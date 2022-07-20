@@ -19,7 +19,7 @@ const Dog = (props) => {
         const typeArray = [];
         response.data.types.map((type) => {
           // console.log(Object.values(type));
-          Object.values(type).map((num, type) => {
+          Object.values(type).map((num) => {
             console.log(num.name);
             if (typeof num.name != typeof "") {
               console.log("true");
@@ -33,7 +33,7 @@ const Dog = (props) => {
         console.log(typeArray);
         setDogStats({
           img: response.data.sprites.front_default,
-          type: typeArray.toString()
+          type: typeArray
         });
       })
       .catch(e => console.log(e));
@@ -49,9 +49,15 @@ const Dog = (props) => {
             <StyledCard.Text>
               url: {dog.url}
             </StyledCard.Text>
-            <StyledCard.Text>
-              type: {dogStats.type}
-            </StyledCard.Text>
+            {dogStats.type.length >= 2 ?
+              <StyledCard.Text>
+                types: {dogStats.type.toString()}
+              </StyledCard.Text>
+              :
+              <StyledCard.Text>
+                type: {dogStats.type.toString()}
+              </StyledCard.Text>
+            }
             <Link to={`/dogs/${dog.name}`}>
               <Button variant="primary">View Dog</Button>
             </Link>
