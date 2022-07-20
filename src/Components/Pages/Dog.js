@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { StyledButton, StyledCard } from '../utils/StyledComponents';
-import { Card, Button, Col } from "react-bootstrap";
+import { StyledCard, StyledCol, StyledCardTitle } from '../utils/StyledComponents';
+import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
 const Dog = (props) => {
   const { dog } = props;
-  let img = '';
   const [dogImage, setDogImage] = useState('');
 
   useEffect(() => {
@@ -20,18 +19,18 @@ const Dog = (props) => {
 
   return (
     <>
-      <Col>
+      <StyledCol>
         <StyledCard>
           <StyledCard.Img variant="top" src={dogImage} />
           <StyledCard.Body>
-            <StyledCard.Title>{dog.name}</StyledCard.Title>
+            <StyledCardTitle>{dog.name}</StyledCardTitle>
             <StyledCard.Text>url: {dog.url}</StyledCard.Text>
             <Link to={`/dogs/${dog.name}`}>
               <Button variant="primary">View Dog</Button>
             </Link>
           </StyledCard.Body>
         </StyledCard>
-      </Col>
+      </StyledCol>
     </>
   );
 };

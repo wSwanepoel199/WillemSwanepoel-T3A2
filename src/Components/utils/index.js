@@ -13,7 +13,7 @@ import ContactForm from '../Pages/ContactForm';
 import Dogs from '../Pages/Dogs';
 import Dog from '../Pages/Dog';
 import DogDetails from '../Pages/DogDetails';
-import NotFound from '../Pages/404';
+import NotFound from '../Pages/NotFound';
 
 // Export Components
 export {

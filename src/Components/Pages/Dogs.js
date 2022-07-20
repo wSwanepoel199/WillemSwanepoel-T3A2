@@ -1,7 +1,7 @@
 import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
 import { Row } from "react-bootstrap";
-import { StyledContainer } from "../utils/StyledComponents";
+import { StyledContainer, StyledRow } from "../utils/StyledComponents";
 
 const Dogs = () => {
   const { store } = useGlobalState();
@@ -10,11 +10,11 @@ const Dogs = () => {
   return (
     <>
       <StyledContainer>
-        <Row>
+        <StyledRow>
           {Object.keys(dogList).map((dog) =>
             <Dog key={dog} dog={dogList[dog]} />
           )}
-        </Row>
+        </StyledRow>
       </StyledContainer>
     </>
   );

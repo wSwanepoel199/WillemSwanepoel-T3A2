@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Button, Card, Container } from 'react-bootstrap';
+import { Card, Container, Row, Col, Image, Nav } from 'react-bootstrap';
 
 // export const Button = styled.button`
 //   background: transparent;
@@ -31,10 +31,37 @@ import { Button, Card, Container } from 'react-bootstrap';
 // `;
 
 export const StyledCard = styled(Card)`
-width: 18rem;
+max-width: 18rem;
+margin-left: auto;
+margin-right: auto;
+`;
 
+export const StyledCardTitle = styled(Card.Title)`
+display: flex;
+justify-content: center;
+`;
+
+export const StyledRow = styled(Row)`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const StyledCol = styled(Col)`
+  align-items: center;
+  justify-content: center;
 `;
 
 export const StyledContainer = styled(Container)`
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+`;
+
+export const StyledImage = styled(Image)`
+max-width: 100%;
+max-height: 100%;
+`;
+
+export const StyledNav = styled(Nav)`
+
 `;
