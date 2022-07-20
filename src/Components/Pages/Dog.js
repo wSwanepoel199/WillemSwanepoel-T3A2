@@ -43,7 +43,7 @@ const Dog = (props) => {
     <>
       <StyledCol>
         <StyledCard>
-          <StyledCard.Img variant="top" src={dogStats.img} />
+          <StyledCard.Img fluid variant="top" src={dogStats.img} />
           <StyledCardBody>
             <StyledCardTitle>{dog.name}</StyledCardTitle>
             <StyledCard.Text>

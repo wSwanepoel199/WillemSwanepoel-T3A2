@@ -54,9 +54,9 @@ export const StyledRow = styled(Row)`
 `;
 
 export const StyledCol = styled(Col)`
-  align-items: center;
   justify-content: center;
-  margin: 20px;
+  margin-top: 20px;
+  padding: 0;
 `;
 
 export const StyledContainer = styled(Container)`
