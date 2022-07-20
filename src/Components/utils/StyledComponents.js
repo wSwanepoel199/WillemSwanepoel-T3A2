@@ -36,6 +36,13 @@ margin-left: auto;
 margin-right: auto;
 `;
 
+export const StyledCardBody = styled(Card.Body)`
+border-top-style: solid;
+border-top-width: 1px;
+border-top-color: rgba(0, 0, 0, 0.175);
+border-top-radius: 0.375rem;
+`;
+
 export const StyledCardTitle = styled(Card.Title)`
 display: flex;
 justify-content: center;

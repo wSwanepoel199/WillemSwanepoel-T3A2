@@ -5,16 +5,20 @@ const NavBar = () => {
 
   const checkEvent = (e) => {
     console.log(e.target);
+    const changeColor = () => {
+
+    };
   };
+
   return (
-    <Navbar>
-      <Container fluid>
+    <Navbar collapseOnSelect>
+      <Container fluid onMouseOver={(e) => checkEvent(e)}>
         <StyledNav
-          activeKey='/'>
+          defaultActiveKey="/home">
           <StyledNav.Item>
             <StyledNav.Link href="/">Home</StyledNav.Link>
           </StyledNav.Item>
-          <NavDropdown title="Dogs" id="dogs-dropdown" onClick={(e) => checkEvent(e)}>
+          <NavDropdown title="Dogs" id="dogs-dropdown">
             <NavDropdown.Item eventKey="all-dogs" href="/dogs">All Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="male-dogs">Male Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="female-dogs">Female Dogs</NavDropdown.Item>
@@ -34,15 +38,6 @@ const NavBar = () => {
         </StyledNav>
       </Container>
     </Navbar>
-
-    // <nav>
-    //   <a href="/">Home</a>
-    //   <a href="/dogs">Dogs</a>
-    //   <a href="/">Litters</a>
-    //   <a href="/">Shows</a>
-    //   <a href="/">Our Company</a>
-    //   <a href="/about">Temp About</a>
-    // </nav>
   );
 };
 

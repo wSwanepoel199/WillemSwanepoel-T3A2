@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { StyledCard, StyledCol, StyledCardTitle } from '../utils/StyledComponents';
+import { StyledCard, StyledCol, StyledCardTitle, StyledCardBody } from '../utils/StyledComponents';
 import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -22,13 +22,13 @@ const Dog = (props) => {
       <StyledCol>
         <StyledCard>
           <StyledCard.Img variant="top" src={dogImage} />
-          <StyledCard.Body>
+          <StyledCardBody>
             <StyledCardTitle>{dog.name}</StyledCardTitle>
             <StyledCard.Text>url: {dog.url}</StyledCard.Text>
             <Link to={`/dogs/${dog.name}`}>
               <Button variant="primary">View Dog</Button>
             </Link>
-          </StyledCard.Body>
+          </StyledCardBody>
         </StyledCard>
       </StyledCol>
     </>
