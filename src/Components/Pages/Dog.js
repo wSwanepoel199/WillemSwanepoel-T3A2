@@ -20,9 +20,9 @@ const Dog = (props) => {
         response.data.types.map((type) => {
           // console.log(Object.values(type));
           Object.values(type).map((num) => {
-            console.log(num.name);
+            // console.log(num.name);
             if (typeof num.name != typeof "") {
-              console.log("true");
+              // console.log("true");
             } else {
               typeArray.push(` ${num.name}`);
             }
@@ -30,7 +30,7 @@ const Dog = (props) => {
           });
 
         });
-        console.log(typeArray);
+        // console.log(typeArray);
         setDogStats({
           img: response.data.sprites.front_default,
           type: typeArray
@@ -43,7 +43,7 @@ const Dog = (props) => {
     <>
       <StyledCol>
         <StyledCard>
-          <StyledCard.Img fluid variant="top" src={dogStats.img} />
+          <StyledCard.Img fluid="true" variant="top" src={dogStats.img} />
           <StyledCardBody>
             <StyledCardTitle>{dog.name}</StyledCardTitle>
             <StyledCard.Text>

@@ -54,6 +54,7 @@ export const StyledRow = styled(Row)`
 `;
 
 export const StyledCol = styled(Col)`
+  display: flex;
   justify-content: center;
   margin-top: 20px;
   padding: 0;
@@ -68,8 +69,4 @@ export const StyledContainer = styled(Container)`
 export const StyledImage = styled(Image)`
 max-width: 100%;
 max-height: 100%;
-`;
-
-export const StyledNav = styled(Nav)`
-
 `;
