@@ -1,6 +1,5 @@
 import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
-import { Row } from "react-bootstrap";
 import { StyledContainer, StyledRow } from "../utils/StyledComponents";
 
 const Dogs = () => {
