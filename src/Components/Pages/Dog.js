@@ -17,20 +17,26 @@ const Dog = (props) => {
       .then(response => {
         // console.log(Object.values(response.data.types));
         const typeArray = [];
+        // const newArray = response.data.types.reduce((pval, cval) => {
+        //   console.log(pval);
+        //   console.log(cval);
+        // }, console.log(typeArray));
         response.data.types.map((type) => {
           // console.log(Object.values(type));
           Object.values(type).map((num) => {
             // console.log(num.name);
-            if (typeof num.name != typeof "") {
+            if (typeof num.name == typeof "") {
               // console.log("true");
-            } else {
               typeArray.push(` ${num.name}`);
+            } else {
+              return false;
             }
             // console.log(type);
           });
 
         });
         // console.log(typeArray);
+        // console.log(newArray);
         setDogStats({
           img: response.data.sprites.front_default,
           type: typeArray
