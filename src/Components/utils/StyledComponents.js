@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Card, Container, Row, Col, Image, } from 'react-bootstrap';
+import { Card, Container, Row, Col, Image } from 'react-bootstrap';
 
 // export const Button = styled.button`
 //   background: transparent;
