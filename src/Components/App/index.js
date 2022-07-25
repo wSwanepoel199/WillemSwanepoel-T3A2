@@ -20,6 +20,7 @@ import {
   NotFound,
   LitterApplication
 } from '../utils/index';
+import { Container } from 'react-bootstrap';
 
 const App = () => {
   const initialState = {
@@ -47,18 +48,20 @@ const App = () => {
         <Router>
           <Header />
           <NavBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dogs" element={<Dogs />} />
-            <Route path="/dogs">
-              <Route index element={<Dogs />} />
-              <Route path=":id" element={<DogDetails />} />
-            </Route>
-            <Route path="/litterApplication" element={<LitterApplication />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contactForm" element={<ContactForm />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Container>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dogs" element={<Dogs />} />
+              <Route path="/dogs">
+                <Route index element={<Dogs />} />
+                <Route path=":id" element={<DogDetails />} />
+              </Route>
+              <Route path="/litterApplication" element={<LitterApplication />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contactForm" element={<ContactForm />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Container>
           <Footer />
         </Router>
       </StateContext.Provider>

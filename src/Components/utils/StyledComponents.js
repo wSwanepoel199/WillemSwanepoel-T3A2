@@ -52,15 +52,13 @@ border-top-radius: 0.375rem;
 
 // Form Custom Styling
 export const StyledForm = styled(Form)`
-display: flex;
-flex-direction: column;
-align-items: center;
 `;
 
 export const StyledFormContainer = styled(Container)`
 display: flex;
 flex-direction: column;
 align-items: center;
+justify-content: space-evenly;
 `;
 
 export const StyledFormGroup = styled(Form.Group)`

@@ -34,11 +34,12 @@ const ContactForm = () => {
                     <Dropdown.Item eventKey="Action" href="#">Action</Dropdown.Item>
                     <Dropdown.Item eventKey="Another action" href="#">Another action</Dropdown.Item>
                     <Dropdown.Item eventKey="Something else here" href="#">Something else here</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item eventKey="Separated link" href="#">Separated link</Dropdown.Item>
                   </DropdownButton>
                 </InputGroup> */}
-
+              </StyledFormGroup>
+              <StyledFormGroup className="mb-3" controlId="contactFormEmail">
+                <Form.Label>Provide More Detail</Form.Label>
+                <Form.Control type="textarea" as="textarea" placeholder="Provide More Details" />
               </StyledFormGroup>
             </StyledFormContainer>
           </Form>
