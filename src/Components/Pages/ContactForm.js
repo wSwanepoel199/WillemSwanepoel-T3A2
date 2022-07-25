@@ -4,7 +4,9 @@ import { Container, Form, InputGroup, Dropdown, DropdownButton } from "react-boo
 import { StyledFormContainer, StyledFormGroup, StyledSubmitButton } from "../Shared/styles/ContactForm.styled";
 
 const ContactForm = () => {
-  const { store, dispatch } = useGlobalState();
+  // uses global state to gain access to dispatch
+  const { dispatch } = useGlobalState();
+
   const initialContactDetails = {
     email: "",
     catagory: "",
@@ -27,7 +29,9 @@ const ContactForm = () => {
       [e.id]: e.value
     });
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitting");
     const updatedContactForm = {
       email: contactDetails.email,
       catagory: contactDetails.catagory,

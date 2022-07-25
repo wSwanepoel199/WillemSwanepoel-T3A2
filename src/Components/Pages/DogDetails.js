@@ -18,17 +18,6 @@ const DogDetails = () => {
       .catch(e => console.log(e));
   }, []);
 
-  // const getDog = (id) => {
-  //   console.log(id);
-  //   // console.log(Object.values(dogList));
-  //   // return Object.values(dogList).find(d => d.id === id);
-
-  //   return Object.values(dogList).find(dog => {
-  //     console.log(dog);
-  //   });
-  // };
-  // const dog = getDog(params.id);
-
   return (
     <div>
       {console.log(dogDetails)}

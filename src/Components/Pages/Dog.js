@@ -59,7 +59,7 @@ const Dog = (props) => {
               Breeder: {dog.breeder}
             </StyledCard.Text>
             <StyledCard.Text>
-              Sex: {dog.sex == 1 ?
+              Sex: {dog.sex === 1 ?
                 "Male"
                 :
                 "Female"}

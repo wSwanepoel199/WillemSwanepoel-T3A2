@@ -13,9 +13,17 @@ export const reducer = (state, action) => {
         dogList: action.data
       };
     }
+    case "setContactForm": {
+      console.log(action.data);
+      return {
+        ...state,
+        contactForm: action.data
+      };
+    }
     case "updateContactForm": {
       console.log(action.data);
       return {
+        ...state,
         contactForm: action.data
       };
     }

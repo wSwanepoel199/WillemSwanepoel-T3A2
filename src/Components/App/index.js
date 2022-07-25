@@ -22,36 +22,32 @@ import {
 } from '../utils/index';
 
 const App = () => {
+  // sets the inital state of the application
   const initialState = {
     dogList: {},
-    contactForm: {
+    contactForm: {}
+  };
+  // uses reducer to globalise state.
+  const [store, dispatch] = useReducer(reducer, initialState, init);
+
+  // on component mount sets the inital state of the contact form and gets api from backend server
+  useEffect(() => {
+    const initialContactFormState = {
       email: "",
       catagory: "",
       details: ""
-    }
-  };
-
-  const [store, dispatch] = useReducer(reducer, initialState, init);
-
-  // useEffect(() => {
-  //   axios.get("https://pokeapi.co/api/v2/pokemon?limit=25&offset=0/")
-  //     .then(response => {
-  //       console.log(response);
-  //       dispatch({
-  //         type: 'setDogList',
-  //         data: response.data
-  //       });
-  //     })
-  //     .catch(e => console.log(e));
-  // }, []);
-
-  useEffect(() => {
+    };
     axios.get("http://127.0.0.1:3001/dogs")
       .then(response => {
-        console.log(response.data);
+        // uses reducer to spread fetched data into the global dog list state
         dispatch({
           type: "setDogList",
           data: response.data
+        });
+        // uses reducer to spread intial contact form state into global contact form state
+        dispatch({
+          type: "setContactForm",
+          data: initialContactFormState
         });
       })
       .catch(e => console.log(e));
@@ -59,6 +55,7 @@ const App = () => {
 
   return (
     <>
+      {/* makes dispatch and store availabl to the main application */}
       <StateContext.Provider value={{ store, dispatch }}>
         {console.log(Object.entries(store.dogList))}
         <Router>
