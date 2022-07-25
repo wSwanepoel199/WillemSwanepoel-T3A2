@@ -20,21 +20,37 @@ import {
   NotFound,
   LitterApplication
 } from '../utils/index';
-import { Container } from 'react-bootstrap';
 
 const App = () => {
   const initialState = {
-    dogList: {}
+    dogList: {},
+    contactForm: {
+      email: "",
+      catagory: "",
+      details: ""
+    }
   };
 
   const [store, dispatch] = useReducer(reducer, initialState, init);
 
+  // useEffect(() => {
+  //   axios.get("https://pokeapi.co/api/v2/pokemon?limit=25&offset=0/")
+  //     .then(response => {
+  //       console.log(response);
+  //       dispatch({
+  //         type: 'setDogList',
+  //         data: response.data
+  //       });
+  //     })
+  //     .catch(e => console.log(e));
+  // }, []);
+
   useEffect(() => {
-    axios.get("https://pokeapi.co/api/v2/pokemon?limit=25&offset=0/")
+    axios.get("http://127.0.0.1:3001/dogs")
       .then(response => {
-        console.log(response);
+        console.log(response.data);
         dispatch({
-          type: 'setDogList',
+          type: "setDogList",
           data: response.data
         });
       })
@@ -44,24 +60,22 @@ const App = () => {
   return (
     <>
       <StateContext.Provider value={{ store, dispatch }}>
-        {console.log(Object.keys(store.dogList))}
+        {console.log(Object.entries(store.dogList))}
         <Router>
           <Header />
           <NavBar />
-          <Container>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/dogs" element={<Dogs />} />
-              <Route path="/dogs">
-                <Route index element={<Dogs />} />
-                <Route path=":id" element={<DogDetails />} />
-              </Route>
-              <Route path="/litterApplication" element={<LitterApplication />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contactForm" element={<ContactForm />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Container>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/dogs" element={<Dogs />} />
+            <Route path="/dogs">
+              <Route index element={<Dogs />} />
+              <Route path=":id" element={<DogDetails />} />
+            </Route>
+            <Route path="/litterApplication" element={<LitterApplication />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contactForm" element={<ContactForm />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
           <Footer />
         </Router>
       </StateContext.Provider>

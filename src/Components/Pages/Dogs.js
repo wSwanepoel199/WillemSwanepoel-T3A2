@@ -11,8 +11,8 @@ const Dogs = () => {
     <>
       <Container>
         <StyledRow>
-          {Object.keys(dogList).map((dog) =>
-            <Dog key={dog} dog={dogList[dog]} />
+          {Object.entries(dogList).map((id, dog) =>
+            <Dog key={id} dog={dogList[dog]} />
           )}
         </StyledRow>
       </Container>

@@ -8,8 +8,15 @@ export const reducer = (state, action) => {
       return init(action.data);
     }
     case "setDogList": {
+      console.log(action.data);
       return {
-        dogList: action.data.results
+        dogList: action.data
+      };
+    }
+    case "updateContactForm": {
+      console.log(action.data);
+      return {
+        contactForm: action.data
       };
     }
     default: {
