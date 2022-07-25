@@ -1,5 +1,5 @@
 import banner from './Assests/banner.jpg';
-import { HeaderContainer, HeaderImage } from '../utils/StyledComponents';
+import { HeaderContainer, HeaderImage } from './styles/Header.styled';
 
 const Header = () => {
   return (

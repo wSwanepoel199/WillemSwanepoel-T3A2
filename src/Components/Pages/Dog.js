@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { StyledCard, StyledCol, StyledCardTitle, StyledCardBody } from '../utils/StyledComponents';
+import { StyledCard, StyledCol, StyledCardTitle, StyledCardBody } from '../Shared/styles/Dog.styled';
 import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import axios from 'axios';

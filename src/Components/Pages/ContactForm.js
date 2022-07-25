@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Container, Form, Ratio, InputGroup, Dropdown, DropdownButton } from "react-bootstrap";
-import { StyledFormContainer, StyledForm, StyledFormGroup } from "../utils/StyledComponents";
+import { StyledFormContainer, StyledFormGroup } from "../Shared/styles/ContactForm.styled";
 
 const ContactForm = () => {
-  const handleSelect = (e) => {
-    console.log(e);
+
+  const [catagory, setCatagory] = useState('');
+
+  const handleCharagory = (e) => {
+    setCatagory(e);
   };
 
   return (
@@ -19,23 +23,21 @@ const ContactForm = () => {
               </StyledFormGroup>
               <StyledFormGroup className="mb-3" controlId="contactFormCatagory">
                 <Form.Label>Reason for Contact</Form.Label>
-                <Form.Control type="email" placeholder="Enter your email" />
+                {/* <Form.Control type="email" placeholder="Enter your email" /> */}
 
-                {/* <InputGroup className="mb-3">
-                  <Form.Control aria-label="Text input with dropdown button" onChange={handleSelect} />
-
+                <InputGroup className="mb-3">
                   <DropdownButton
                     variant="outline-secondary"
-                    title="Dropdown"
+                    title="Select reason"
                     id="input-group-dropdown-2"
-                    align="end"
-                    onSelect={handleSelect}
+                    onSelect={(e) => handleCharagory(e)}
                   >
-                    <Dropdown.Item eventKey="Action" href="#">Action</Dropdown.Item>
-                    <Dropdown.Item eventKey="Another action" href="#">Another action</Dropdown.Item>
-                    <Dropdown.Item eventKey="Something else here" href="#">Something else here</Dropdown.Item>
+                    <Dropdown.Item eventKey="Enquire about dogs" href="#">Enquire about dogs</Dropdown.Item>
+                    <Dropdown.Item eventKey="Enquire about litters" href="#">Enquire about litters</Dropdown.Item>
+                    <Dropdown.Item eventKey="Enquire about shows" href="#">Enquire about shows</Dropdown.Item>
                   </DropdownButton>
-                </InputGroup> */}
+                  <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={catagory} onChange={(e) => handleCharagory(e.target.value)} />
+                </InputGroup>
               </StyledFormGroup>
               <StyledFormGroup className="mb-3" controlId="contactFormEmail">
                 <Form.Label>Provide More Detail</Form.Label>
