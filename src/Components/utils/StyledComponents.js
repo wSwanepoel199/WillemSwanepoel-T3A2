@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Card, Container, Row, Col, Image } from 'react-bootstrap';
+import { Card, Container, Row, Col, Image, Form } from 'react-bootstrap';
 
 // export const Button = styled.button`
 //   background: transparent;
@@ -30,10 +30,17 @@ import { Card, Container, Row, Col, Image } from 'react-bootstrap';
 //   `}
 // `;
 
+
+// Cards Custom Styling
 export const StyledCard = styled(Card)`
 max-width: 18rem;
 margin-left: auto;
 margin-right: auto;
+`;
+
+export const StyledCardTitle = styled(Card.Title)`
+display: flex;
+justify-content: center;
 `;
 
 export const StyledCardBody = styled(Card.Body)`
@@ -43,11 +50,24 @@ border-top-color: rgba(0, 0, 0, 0.175);
 border-top-radius: 0.375rem;
 `;
 
-export const StyledCardTitle = styled(Card.Title)`
+// Form Custom Styling
+export const StyledForm = styled(Form)`
 display: flex;
-justify-content: center;
+flex-direction: column;
+align-items: center;
 `;
 
+export const StyledFormContainer = styled(Container)`
+display: flex;
+flex-direction: column;
+align-items: center;
+`;
+
+export const StyledFormGroup = styled(Form.Group)`
+min-width: 75%;
+`;
+
+// Table Custom Styling
 export const StyledRow = styled(Row)`
   align-items: center;
   justify-content: center;
@@ -60,13 +80,15 @@ export const StyledCol = styled(Col)`
   padding: 0;
 `;
 
-export const StyledContainer = styled(Container)`
+// Header Custom Styling
+export const HeaderContainer = styled(Container)`
   display: flex;
   justify-content: center;
   padding: 0;
 `;
 
-export const StyledImage = styled(Image)`
+export const HeaderImage = styled(Image)`
 max-width: 100%;
 max-height: 100%;
 `;
+
