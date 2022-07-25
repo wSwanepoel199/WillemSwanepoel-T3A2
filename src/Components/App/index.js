@@ -17,7 +17,8 @@ import {
   ContactForm,
   Dogs,
   DogDetails,
-  NotFound
+  NotFound,
+  LitterApplication
 } from '../utils/index';
 
 const App = () => {
@@ -53,6 +54,7 @@ const App = () => {
               <Route index element={<Dogs />} />
               <Route path=":id" element={<DogDetails />} />
             </Route>
+            <Route path="/litterApplication" element={<LitterApplication />} />
             <Route path="/about" element={<About />} />
             <Route path="/contactForm" element={<ContactForm />} />
             <Route path="*" element={<NotFound />} />
