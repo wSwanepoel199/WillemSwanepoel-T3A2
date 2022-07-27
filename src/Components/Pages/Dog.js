@@ -1,38 +1,40 @@
 import { Link } from "react-router-dom";
-import { StyledCard, StyledCol, StyledCardTitle, StyledCardBody } from '../Shared/styles/Dog.styled';
-import { Button } from "react-bootstrap";
+import { StyledCard, StyledCardTitle, StyledCardBody } from '../Shared/styles/Dog.styled';
+import { Button, Card } from "react-bootstrap";
+import { Grid } from "@mui/material";
 
 const Dog = (props) => {
   const { dog } = props;
 
   return (
     <>
-      <StyledCol md="auto">
+      {console.log(dog)}
+      <Grid item md={3}>
         <StyledCard>
-          <StyledCard.Img fluid="true" variant="top" src={dog.main_image} />
+          <Card.Img variant="top" src={dog.main_image} />
           <StyledCardBody>
             <StyledCardTitle>{dog.callname}</StyledCardTitle>
-            <StyledCard.Text>
+            <Card.Text>
               Full Name: {dog.realname}
-            </StyledCard.Text>
-            <StyledCard.Text>
+            </Card.Text>
+            <Card.Text>
               Owner: {dog.ownername}
-            </StyledCard.Text>
-            <StyledCard.Text>
+            </Card.Text>
+            <Card.Text>
               Breeder: {dog.breedername}
-            </StyledCard.Text>
-            <StyledCard.Text>
+            </Card.Text>
+            <Card.Text>
               Sex: {dog.sex === 1 ?
                 "Male"
                 :
                 "Female"}
-            </StyledCard.Text>
+            </Card.Text>
             <Link to={`/dogs/chosen/${dog.id}`}>
               <Button variant="primary">View Dog</Button>
             </Link>
           </StyledCardBody>
         </StyledCard>
-      </StyledCol>
+      </Grid>
     </>
   );
 };

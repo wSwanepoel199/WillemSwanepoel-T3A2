@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
-import { Row } from 'react-bootstrap';
+import { Grid } from '@mui/material';
 
-export const StyledRow = styled(Row)`
-  align-items: center;
+export const StyledGrid = styled(Grid)`
   justify-content: center;
 `;

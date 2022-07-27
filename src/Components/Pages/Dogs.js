@@ -1,9 +1,8 @@
 import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
-import { StyledRow } from "../Shared/styles/Dogs.styled";
+import { StyledGrid } from "../Shared/styles/Dogs.styled";
 import { Container } from "react-bootstrap";
 import { useParams } from "react-router";
-
 const Dogs = () => {
   const { store } = useGlobalState();
   const { dogList } = store;
@@ -25,11 +24,11 @@ const Dogs = () => {
       {console.log(handleSex(params))}
       { }
       <Container>
-        <StyledRow>
+        <StyledGrid container spacing={2}>
           {handleSex(params).map((id, dog) =>
             <Dog key={dog} dog={id[1]} />
           )}
-        </StyledRow>
+        </StyledGrid>
       </Container>
     </>
   );
