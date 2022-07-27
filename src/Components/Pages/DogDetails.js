@@ -10,6 +10,7 @@ const DogDetails = () => {
   const [dogDetails, setDogDetails] = useState(initialDogDetails);
 
   useEffect(() => {
+    console.log(params);
     axios.get(`http://127.0.0.1:3001/dogs/${params.id}`)
       .then(response => {
         console.log(response.data);
@@ -27,8 +28,8 @@ const DogDetails = () => {
           <h4>{dogDetails.realname}</h4>
           <img alt={`Image of ${dogDetails.callname}`} src={dogDetails.main_image} />
           <p>{dogDetails.callname}</p>
-          <p>{dogDetails.owner}</p>
-          <p>{dogDetails.breeder}</p>
+          <p>{dogDetails.ownername}</p>
+          <p>{dogDetails.breedername}</p>
           <p>{dogDetails.dob}</p>
           <Link to="/dogs">Return</Link>
         </>

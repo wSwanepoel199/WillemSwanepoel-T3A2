@@ -9,6 +9,7 @@ const ContactForm = () => {
 
   const initialContactDetails = {
     email: "",
+    phonenumber: 0,
     catagory: "",
     details: ""
   };
@@ -34,6 +35,7 @@ const ContactForm = () => {
     console.log("Submitting");
     const updatedContactForm = {
       email: contactDetails.email,
+      phonenumber: contactDetails.phonenumber,
       catagory: contactDetails.catagory,
       details: contactDetails.details
     };
@@ -53,6 +55,10 @@ const ContactForm = () => {
           <StyledFormGroup className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control type="email" placeholder="Enter your email" value={contactDetails.email} />
+          </StyledFormGroup>
+          <StyledFormGroup className="mb-3" controlId="phone">
+            <Form.Label>Prefered Contact Number</Form.Label>
+            <Form.Control type="phonenumber" placeholder="Enter your prefered contact number" value={contactDetails.phonenumber} />
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="catagory">
             <Form.Label>Reason for Contact</Form.Label>
