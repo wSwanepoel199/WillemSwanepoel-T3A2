@@ -26,7 +26,7 @@ const DogDetails = () => {
       {dogDetails ?
         <>
           <h4>{dogDetails.realname}</h4>
-          <img alt={`Image of ${dogDetails.callname}`} src={dogDetails.main_image} />
+          <img alt={`${dogDetails.realname}`} src={dogDetails.main_image} />
           <p>{dogDetails.callname}</p>
           <p>{dogDetails.ownername}</p>
           <p>{dogDetails.breedername}</p>
