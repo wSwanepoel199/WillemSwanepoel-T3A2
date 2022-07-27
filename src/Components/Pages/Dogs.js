@@ -1,8 +1,7 @@
 import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
-import { StyledGrid } from "../Shared/styles/Dogs.styled";
-import { Container } from "react-bootstrap";
 import { useParams } from "react-router";
+import { Container, Grid } from "@mui/material";
 const Dogs = () => {
   const { store } = useGlobalState();
   const { dogList } = store;
@@ -24,11 +23,17 @@ const Dogs = () => {
       {console.log(handleSex(params))}
       { }
       <Container>
-        <StyledGrid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent="space-evenly"
+          columns={{ xs: 6, sm: 8, md: 10, lg: 12 }}>
           {handleSex(params).map((id, dog) =>
-            <Dog key={dog} dog={id[1]} />
+            <Grid item sm={3} md={3} key={dog}>
+              <Dog dog={id[1]} />
+            </Grid>
           )}
-        </StyledGrid>
+        </Grid>
       </Container>
     </>
   );

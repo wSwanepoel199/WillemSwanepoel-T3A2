@@ -1,5 +1,6 @@
 import { styled } from '@mui/system';
-import { Container, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
+import { Container } from '@mui/material';
 
 // Header Custom Styling
 export const HeaderContainer = styled(Container)`

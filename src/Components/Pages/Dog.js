@@ -1,40 +1,42 @@
 import { Link } from "react-router-dom";
-import { StyledCard, StyledCardTitle, StyledCardBody } from '../Shared/styles/Dog.styled';
-import { Button, Card } from "react-bootstrap";
-import { Grid } from "@mui/material";
+import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mui/material";
 
 const Dog = (props) => {
   const { dog } = props;
 
   return (
     <>
-      {console.log(dog)}
-      <Grid item md={3}>
-        <StyledCard>
-          <Card.Img variant="top" src={dog.main_image} />
-          <StyledCardBody>
-            <StyledCardTitle>{dog.callname}</StyledCardTitle>
-            <Card.Text>
-              Full Name: {dog.realname}
-            </Card.Text>
-            <Card.Text>
-              Owner: {dog.ownername}
-            </Card.Text>
-            <Card.Text>
-              Breeder: {dog.breedername}
-            </Card.Text>
-            <Card.Text>
-              Sex: {dog.sex === 1 ?
-                "Male"
-                :
-                "Female"}
-            </Card.Text>
-            <Link to={`/dogs/chosen/${dog.id}`}>
-              <Button variant="primary">View Dog</Button>
-            </Link>
-          </StyledCardBody>
-        </StyledCard>
-      </Grid>
+      <Card>
+        <CardMedia
+          component="img"
+          image={dog.main_image}
+        />
+        <CardContent>
+          <Container>
+            <Typography variant="h5" component="div" textAlign="center">
+              {dog.callname}
+            </Typography>
+          </Container>
+          <Typography varient="p" component="div">
+            Full Name: {dog.realname}
+          </Typography>
+          <Typography>
+            Owner: {dog.ownername}
+          </Typography>
+          <Typography>
+            Breeder: {dog.breedername}
+          </Typography>
+          <Typography>
+            Sex: {dog.sex === 1 ?
+              "Male"
+              :
+              "Female"}
+          </Typography>
+          <Link to={`/dogs/chosen/${dog.id}`}>
+            <Button variant="outlined">View Dog</Button>
+          </Link>
+        </CardContent>
+      </Card>
     </>
   );
 };
