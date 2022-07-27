@@ -9,7 +9,7 @@ const ContactForm = () => {
 
   const initialContactDetails = {
     email: "",
-    phonenumber: 0,
+    phonenumber: '',
     catagory: "",
     details: ""
   };
@@ -24,7 +24,6 @@ const ContactForm = () => {
     handleFormInput(selectedCatagory);
   };
   const handleFormInput = (e) => {
-    console.log(e);
     setContactDetails({
       ...contactDetails,
       [e.id]: e.value
@@ -32,7 +31,6 @@ const ContactForm = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting");
     const updatedContactForm = {
       email: contactDetails.email,
       phonenumber: contactDetails.phonenumber,
@@ -48,17 +46,16 @@ const ContactForm = () => {
 
   return (
     <>
-      {console.log(contactDetails)}
       <Form>
-        <StyledFormContainer onChange={(e) => handleFormInput(e.target)}>
+        <StyledFormContainer>
           <h2>Contact Form</h2>
           <StyledFormGroup className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter your email" value={contactDetails.email} />
+            <Form.Control type="email" placeholder="Enter your email" value={contactDetails.email} onChange={(e) => handleFormInput(e.target)} />
           </StyledFormGroup>
-          <StyledFormGroup className="mb-3" controlId="phone">
+          <StyledFormGroup className="mb-3" controlId="phonenumber">
             <Form.Label>Prefered Contact Number</Form.Label>
-            <Form.Control type="phonenumber" placeholder="Enter your prefered contact number" value={contactDetails.phonenumber} />
+            <Form.Control type="phonenumber" placeholder="Enter your prefered contact number" value={contactDetails.phonenumber} onChange={(e) => handleFormInput(e.target)} />
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="catagory">
             <Form.Label>Reason for Contact</Form.Label>
@@ -73,12 +70,12 @@ const ContactForm = () => {
                 <Dropdown.Item eventKey="Enquire about litters" href="#">Enquiring about litters</Dropdown.Item>
                 <Dropdown.Item eventKey="Enquire about shows" href="#">Enquiring about shows</Dropdown.Item>
               </DropdownButton>
-              <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={contactDetails.catagory} />
+              <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={contactDetails.catagory} onChange={(e) => handleFormInput(e.target)} />
             </InputGroup>
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="details" >
             <Form.Label>Provide More Detail</Form.Label>
-            <Form.Control type="textarea" as="textarea" rows={3} placeholder="Provide More Details" value={contactDetails.details} />
+            <Form.Control type="textarea" as="textarea" rows={3} placeholder="Provide More Details" value={contactDetails.details} onChange={(e) => handleFormInput(e.target)} />
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="contactFormSubmitButton">
             <Container fluid>

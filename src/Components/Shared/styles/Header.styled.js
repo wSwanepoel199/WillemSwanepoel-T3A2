@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from '@mui/system';
 import { Container, Image } from 'react-bootstrap';
 
 // Header Custom Styling

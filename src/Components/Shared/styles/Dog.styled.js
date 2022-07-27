@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from '@mui/system';
 import { Card, Col } from 'react-bootstrap';
 
 // Cards Custom Styling

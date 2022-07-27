@@ -20,6 +20,7 @@ import {
   NotFound,
   LitterApplication
 } from '../utils/index';
+import { StyledContainer } from '../Shared/styles/index.styled';
 
 const App = () => {
   // sets the inital state of the application
@@ -61,17 +62,19 @@ const App = () => {
         <Router>
           <Header />
           <NavBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dogs">
-              <Route path=":id" element={<Dogs />} />
-            </Route>
-            <Route path="/dogs/chosen/:id" element={<DogDetails />} />
-            <Route path="/litterApplication" element={<LitterApplication />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contactForm" element={<ContactForm />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <StyledContainer>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dogs">
+                <Route path=":id" element={<Dogs />} />
+              </Route>
+              <Route path="/dogs/chosen/:id" element={<DogDetails />} />
+              <Route path="/litterApplication" element={<LitterApplication />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contactForm" element={<ContactForm />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </StyledContainer>
           <Footer />
         </Router>
       </StateContext.Provider>
