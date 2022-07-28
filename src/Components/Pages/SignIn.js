@@ -19,24 +19,32 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const userForm = {
+      user: {
+        ...formData
+      }
+    };
 
-    signIn(formData)
-      .then((user) => {
-        // console.log(user)
+    signIn(userForm)
+      .then((formResponse) => {
+        const user = {
+          ...formResponse.user
+        };
+        console.log(user);
         if (user.error) {
           console.log("user.error", user.error);
           setError(user.error);
         } else {
           setError(null);
           sessionStorage.setItem("username", user.username);
-          sessionStorage.setItem("token", user.jwt);
+          sessionStorage.setItem("token", user.jti);
           dispatch({
             type: "setLoggedInUser",
             data: user.username
           });
           dispatch({
             type: "setToken",
-            data: user.jwt
+            data: user.jti
           });
           setFormData(initialFormData);
           navigate("/messages");

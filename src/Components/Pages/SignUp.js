@@ -28,24 +28,27 @@ const SignUpForm = () => {
     };
     console.log(userForm);
     signup(userForm)
-      .then((user) => {
-        console.log(user.user);
+      .then((formResponse) => {
+        const user = {
+          ...formResponse.user
+        };
+        console.log(user);
         let errorMessage = "";
-        if (user.user.error) {
-          Object.keys(user.user.error).forEach(key => {
-            errorMessage = errorMessage.concat("", `${key} ${user.user.error[key]}`);
+        if (user.error) {
+          Object.keys(user.error).forEach(key => {
+            errorMessage = errorMessage.concat("", `${key} ${user.error[key]}`);
           });
           setError(errorMessage);
         } else {
-          sessionStorage.setItem("username", user.user.username);
-          sessionStorage.setItem("token", user.user.jwt);
+          sessionStorage.setItem("username", user.username);
+          sessionStorage.setItem("token", user.jti);
           dispatch({
             type: "setLoggedInUser",
-            data: user.user.username
+            data: user.username
           });
           dispatch({
             type: "setToken",
-            data: user.user.jwt
+            data: user.jti
           });
           setFormData(initialFormData);
           navigate("/");
