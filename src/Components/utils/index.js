@@ -15,6 +15,7 @@ import Dog from '../Pages/Dog';
 import DogDetails from '../Pages/DogDetails';
 import NotFound from '../Pages/NotFound';
 import LitterApplication from '../Pages/LitterApplication';
+import LoginForm from '../Pages/SignIn';
 
 // Export Components
 export {
@@ -36,4 +37,5 @@ export {
   DogDetails,
   NotFound,
   LitterApplication,
+  LoginForm
 };

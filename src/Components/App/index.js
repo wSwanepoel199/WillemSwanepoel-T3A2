@@ -18,7 +18,8 @@ import {
   Dogs,
   DogDetails,
   NotFound,
-  LitterApplication
+  LitterApplication,
+  LoginForm
 } from '../utils/index';
 import { StyledContainer } from '../Shared/styles/index.styled';
 
@@ -72,6 +73,8 @@ const App = () => {
               <Route path="/litterApplication" element={<LitterApplication />} />
               <Route path="/about" element={<About />} />
               <Route path="/contactForm" element={<ContactForm />} />
+              <Route path="/signIn" element={<LoginForm />}></Route>
+              <Route path="/signUp"></Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </StyledContainer>
