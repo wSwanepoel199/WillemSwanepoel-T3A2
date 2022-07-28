@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import axios from 'axios';
 import {
   // reducer
   reducer,
@@ -19,7 +18,10 @@ import {
   DogDetails,
   NotFound,
   LitterApplication,
-  LoginForm
+  SignInForm,
+  SignUpForm,
+  // Servies
+  getDogs
 } from '../utils/index';
 import { StyledContainer } from '../Shared/styles/index.styled';
 
@@ -27,7 +29,9 @@ const App = () => {
   // sets the inital state of the application
   const initialState = {
     dogList: {},
-    contactForm: {}
+    contactForm: {},
+    loggedInUser: sessionStorage.getItem("username") || null,
+    token: sessionStorage.getItem("token") || null
   };
   // uses reducer to globalise state.
   const [store, dispatch] = useReducer(reducer, initialState, init);
@@ -39,20 +43,20 @@ const App = () => {
       catagory: "",
       details: ""
     };
-    axios.get("http://127.0.0.1:3001/dogs")
-      .then(response => {
+    getDogs()
+      .then(dogs => {
         // uses reducer to spread fetched data into the global dog list state
         dispatch({
           type: "setDogList",
-          data: response.data
-        });
-        // uses reducer to spread intial contact form state into global contact form state
-        dispatch({
-          type: "setContactForm",
-          data: initialContactFormState
+          data: dogs
         });
       })
       .catch(e => console.log(e));
+    // uses reducer to spread intial contact form state into global contact form state
+    dispatch({
+      type: "setContactForm",
+      data: initialContactFormState
+    });
   }, []);
 
   return (
@@ -60,6 +64,7 @@ const App = () => {
       {/* makes dispatch and store availabl to the main application */}
       <StateContext.Provider value={{ store, dispatch }}>
         {console.log(Object.entries(store.dogList))}
+        <p>hello world</p>
         <Router>
           <Header />
           <NavBar />
@@ -73,8 +78,8 @@ const App = () => {
               <Route path="/litterApplication" element={<LitterApplication />} />
               <Route path="/about" element={<About />} />
               <Route path="/contactForm" element={<ContactForm />} />
-              <Route path="/signIn" element={<LoginForm />}></Route>
-              <Route path="/signUp"></Route>
+              <Route path="/signIn" element={<SignInForm />}></Route>
+              <Route path="/signUp" element={<SignUpForm />}></Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </StyledContainer>

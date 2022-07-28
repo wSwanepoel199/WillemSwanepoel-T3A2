@@ -27,6 +27,20 @@ export const reducer = (state, action) => {
         contactForm: action.data
       };
     }
+    case "setLoggedInUser": {
+      //updates the loggedInUser value
+      return {
+        ...state,
+        loggedInUser: action.data
+      };
+    }
+    case "setToken": {
+      //updates the token value
+      return {
+        ...state,
+        token: action.data
+      };
+    }
     default: {
       throw new Error();
     }
