@@ -4,19 +4,10 @@ import { Container, Typography, Grid, Card as MuiCard, CardContent, CardMedia } 
 import { useGlobalState } from '../utils';
 
 const Home = () => {
-  const { store } = useGlobalState();
 
   return (
     <>
       <Container>
-        {store.loggedInUser ?
-          <>
-            <p>{store.loggedInUser}</p>
-          </>
-          :
-          <>
-            <p>No User</p>
-          </>}
         {/* Main Body Introduction */}
         <Grid container spacing={3} alignItems="center">
           <Grid item sm={6}>

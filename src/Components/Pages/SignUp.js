@@ -14,7 +14,7 @@ const SignUpForm = () => {
     username: "",
     email: "",
     password: "",
-    postcode: ''
+    postcode: ""
   };
   const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState(null);
@@ -28,39 +28,34 @@ const SignUpForm = () => {
     };
     console.log(userForm);
     signup(userForm)
-      .then((formResponse) => {
-        const user = {
-          ...formResponse.user
-        };
+      .then((user) => {
         console.log(user);
-        let errorMessage = "";
-        if (user.error) {
-          Object.keys(user.error).forEach(key => {
-            errorMessage = errorMessage.concat("", `${key} ${user.error[key]}`);
-          });
-          setError(errorMessage);
-        } else {
-          sessionStorage.setItem("username", user.username);
-          sessionStorage.setItem("token", user.jti);
-          dispatch({
-            type: "setLoggedInUser",
-            data: user.username
-          });
-          dispatch({
-            type: "setToken",
-            data: user.jti
-          });
-          setFormData(initialFormData);
-          navigate("/");
-        }
+        sessionStorage.setItem("username", user.username);
+        dispatch({
+          type: "setLoggedInUser",
+          data: user.username
+        });
+        dispatch({
+          type: "setToken",
+          data: user.jwt
+        });
+        setFormData(initialFormData);
+        navigate("/");
       })
-      .catch(e => { console.log(e); });
+      .catch(e => {
+        console.log(e.response.data.errors);
+        let errorMessage = "";
+        Object.keys(e.response.data.errors).forEach(key => {
+          errorMessage = errorMessage.concat("", `${key} ${e.response.data.errors[key]}`);
+        });
+        alert(errorMessage);
+      });
   };
 
   const handleFormData = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: [e.target.value]
+      [e.target.id]: e.target.value
     });
   };
 

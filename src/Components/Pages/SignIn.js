@@ -24,31 +24,25 @@ const SignInForm = () => {
         ...formData
       }
     };
-
     signIn(userForm)
-      .then((formResponse) => {
-        const user = {
-          ...formResponse.user
-        };
+      .then((user) => {
         console.log(user);
-        if (user.error) {
-          console.log("user.error", user.error);
-          setError(user.error);
-        } else {
-          setError(null);
-          sessionStorage.setItem("username", user.username);
-          sessionStorage.setItem("token", user.jti);
-          dispatch({
-            type: "setLoggedInUser",
-            data: user.username
-          });
-          dispatch({
-            type: "setToken",
-            data: user.jti
-          });
-          setFormData(initialFormData);
-          navigate("/messages");
-        }
+        sessionStorage.setItem("username", user.username);
+        dispatch({
+          type: "setLoggedInUser",
+          data: user.username
+        });
+        dispatch({
+          type: "setToken",
+          data: user.jwt
+        });
+        setFormData(initialFormData);
+        navigate("/");
+      }
+      )
+      .catch(e => {
+        console.log(e.response.data.message);
+        alert(e.response.data.message);
       });
   };
 
@@ -57,6 +51,17 @@ const SignInForm = () => {
       ...formData,
       [e.target.id]: e.target.value
     });
+  };
+
+  const whipeToken = () => {
+    sessionStorage.setItem("token", null);
+
+    dispatch({
+      type: "setToken",
+      data: null
+    });
+
+    console.log(sessionStorage);
   };
 
   return (
@@ -78,6 +83,7 @@ const SignInForm = () => {
               <Button variant="text" href="/signUp">sign up</Button>
             </Container>
           </Form.Group>
+          <Button variant="text" onClick={whipeToken}>whipe tokeb</Button>
         </Container>
       </Form>
     </>

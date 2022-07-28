@@ -64,7 +64,6 @@ const App = () => {
       {/* makes dispatch and store availabl to the main application */}
       <StateContext.Provider value={{ store, dispatch }}>
         {console.log(Object.entries(store.dogList))}
-        <p>hello world</p>
         <Router>
           <Header />
           <NavBar />
