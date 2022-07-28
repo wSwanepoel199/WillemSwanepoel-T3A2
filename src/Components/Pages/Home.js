@@ -1,11 +1,22 @@
 import temp_avatar from '../Shared/Assests/Temp Avatar.jpg';
 import { StyledContainer, StyledImage } from '../Shared/styles/Home.styled';
 import { Container, Typography, Grid, Card as MuiCard, CardContent, CardMedia } from '@mui/material';
+import { useGlobalState } from '../utils';
 
 const Home = () => {
+  const { store } = useGlobalState();
+
   return (
     <>
       <Container>
+        {store.loggedInUser ?
+          <>
+            <p>{store.loggedInUser}</p>
+          </>
+          :
+          <>
+            <p>No User</p>
+          </>}
         {/* Main Body Introduction */}
         <Grid container spacing={3} alignItems="center">
           <Grid item sm={6}>

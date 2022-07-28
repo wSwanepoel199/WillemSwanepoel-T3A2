@@ -14,33 +14,38 @@ const SignUpForm = () => {
     username: "",
     email: "",
     password: "",
-    password_confirmation: ""
+    postcode: ''
   };
   const [formData, setFormData] = useState(initialFormData);
   const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    signup(formData)
+    const userForm = {
+      user: {
+        ...formData
+      }
+    };
+    console.log(userForm);
+    signup(userForm)
       .then((user) => {
-        console.log(user);
+        console.log(user.user);
         let errorMessage = "";
-        if (user.error) {
-          Object.keys(user.error).forEach(key => {
-            errorMessage = errorMessage.concat("", `${key} ${user.error[key]}`);
+        if (user.user.error) {
+          Object.keys(user.user.error).forEach(key => {
+            errorMessage = errorMessage.concat("", `${key} ${user.user.error[key]}`);
           });
           setError(errorMessage);
         } else {
-          sessionStorage.setItem("username", user.username);
-          sessionStorage.setItem("token", user.jwt);
+          sessionStorage.setItem("username", user.user.username);
+          sessionStorage.setItem("token", user.user.jwt);
           dispatch({
             type: "setLoggedInUser",
-            data: user.username
+            data: user.user.username
           });
           dispatch({
             type: "setToken",
-            data: user.jwt
+            data: user.user.jwt
           });
           setFormData(initialFormData);
           navigate("/");
@@ -74,13 +79,18 @@ const SignUpForm = () => {
             <Form.Label>Password</Form.Label>
             <Form.Control type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="password_confirmation">
+          {/* <Form.Group className="mb-3" controlId="password_confirmation">
             <Form.Label>Enter Password Again</Form.Label>
             <Form.Control type="password" placeholder="Enter your password again" value={formData.password_confirmation} onChange={handleFormData} />
+          </Form.Group> */}
+          <Form.Group className="mb-3" controlId="postcode">
+            <Form.Label>Enter Your Postcode</Form.Label>
+            <Form.Control type="text" placeholder="Enter your postcode" value={formData.postcode} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="contactFormSubmitButton">
-            <Container fluid>
+            <Container fluid="true">
               <Button variant="contained" type="submit">Sign Up</Button>
+              <Button variant="text" href="/signIn">sign in</Button>
             </Container>
           </Form.Group>
         </Container>

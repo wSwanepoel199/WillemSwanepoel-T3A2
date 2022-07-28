@@ -10,6 +10,7 @@ export const reducer = (state, action) => {
     case "setDogList": {
       console.log(action.data);
       return {
+        ...state,
         dogList: action.data
       };
     }
@@ -42,7 +43,7 @@ export const reducer = (state, action) => {
       };
     }
     default: {
-      throw new Error();
+      return state;
     }
   }
 };

@@ -65,8 +65,9 @@ const SignInForm = () => {
             <Form.Control type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="contactFormSubmitButton">
-            <Container fluid>
+            <Container fluid="true">
               <Button variant="contained" type="submit" >Sign In</Button>
+              <Button variant="text" href="/signUp">sign up</Button>
             </Container>
           </Form.Group>
         </Container>

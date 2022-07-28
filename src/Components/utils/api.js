@@ -4,4 +4,13 @@ const backEndAPI = axios.create({
   baseURL: 'http://localhost:3001'
 });
 
+backEndAPI.interceptors.request.use(req => {
+  const token = sessionStorage.getItem("token");
+  if (token) {
+    req.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return req;
+});
+
 export default backEndAPI;
