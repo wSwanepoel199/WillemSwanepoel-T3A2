@@ -1,6 +1,6 @@
 import { backEndAPI } from "../utils";
 
-export async function signup(data) {
+export async function signUp(data) {
   console.log(data);
   const response = await backEndAPI.post('/users', data);
   console.log(response.data);

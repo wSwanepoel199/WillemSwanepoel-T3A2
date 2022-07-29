@@ -2,46 +2,55 @@ import { useState } from "react";
 import { useGlobalState } from "../utils";
 import { Container, Form, InputGroup, Dropdown, DropdownButton } from "react-bootstrap";
 import { StyledFormContainer, StyledFormGroup, StyledSubmitButton } from "../Shared/styles/ContactForm.styled";
+import { postForm } from "../services/contactServices";
 
 const ContactForm = () => {
   // uses global state to gain access to dispatch
   const { dispatch } = useGlobalState();
 
-  const initialContactDetails = {
+  const initialFormData = {
     email: "",
     phonenumber: '',
-    catagory: "",
-    details: ""
+    reason: "",
+    text: ""
   };
-  const [contactDetails, setContactDetails] = useState(initialContactDetails);
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleSelect = (e) => {
     console.log("Seletected:", e);
     const selectedCatagory = {
-      id: "catagory",
+      id: "reason",
       value: e
     };
-    handleFormInput(selectedCatagory);
+    handleFormData(selectedCatagory);
   };
-  const handleFormInput = (e) => {
-    setContactDetails({
-      ...contactDetails,
+
+  const handleFormData = (e) => {
+    setFormData({
+      ...formData,
       [e.id]: e.value
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedContactForm = {
-      email: contactDetails.email,
-      phonenumber: contactDetails.phonenumber,
-      catagory: contactDetails.catagory,
-      details: contactDetails.details
+    console.log(formData);
+    const submitForm = {
+      contact: {
+        ...formData
+      }
     };
-    dispatch({
-      type: "updateContactForm",
-      data: updatedContactForm
-    });
-    setContactDetails(initialContactDetails);
+    postForm(submitForm)
+      .then(contact => {
+        console.log(contact);
+      })
+      .catch(e => {
+        console.log(e.response.data.message);
+        alert(e.response.data.message);
+      });
+
+
+    setFormData(initialFormData);
   };
 
   return (
@@ -51,13 +60,13 @@ const ContactForm = () => {
           <h2>Contact Form</h2>
           <StyledFormGroup className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter your email" value={contactDetails.email} onChange={(e) => handleFormInput(e.target)} />
+            <Form.Control type="email" placeholder="Enter your email" value={formData.email} onChange={(e) => handleFormData(e.target)} />
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="phonenumber">
             <Form.Label>Prefered Contact Number</Form.Label>
-            <Form.Control type="phonenumber" placeholder="Enter your prefered contact number" value={contactDetails.phonenumber} onChange={(e) => handleFormInput(e.target)} />
+            <Form.Control type="phonenumber" placeholder="Enter your prefered contact number" value={formData.phonenumber} onChange={(e) => handleFormData(e.target)} />
           </StyledFormGroup>
-          <StyledFormGroup className="mb-3" controlId="catagory">
+          <StyledFormGroup className="mb-3" controlId="reason">
             <Form.Label>Reason for Contact</Form.Label>
             <InputGroup className="mb-3">
               <DropdownButton
@@ -70,12 +79,12 @@ const ContactForm = () => {
                 <Dropdown.Item eventKey="Enquire about litters" href="#">Enquiring about litters</Dropdown.Item>
                 <Dropdown.Item eventKey="Enquire about shows" href="#">Enquiring about shows</Dropdown.Item>
               </DropdownButton>
-              <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={contactDetails.catagory} onChange={(e) => handleFormInput(e.target)} />
+              <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={formData.reason} onChange={(e) => handleFormData(e.target)} />
             </InputGroup>
           </StyledFormGroup>
-          <StyledFormGroup className="mb-3" controlId="details" >
+          <StyledFormGroup className="mb-3" controlId="text" >
             <Form.Label>Provide More Detail</Form.Label>
-            <Form.Control type="textarea" as="textarea" rows={3} placeholder="Provide More Details" value={contactDetails.details} onChange={(e) => handleFormInput(e.target)} />
+            <Form.Control type="textarea" as="textarea" rows={3} placeholder="Provide More Details" value={formData.text} onChange={(e) => handleFormData(e.target)} />
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="contactFormSubmitButton">
             <Container fluid>

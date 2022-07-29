@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { useGlobalState } from "../utils";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-import { signup } from "../services/authServices";
+import { signUp } from "../services/authServices";
 
 const SignUpForm = () => {
   const { dispatch } = useGlobalState();
@@ -21,13 +21,13 @@ const SignUpForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userForm = {
+    const submitForm = {
       user: {
         ...formData
       }
     };
-    console.log(userForm);
-    signup(userForm)
+    console.log(submitForm);
+    signUp(submitForm)
       .then((user) => {
         console.log(user);
         sessionStorage.setItem("username", user.username);

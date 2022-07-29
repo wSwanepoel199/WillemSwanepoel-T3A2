@@ -6,7 +6,6 @@ const backEndAPI = axios.create({
 
 backEndAPI.interceptors.request.use(req => {
   const token = sessionStorage.getItem("token");
-  console.log(token);
   if (token) {
     req.headers["Authorization"] = `Bearer ${token}`;
   }

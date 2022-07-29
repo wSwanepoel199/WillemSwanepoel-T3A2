@@ -19,12 +19,12 @@ const SignInForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userForm = {
+    const submitForm = {
       user: {
         ...formData
       }
     };
-    signIn(userForm)
+    signIn(submitForm)
       .then((user) => {
         console.log(user);
         sessionStorage.setItem("username", user.username);
@@ -53,17 +53,6 @@ const SignInForm = () => {
     });
   };
 
-  const whipeToken = () => {
-    sessionStorage.setItem("token", null);
-
-    dispatch({
-      type: "setToken",
-      data: null
-    });
-
-    console.log(sessionStorage);
-  };
-
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -83,7 +72,6 @@ const SignInForm = () => {
               <Button variant="text" href="/signUp">sign up</Button>
             </Container>
           </Form.Group>
-          <Button variant="text" onClick={whipeToken}>whipe tokeb</Button>
         </Container>
       </Form>
     </>

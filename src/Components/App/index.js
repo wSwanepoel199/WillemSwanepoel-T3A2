@@ -1,5 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { getDogs } from '../services/dogsServices';
+import { getForm } from '../services/contactServices';
 import {
   // reducer
   reducer,
@@ -19,9 +21,7 @@ import {
   NotFound,
   LitterApplication,
   SignInForm,
-  SignUpForm,
-  // Servies
-  getDogs
+  SignUpForm
 } from '../utils/index';
 import { StyledContainer } from '../Shared/styles/index.styled';
 
@@ -34,14 +34,15 @@ const App = () => {
     token: sessionStorage.getItem("token") || null
   };
   // uses reducer to globalise state.
-  const [store, dispatch] = useReducer(reducer, initialState, init);
+  const [store, dispatch] = useReducer(reducer, initialState);
 
   // on component mount sets the inital state of the contact form and gets api from backend server
   useEffect(() => {
     const initialContactFormState = {
       email: "",
-      catagory: "",
-      details: ""
+      phonenumber: '',
+      reason: "",
+      text: ""
     };
     getDogs()
       .then(dogs => {
@@ -52,6 +53,10 @@ const App = () => {
         });
       })
       .catch(e => console.log(e));
+    getForm()
+      .then(form => {
+        console.log(form);
+      });
     // uses reducer to spread intial contact form state into global contact form state
     dispatch({
       type: "setContactForm",

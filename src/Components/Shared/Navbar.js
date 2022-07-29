@@ -5,7 +5,6 @@ const NavBar = () => {
     <>
       {['md'].map((expand) => (
         <Navbar key={expand} bg="light" expand={expand} className="mb=3">
-          {console.log(expand)}
           <Container fluid>
             <Navbar.Brand>Myshalair</Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />

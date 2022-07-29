@@ -19,8 +19,6 @@ import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
 // API
 import backEndAPI from './api';
-// Services
-import { getDogs } from '../services/dogsServices';
 
 // Export Components
 export {
@@ -46,6 +44,4 @@ export {
   SignUpForm,
   // API,
   backEndAPI,
-  // Services
-  getDogs
 };
