@@ -21,7 +21,6 @@ const Dogs = () => {
     <>
       {console.log(params)}
       {console.log(handleSex(params))}
-      { }
       <Container>
         <Grid
           container

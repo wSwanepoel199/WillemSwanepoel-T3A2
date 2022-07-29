@@ -5,6 +5,7 @@ import { StateContext, useGlobalState } from './stateContext';
 // Import Shared Components
 import Header from '../Shared/Header';
 import NavBar from '../Shared/Navbar';
+import Appbar from '../Shared/Navbar copy';
 import Footer from '../Shared/Footer';
 // Import Pages Components
 import Home from '../Pages/Home';
@@ -30,6 +31,7 @@ export {
   // Shared Components
   Header,
   NavBar,
+  Appbar,
   Footer,
   // Pages
   Home,

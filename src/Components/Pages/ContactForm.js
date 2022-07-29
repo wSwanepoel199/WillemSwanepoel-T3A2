@@ -20,7 +20,7 @@ const ContactForm = () => {
     console.log("Seletected:", e);
     const selectedCatagory = {
       id: "reason",
-      value: e
+      value: parseInt(e)
     };
     handleFormData(selectedCatagory);
   };
@@ -75,11 +75,11 @@ const ContactForm = () => {
                 id="input-group-dropdown-2"
                 onSelect={handleSelect}
               >
-                <Dropdown.Item eventKey="Enquire about dogs" href="#">Enquiring about dogs</Dropdown.Item>
-                <Dropdown.Item eventKey="Enquire about litters" href="#">Enquiring about litters</Dropdown.Item>
-                <Dropdown.Item eventKey="Enquire about shows" href="#">Enquiring about shows</Dropdown.Item>
+                <Dropdown.Item eventKey="1" id="dogs-enquiries" href="#">Enquiring about dogs</Dropdown.Item>
+                <Dropdown.Item eventKey="2" id="litter-enquiries" href="#">Enquiring about litters</Dropdown.Item>
+                <Dropdown.Item eventKey="3" id="show-enquiries" href="#">Enquiring about shows</Dropdown.Item>
+                <Dropdown.Item eventKey="0" id="unlisted-enquiries" href="#">Specify in detail box</Dropdown.Item>
               </DropdownButton>
-              <Form.Control aria-label="Reason for contact input with dropdown" placeholder="or enter custom reason" as="input" value={formData.reason} onChange={(e) => handleFormData(e.target)} />
             </InputGroup>
           </StyledFormGroup>
           <StyledFormGroup className="mb-3" controlId="text" >

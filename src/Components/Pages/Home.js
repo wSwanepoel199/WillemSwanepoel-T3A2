@@ -23,7 +23,7 @@ const Home = () => {
       <StyledContainer>
         {/* Cards for display items */}
         <Grid container spacing={3} columns={{ xs: 5, sm: 10, md: 12 }} justifyContent="center" >
-          <Grid item xs={3} sm={4} md={3}>
+          <Grid item xs={4} sm={4} md={3}>
             <MuiCard>
               <CardMedia
                 component="img"
@@ -41,7 +41,7 @@ const Home = () => {
               </CardContent>
             </MuiCard>
           </Grid>
-          <Grid item xs={3} sm={4} md={3}>
+          <Grid item xs={4} sm={4} md={3}>
             <MuiCard>
               <CardMedia
                 component="img"
@@ -59,7 +59,7 @@ const Home = () => {
               </CardContent>
             </MuiCard>
           </Grid>
-          <Grid item xs={3} sm={4} md={3}>
+          <Grid item xs={4} sm={4} md={3}>
             <MuiCard>
               <CardMedia
                 component="img"
@@ -77,7 +77,7 @@ const Home = () => {
               </CardContent>
             </MuiCard>
           </Grid>
-          <Grid item xs={3} sm={4} md={3}>
+          <Grid item xs={4} sm={4} md={3}>
             <MuiCard>
               <CardMedia
                 component="img"

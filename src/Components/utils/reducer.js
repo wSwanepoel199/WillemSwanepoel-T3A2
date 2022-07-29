@@ -8,10 +8,32 @@ export const reducer = (state, action) => {
       return init(action.data);
     }
     case "setDogList": {
-      console.log(action.data);
+      // updates the dogList value
       return {
         ...state,
         dogList: action.data
+      };
+    }
+    case "setFilledForms": {
+      // updates the contactFormList value
+      return {
+        ...state,
+        contactFormList: action.data
+      };
+    }
+    case "setLoggedInUser": {
+      //updates the loggedInUser value
+      console.log(action.data);
+      return {
+        ...state,
+        loggedInUser: action.data
+      };
+    }
+    case "setToken": {
+      //updates the token value
+      return {
+        ...state,
+        token: action.data
       };
     }
     case "setContactForm": {
@@ -26,20 +48,6 @@ export const reducer = (state, action) => {
       return {
         ...state,
         contactForm: action.data
-      };
-    }
-    case "setLoggedInUser": {
-      //updates the loggedInUser value
-      return {
-        ...state,
-        loggedInUser: action.data
-      };
-    }
-    case "setToken": {
-      //updates the token value
-      return {
-        ...state,
-        token: action.data
       };
     }
     default: {

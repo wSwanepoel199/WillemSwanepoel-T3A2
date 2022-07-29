@@ -17,10 +17,16 @@ const SignUpForm = () => {
     postcode: ""
   };
   const [formData, setFormData] = useState(initialFormData);
-  const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.password != formData.password_confirmation) {
+      alert("confirmation password does not match password");
+      return;
+    } else {
+      alert("alls good");
+      delete formData.password_confirmation;
+    }
     const submitForm = {
       user: {
         ...formData
@@ -30,14 +36,9 @@ const SignUpForm = () => {
     signUp(submitForm)
       .then((user) => {
         console.log(user);
-        sessionStorage.setItem("username", user.username);
         dispatch({
           type: "setLoggedInUser",
-          data: user.username
-        });
-        dispatch({
-          type: "setToken",
-          data: user.jwt
+          data: user
         });
         setFormData(initialFormData);
         navigate("/");
@@ -67,23 +68,23 @@ const SignUpForm = () => {
           <h2>Sign Up Form</h2>
           <Form.Group className="mb-3" controlId="username">
             <Form.Label>Username</Form.Label>
-            <Form.Control type="text" placeholder="Enter your username" value={formData.username} onChange={handleFormData} />
+            <Form.Control required type="text" placeholder="Enter your username" value={formData.username} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
+            <Form.Control required type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
+            <Form.Control required type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
           </Form.Group>
-          {/* <Form.Group className="mb-3" controlId="password_confirmation">
+          <Form.Group className="mb-3" controlId="password_confirmation">
             <Form.Label>Enter Password Again</Form.Label>
             <Form.Control type="password" placeholder="Enter your password again" value={formData.password_confirmation} onChange={handleFormData} />
-          </Form.Group> */}
+          </Form.Group>
           <Form.Group className="mb-3" controlId="postcode">
             <Form.Label>Enter Your Postcode</Form.Label>
-            <Form.Control type="text" placeholder="Enter your postcode" value={formData.postcode} onChange={handleFormData} />
+            <Form.Control required type="text" placeholder="Enter your postcode" value={formData.postcode} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="contactFormSubmitButton">
             <Container fluid="true">

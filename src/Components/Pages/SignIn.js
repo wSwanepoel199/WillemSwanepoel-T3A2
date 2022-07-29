@@ -30,11 +30,7 @@ const SignInForm = () => {
         sessionStorage.setItem("username", user.username);
         dispatch({
           type: "setLoggedInUser",
-          data: user.username
-        });
-        dispatch({
-          type: "setToken",
-          data: user.jwt
+          data: user
         });
         setFormData(initialFormData);
         navigate("/");
@@ -60,11 +56,11 @@ const SignInForm = () => {
           <h2>Sign In</h2>
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
+            <Form.Control required type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
+            <Form.Control required type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="contactFormSubmitButton">
             <Container fluid="true">
