@@ -1,4 +1,4 @@
-import { Container, FormControl, InputLabel, Input, FormHelperText } from "@mui/material";
+import { Container } from "@mui/material";
 import { Form } from "react-bootstrap";
 import { Button } from "@mui/material";
 import { useGlobalState } from "../utils";
@@ -20,7 +20,7 @@ const SignUpForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password != formData.password_confirmation) {
+    if (formData.password !== formData.password_confirmation) {
       alert("confirmation password does not match password");
       return;
     } else {

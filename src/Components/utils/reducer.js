@@ -5,7 +5,7 @@ export const init = (initialState) => {
 export const reducer = (state, action) => {
   switch (action.type) {
     case "cleanState": {
-      return init(action.data);
+      return init();
     }
     case "setDogList": {
       // updates the dogList value

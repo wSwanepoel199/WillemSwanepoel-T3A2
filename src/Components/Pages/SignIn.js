@@ -1,6 +1,6 @@
-import { Container, Button, FormControl, InputLabel, Input, FormHelperText } from "@mui/material";
+import { Container, Button } from "@mui/material";
 import { useState } from "react";
-import { Form, InputGroup, DropdownButton, Dropdown } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useGlobalState } from "../utils";
 import { signIn } from "../services/authServices";
@@ -15,7 +15,6 @@ const SignInForm = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +26,9 @@ const SignInForm = () => {
     signIn(submitForm)
       .then((user) => {
         console.log(user);
+        sessionStorage.setItem("id", user.id);
         sessionStorage.setItem("username", user.username);
+        sessionStorage.setItem("admin", user.admin);
         dispatch({
           type: "setLoggedInUser",
           data: user

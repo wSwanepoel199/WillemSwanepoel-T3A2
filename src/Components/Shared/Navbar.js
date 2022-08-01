@@ -1,8 +1,17 @@
 import { Navbar, NavDropdown, Container, Offcanvas, Nav } from "react-bootstrap";
-import { useGlobalState } from "../utils";
+import { SignOut, useGlobalState } from "../utils";
 
 const NavBar = () => {
-  const { store } = useGlobalState();
+  const { store, dispatch, init } = useGlobalState();
+
+  const handleSignOut = () => {
+    dispatch({
+      type: "clearState",
+      data: init
+    });
+    sessionStorage.clear();
+  };
+
   return (
     <>
       {['md'].map((expand) => (
@@ -50,7 +59,7 @@ const NavBar = () => {
                       <NavDropdown
                         title="Admin Panel"
                         id={`offcanvasNavbarDropdown-expand-${expand}`}>
-                        <NavDropdown.Item eventKey="view-contacts" href="/contactForm/view" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                        <NavDropdown.Item eventKey="view-contacts" href="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
                         <NavDropdown.Item eventKey="male-dogs" href="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
                         <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
                         <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
@@ -60,22 +69,24 @@ const NavBar = () => {
                     <>
 
                     </>}
-                  {store.loggedInUser ?
+                </Nav>
+                {store.loggedInUser.username ?
+                  <Nav fluid="true" className="justify-content-end align-items-end pe-3">
                     <NavDropdown
                       title={store.loggedInUser.username}
-                      className="align-self-flex-end"
-                      id={`offcanvasNavbarDropdown-expand-${expand}`}>
-                      <NavDropdown.Item eventKey="view-contacts" href="/contactForm/view" id="view-contacts">View Profile</NavDropdown.Item>
-                      <NavDropdown.Item eventKey="male-dogs" href="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
-                      <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
-                      <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
+                      id={`offcanvasNavbarDropdown-expand-${expand}`}
+                      align={{ md: 'end' }}
+                      style={{ textAlign: 'right' }}
+                    >
+                      <NavDropdown.Item eventKey="view-contacts" href={`/users/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
+                      <NavDropdown.Item eventKey="sign-out" href="/" onClick={handleSignOut} id="sign-out">Sign Out</NavDropdown.Item>
                     </NavDropdown>
-                    :
-                    <>
-
-                    </>
-                  }
-                </Nav>
+                  </Nav>
+                  :
+                  <Nav>
+                    <Nav.Link href="/signIn">Sign In</Nav.Link>
+                  </Nav>
+                }
               </Offcanvas.Body>
             </Navbar.Offcanvas>
           </Container>
