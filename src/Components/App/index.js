@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { getDogs } from '../services/dogsServices';
+import { getDogs, getLitters } from '../services/dogsServices';
 import { getForms } from '../services/contactServices';
 import {
   // reducer
@@ -20,17 +20,21 @@ import {
   ContactDetails,
   Dogs,
   DogDetails,
-  NotFound,
   LitterApplication,
+  LitterCreationForm,
+  LitterManage,
   SignInForm,
   SignUpForm,
+  NotFound,
 } from '../utils/index';
 import { StyledContainer } from '../Shared/styles/index.styled';
+import { PrivateRoute } from '../utils/PrivateRoute';
 
 const App = () => {
   // sets the inital state of the application
   const initialState = {
     dogList: {},
+    litterList: {},
     contactFormList: {},
     loggedInUser: {
       id: sessionStorage.getItem("id") || null,
@@ -38,6 +42,7 @@ const App = () => {
       admin: sessionStorage.getItem("admin") || false,
     },
     token: sessionStorage.getItem("token") || null,
+    userList: {},
   };
   // uses reducer to globalise state.
   const [store, dispatch] = useReducer(reducer, initialState, init);
@@ -61,6 +66,15 @@ const App = () => {
         });
       })
       .catch(e => console.log(e));
+    getLitters()
+      .then(litter => {
+        console.log("Litters:", litter);
+        dispatch({
+          type: "setLitterList",
+          data: litter
+        });
+      })
+      .catch(e => console.log(e));
   }, []);
 
   return (
@@ -81,22 +95,46 @@ const App = () => {
             <Routes>
               {/* sets the route for the home page */}
               <Route path="/" element={<Home />} />
+              {/* sets route for about page */}
+              <Route path="/about" element={<About />} />
               {/* sets the route for dogs using params to specify the type of dog */}
               <Route path="/dogs">
                 <Route path=":id" element={<Dogs />} />
+                {/* sets the route for a selected dog using params to choose which dog had been selected */}
+                <Route path="/dogs/chosen/:id" element={<DogDetails />} />
               </Route>
-              {/* sets the route for a selected dog using params to choose which dog had been selected */}
-              <Route path="/dogs/chosen/:id" element={<DogDetails />} />
-              {/* sets route for litter application */}
-              <Route path="/litterApplication" element={<LitterApplication />} />
-              {/* sets route for about page */}
-              <Route path="/about" element={<About />} />
-              {/* sets route for contact form page */}
-              <Route path="/contactForm" element={<ContactForm />} />
-              {/* sets routes for contacts, which lists all sent contact forms and contactdetails, which uses params to select the form and views it in greater detail */}
+              {/* sets base route for contacts*/}
               <Route path="/contacts">
-                <Route index element={<Contacts />} />
-                <Route path=":id" element={<ContactDetails />} />
+                {/* sets Contacts page as default route and wraps in custom route to ensure only accessable by admin*/}
+                <Route index element={
+                  <PrivateRoute>
+                    <Contacts />
+                  </PrivateRoute>
+                } />
+                {/* sets route for ContactDetails page and wraps in custom route to ensure only accessable by admin*/}
+                <Route path=":id" element={
+                  <PrivateRoute>
+                    <ContactDetails />
+                  </PrivateRoute>
+                } />
+                {/* sets route for contact form page */}
+                <Route path="/contacts/form" element={<ContactForm />} />
+              </Route>
+              {/* sets default route for litters */}
+              <Route path="/litters" >
+                {/* sets route for litter application page */}
+                <Route path="/litters/apply" element={<LitterApplication />} />
+                {/* sets route for litter management page and wraps in custom route to ensure only accessable by admin*/}
+                <Route path="/litters/manage" element={
+                  <PrivateRoute>
+                    <LitterManage />
+                  </PrivateRoute>} />
+                {/* sets route for litter creation page and wraps in custom route to ensure only accessable by admin*/}
+                <Route path="/litters/create" element={
+                  <PrivateRoute>
+                    <LitterCreationForm />
+                  </PrivateRoute>
+                } />
               </Route>
               {/* sets routes for sign in and sign up allowing users to make accounts and sign into them */}
               <Route path="/signIn" element={<SignInForm />}></Route>

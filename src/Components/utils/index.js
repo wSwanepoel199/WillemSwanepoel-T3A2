@@ -18,6 +18,8 @@ import Dog from '../Pages/Dog';
 import DogDetails from '../Pages/DogDetails';
 import NotFound from '../Pages/NotFound';
 import LitterApplication from '../Pages/LitterApplication';
+import LitterCreationForm from '../Pages/LitterCreate';
+import LitterManage from '../Pages/LitterManage';
 import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
 import SignOut from '../Pages/SignOut';
@@ -47,6 +49,8 @@ export {
   DogDetails,
   NotFound,
   LitterApplication,
+  LitterCreationForm,
+  LitterManage,
   SignInForm,
   SignUpForm,
   SignOut,

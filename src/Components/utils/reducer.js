@@ -21,6 +21,12 @@ export const reducer = (state, action) => {
         contactFormList: action.data
       };
     }
+    case "setLitterList": {
+      return {
+        ...state,
+        litterList: action.data
+      };
+    }
     case "setLoggedInUser": {
       //updates the loggedInUser value
       console.log(action.data);

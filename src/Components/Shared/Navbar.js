@@ -52,7 +52,7 @@ const NavBar = () => {
                     id={`offcanvasNavbarDropdown-expand-${expand}`}>
                     <NavDropdown.Item eventKey="about-us" href="/about">About Us</NavDropdown.Item>
                     <NavDropdown.Item eventKey="litter-schedule">Legalities (Temp)</NavDropdown.Item>
-                    <NavDropdown.Item eventKey="contactForm" href="/contactForm">Contact Us</NavDropdown.Item>
+                    <NavDropdown.Item eventKey="contactForm" href="/contacts/form">Contact Us</NavDropdown.Item>
                   </NavDropdown>
                   {store.loggedInUser.admin ?
                     <>
@@ -60,7 +60,7 @@ const NavBar = () => {
                         title="Admin Panel"
                         id={`offcanvasNavbarDropdown-expand-${expand}`}>
                         <NavDropdown.Item eventKey="view-contacts" href="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
-                        <NavDropdown.Item eventKey="male-dogs" href="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
+                        <NavDropdown.Item eventKey="manage-litters" href="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                         <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
                         <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
                       </NavDropdown>
