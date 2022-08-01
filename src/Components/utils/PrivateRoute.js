@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router";
 
-export function PrivateRoute({ children }: { children: React.ReactElement; }) {
+export function PrivateRoute({ children }) {
 
   const admin = sessionStorage.getItem('admin');
 
