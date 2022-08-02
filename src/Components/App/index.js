@@ -1,5 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { getDogs, getLitters } from '../services/dogsServices';
 import { getForms } from '../services/contactServices';
 import {
@@ -79,73 +81,77 @@ const App = () => {
 
   return (
     <>
-      {/* makes dispatch and store available to the application */}
-      <StateContext.Provider value={{ store, dispatch }}>
-        {console.log("list of dogs:", Object.entries(store.dogList))}
-        {console.log("logged in user:", store.loggedInUser)}
-        {console.log("token", store.token)}
-        {console.log("list of contact attempts:", store.contactFormList)}
-        <Router>
-          {/* renders the header which contains the Myshalair logo*/}
-          <Header />
-          {/* renders navbar, which is the main form of navigation */}
-          <NavBar />
-          {/* wraps rest of application in a container */}
-          <StyledContainer>
-            <Routes>
-              {/* sets the route for the home page */}
-              <Route path="/" element={<Home />} />
-              {/* sets route for about page */}
-              <Route path="/about" element={<About />} />
-              {/* sets the route for dogs using params to specify the type of dog */}
-              <Route path="/dogs">
-                <Route path=":id" element={<Dogs />} />
-                {/* sets the route for a selected dog using params to choose which dog had been selected */}
-                <Route path="/dogs/chosen/:id" element={<DogDetails />} />
-              </Route>
-              {/* sets base route for contacts*/}
-              <Route path="/contacts">
-                {/* sets Contacts page as default route and wraps in custom route to ensure only accessable by admin*/}
-                <Route index element={
-                  <PrivateRoute>
-                    <Contacts />
-                  </PrivateRoute>
-                } />
-                {/* sets route for ContactDetails page and wraps in custom route to ensure only accessable by admin*/}
-                <Route path=":id" element={
-                  <PrivateRoute>
-                    <ContactDetails />
-                  </PrivateRoute>
-                } />
-                {/* sets route for contact form page */}
-                <Route path="/contacts/form" element={<ContactForm />} />
-              </Route>
-              {/* sets default route for litters */}
-              <Route path="/litters" >
-                {/* sets route for litter application page */}
-                <Route path="/litters/apply" element={<LitterApplication />} />
-                {/* sets route for litter management page and wraps in custom route to ensure only accessable by admin*/}
-                <Route path="/litters/manage" element={
-                  <PrivateRoute>
-                    <LitterManage />
-                  </PrivateRoute>} />
-                {/* sets route for litter creation page and wraps in custom route to ensure only accessable by admin*/}
-                <Route path="/litters/create" element={
-                  <PrivateRoute>
-                    <LitterCreationForm />
-                  </PrivateRoute>
-                } />
-              </Route>
-              {/* sets routes for sign in and sign up allowing users to make accounts and sign into them */}
-              <Route path="/signIn" element={<SignInForm />}></Route>
-              <Route path="/signUp" element={<SignUpForm />}></Route>
-              {/* default path to render 404 page when attempting to access a route that does not exist */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </StyledContainer>
-          <Footer />
-        </Router>
-      </StateContext.Provider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        {/* makes dispatch and store available to the application */}
+        <StateContext.Provider value={{ store, dispatch }}>
+          {console.log("list of dogs:", Object.entries(store.dogList))}
+          {console.log("list of litters:", Object.entries(store.litterList))}
+          {console.log("logged in user:", store.loggedInUser)}
+          {console.log("token", store.token)}
+          {console.log("list of contact attempts:", store.contactFormList)}
+          {console.log("user list:", store.userList)}
+          <Router>
+            {/* renders the header which contains the Myshalair logo*/}
+            <Header />
+            {/* renders navbar, which is the main form of navigation */}
+            <NavBar />
+            {/* wraps rest of application in a container */}
+            <StyledContainer>
+              <Routes>
+                {/* sets the route for the home page */}
+                <Route path="/" element={<Home />} />
+                {/* sets route for about page */}
+                <Route path="/about" element={<About />} />
+                {/* sets the route for dogs using params to specify the type of dog */}
+                <Route path="/dogs">
+                  <Route path=":id" element={<Dogs />} />
+                  {/* sets the route for a selected dog using params to choose which dog had been selected */}
+                  <Route path="/dogs/chosen/:id" element={<DogDetails />} />
+                </Route>
+                {/* sets base route for contacts*/}
+                <Route path="/contacts">
+                  {/* sets Contacts page as default route and wraps in custom route to ensure only accessable by admin*/}
+                  <Route index element={
+                    <PrivateRoute>
+                      <Contacts />
+                    </PrivateRoute>
+                  } />
+                  {/* sets route for ContactDetails page and wraps in custom route to ensure only accessable by admin*/}
+                  <Route path=":id" element={
+                    <PrivateRoute>
+                      <ContactDetails />
+                    </PrivateRoute>
+                  } />
+                  {/* sets route for contact form page */}
+                  <Route path="/contacts/form" element={<ContactForm />} />
+                </Route>
+                {/* sets default route for litters */}
+                <Route path="/litters" >
+                  {/* sets route for litter application page */}
+                  <Route path="/litters/apply" element={<LitterApplication />} />
+                  {/* sets route for litter management page and wraps in custom route to ensure only accessable by admin*/}
+                  <Route path="/litters/manage" element={
+                    <PrivateRoute>
+                      <LitterManage />
+                    </PrivateRoute>} />
+                  {/* sets route for litter creation page and wraps in custom route to ensure only accessable by admin*/}
+                  <Route path="/litters/create" element={
+                    <PrivateRoute>
+                      <LitterCreationForm />
+                    </PrivateRoute>
+                  } />
+                </Route>
+                {/* sets routes for sign in and sign up allowing users to make accounts and sign into them */}
+                <Route path="/signIn" element={<SignInForm />}></Route>
+                <Route path="/signUp" element={<SignUpForm />}></Route>
+                {/* default path to render 404 page when attempting to access a route that does not exist */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </StyledContainer>
+            <Footer />
+          </Router>
+        </StateContext.Provider>
+      </LocalizationProvider>
     </>
   );
 };

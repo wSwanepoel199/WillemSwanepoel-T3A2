@@ -12,6 +12,8 @@ const Dogs = () => {
       return Object.entries(dogList).filter((dog) => dog[1].sex === 1);
     } else if (params.id === "females") {
       return Object.entries(dogList).filter((dog) => dog[1].sex === 2);
+    } else if (params.id === "retired") {
+      return Object.entries(dogList).filter((dog) => dog[1].retired = true);
     } else {
       return Object.entries(dogList);
     }

@@ -20,6 +20,8 @@ import NotFound from '../Pages/NotFound';
 import LitterApplication from '../Pages/LitterApplication';
 import LitterCreationForm from '../Pages/LitterCreate';
 import LitterManage from '../Pages/LitterManage';
+import Litter from '../Pages/Litter';
+import LitterDetails from '../Pages/LitterDetails';
 import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
 import SignOut from '../Pages/SignOut';
@@ -51,6 +53,8 @@ export {
   LitterApplication,
   LitterCreationForm,
   LitterManage,
+  Litter,
+  LitterDetails,
   SignInForm,
   SignUpForm,
   SignOut,
