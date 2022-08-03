@@ -16,3 +16,8 @@ export async function getLitter(data) {
   const response = await backEndAPI.get(`/litters/${data}`);
   return response.data;
 }
+
+export async function postApplication(data) {
+  const response = await backEndAPI.get('/litter_applications', data);
+  return response.data;
+}

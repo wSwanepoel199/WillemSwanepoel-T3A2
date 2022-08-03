@@ -1,5 +1,6 @@
 import { Box, Paper, Grid, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment } from "@mui/material";
 import { useState } from "react";
+import { postApplication } from "../services/litterServices";
 import { useGlobalState } from "../utils";
 
 const LitterApplication = () => {
@@ -22,7 +23,7 @@ const LitterApplication = () => {
   };
   const [formData, setFormData] = useState(initialformData);
   const { store } = useGlobalState();
-  const { litterList } = store;
+  const { litterList, loggedInUser } = store;
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -36,6 +37,19 @@ const LitterApplication = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setFormData({
+      ...formData,
+      user_id: parseInt(loggedInUser.id, 10)
+    });
+    console.log(formData);
+    postApplication(formData)
+      .then(application => {
+        console.log(application);
+      })
+      .catch(e => {
+        console.log(e.response);
+        alert(e.response.data.error);
+      });
   };
 
   return (
