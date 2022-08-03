@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getLitter } from "../services/dogsServices";
+import { getLitter } from "../services/litterServices";
 
 const LitterDetails = (params) => {
   const { id } = params;

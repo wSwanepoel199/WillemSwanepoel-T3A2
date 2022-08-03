@@ -2,7 +2,8 @@ import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { getDogs, getLitters } from '../services/dogsServices';
+import { getDogs } from '../services/dogsServices';
+import { getLitters } from '../services/litterServices';
 import { getForms } from '../services/contactServices';
 import {
   // reducer

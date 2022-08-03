@@ -5,12 +5,7 @@ export async function getDogs() {
   return response.data;
 }
 
-export async function getLitters() {
-  const response = await backEndAPI.get('/litters');
-  return response.data;
-}
-
-export async function getLitter(data) {
-  const response = await backEndAPI.get(`/litters/${data}`);
+export async function addPuppy(data) {
+  const response = await backEndAPI.post('/add_puppy', data);
   return response.data;
 }

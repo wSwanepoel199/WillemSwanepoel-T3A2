@@ -5,11 +5,13 @@ import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
 import { getUsers } from "../services/authServices";
 import { useGlobalState } from "../utils";
+import { postLitter } from "../services/litterServices";
 
 const LitterCreationForm = () => {
   const { store, dispatch } = useGlobalState();
   const { dogList, userList } = store;
-  const defaultValues = {
+
+  const initialFormData = {
     lname: "",
     breeder_id: '',
     bitch_id: '',
@@ -19,12 +21,11 @@ const LitterCreationForm = () => {
     pdate: '',
     esize: 1,
   };
-  const females = Object.entries(dogList).filter(dog => dog[1].sex = 2);
-  const males = Object.entries(dogList).filter(dog => dog[1].sex = 1);
+
+  const females = Object.entries(dogList).filter(dog => dog[1].sex == 2);
+  const males = Object.entries(dogList).filter(dog => dog[1].sex == 1);
   const breeder = Object.entries(userList).filter(user => user[1].breeder = true);
-  const [formValues, setFormValues] = useState(defaultValues);
-  const [date, setDate] = useState();
-  const ref = useRef();
+  const [formValues, setFormValues] = useState(initialFormData);
 
   useEffect(() => {
     getUsers()
@@ -88,9 +89,22 @@ const LitterCreationForm = () => {
     console.log("form:", formValues);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(e);
+    postLitter(formValues)
+      .then((litter) => {
+        console.log(litter);
+      })
+      .catch(e => {
+        console.log(e.response.data.message);
+        alert(e.response.data.message);
+      });
+  };
+
 
   return (
-    <Box component="form" sx={{
+    <Box component="form" onSubmit={(e) => handleSubmit(e)} sx={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -101,7 +115,7 @@ const LitterCreationForm = () => {
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Create Litter Entry</Typography>
           </Grid>
           <Grid item xs={12}>
-            <TextField name="lname" fullWidth id="lname" label="Litter Name" autoFocus onChange={handleInput} value={formValues.name} />
+            <TextField name="lname" required fullWidth id="lname" label="Litter Name" autoFocus onChange={handleInput} value={formValues.name} />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -109,6 +123,7 @@ const LitterCreationForm = () => {
               <Select
                 name="breeder_id"
                 id="breeder_id"
+                required
                 label="breeder_label"
                 onChange={handleInput}
                 value={formValues.breeder_id}
@@ -127,6 +142,7 @@ const LitterCreationForm = () => {
               <Select
                 name="bitch_id"
                 fullWidth
+                required
                 id="bitch_id"
                 label="bitch_label"
                 onChange={handleInput}
@@ -146,6 +162,7 @@ const LitterCreationForm = () => {
               <Select
                 name="sire_id"
                 fullWidth
+                required
                 id="sire_id"
                 label="sire_label"
                 onChange={handleInput}
@@ -166,6 +183,7 @@ const LitterCreationForm = () => {
                 id="pdate_picker"
                 label="Select Predicted Delivery Date"
                 ampm
+                required
                 inputFormat="DD/MM/YYYY HH:mm"
                 mask="__/__/____ __:__"
                 views={['year', 'month', 'day', 'hours', 'minutes']}
@@ -182,7 +200,6 @@ const LitterCreationForm = () => {
             <FormControl fullWidth>
               <DateTimePicker
                 name="edate"
-                ref={ref}
                 id="edate_picker"
                 label="Select Expected Delivery Date"
                 ampm
@@ -233,7 +250,11 @@ const LitterCreationForm = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-
+            <Container>
+              <Button variant="contained" type='submit'>
+                Create Litter
+              </Button>
+            </Container>
           </Grid>
         </Grid>
       </Paper>
