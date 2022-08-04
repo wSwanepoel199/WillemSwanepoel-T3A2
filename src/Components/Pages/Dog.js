@@ -4,9 +4,11 @@ import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mu
 const Dog = (props) => {
   const { dog } = props;
 
+
   return (
     <>
-      <Card>
+      <Card
+      >
         <CardMedia
           component="img"
           image={dog.main_image}
