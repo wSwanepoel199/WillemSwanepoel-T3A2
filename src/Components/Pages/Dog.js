@@ -1,12 +1,32 @@
 import { Link } from "react-router-dom";
 import { Container, Card, CardContent, CardMedia, Button, Typography, Grid } from "@mui/material";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from "@dnd-kit/utilities";
 
 const Dog = (props) => {
   const { dog } = props;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: props.id });
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   return (
-    <>
+    <Grid
+      item
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      xs={12} sm={6} md={4} lg={3}
+    >
       <Card
       >
         <CardMedia
@@ -34,12 +54,13 @@ const Dog = (props) => {
               :
               "Female"}
           </Typography>
+          {dog.context}
           <Link to={`/dogs/chosen/${dog.id}`}>
             <Button variant="outlined">View Dog</Button>
           </Link>
         </CardContent>
       </Card>
-    </>
+    </Grid>
   );
 };
 
