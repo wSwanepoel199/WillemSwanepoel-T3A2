@@ -38,7 +38,6 @@ import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { PrivateRoute } from '../utils/PrivateRoute';
 import { getUsers } from '../services/authServices';
-import { StoreTwoTone } from '@mui/icons-material';
 
 const App = () => {
   // sets the inital state of the application
@@ -123,10 +122,10 @@ const App = () => {
                   {/* automatically routes path: "/dogs" to "/dogs/all" */}
                   <Route index element={<Navigate to={'/dogs/all'} />} />
                   {/* allows the mapped paths to be used to route the same element */}
-                  {[':all', '/males', '/females', '/retired'].map((path, index) => {
+                  {['all', 'males', 'females', 'retired'].map((path, index) => {
                     return (
-                      <Route path={`/dogs${path}`} element={
-                        <Dogs />
+                      <Route path={`/dogs/${path}`} element={
+                        <Dogs id={path} />
                       } key={index} />
                     );
                   })}

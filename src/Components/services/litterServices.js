@@ -18,6 +18,7 @@ export async function getLitter(data) {
 }
 
 export async function postApplication(data) {
+  console.log(JSON.stringify(data));
   const response = await backEndAPI.get('/litter_applications', data);
   return response.data;
 }

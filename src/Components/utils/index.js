@@ -58,6 +58,16 @@ export {
   SignInForm,
   SignUpForm,
   SignOut,
-  // API,
+  // helpers
+  reorder,
+  // api
   backEndAPI,
+};
+
+const reorder = (item, startIndex, endIndex) => {
+  const result = Array.from(item);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
 };

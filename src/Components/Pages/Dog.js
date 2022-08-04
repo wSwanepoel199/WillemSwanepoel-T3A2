@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
-import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mui/material";
+import { Container, Card, CardContent, CardMedia, Button, Typography, Grid } from "@mui/material";
 
 const Dog = (props) => {
   const { dog } = props;
 
+
   return (
     <>
-      <Card>
+      <Card
+      >
         <CardMedia
           component="img"
           image={dog.main_image}
