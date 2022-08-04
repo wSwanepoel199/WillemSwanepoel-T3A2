@@ -9,7 +9,7 @@ const Dogs = (params) => {
   const { store } = useGlobalState();
   const { dogList } = store;
 
-  const [dogs, setDogs] = useState(dogList);
+  const [dogs, setDogs] = useState([]);
 
   const handleSex = (params) => {
     if (params.id === "males") {
@@ -40,16 +40,19 @@ const Dogs = (params) => {
     if (!result.destination) {
       return;
     }
+    let movedItems = reorder(
+      dogs,
+      result.source.index,
+      result.destination.index
+    );
+    console.log(movedItems);
+    setDogs(movedItems);
 
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Container >
-        {console.log(params)}
-        {console.log(dogList)}
-        {console.log(dogs)}
-        {console.log(handleSex(params))}
         <Droppable droppableId="dogs-droppable" type="DOG">
           {(provided, snapshot) => (
             <Grid
@@ -59,29 +62,31 @@ const Dogs = (params) => {
               spacing={2}
               justifyContent="space-evenly"
               columns={{ xs: 6, sm: 8, md: 10, lg: 12 }}>
+
+              {dogs.map((dog, index) => (
+                <Draggable
+                  key={dog[1].id}
+                  draggableId={`dog-${dog[1].id}`}
+                  index={index}>
+                  {(provided, snapshot) => (
+                    <Grid item sm={3} md={3} ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps} >
+
+                      <Dog
+                        dog={dog[1]}
+                      />
+                    </Grid>
+                  )}
+                </Draggable>
+
+              ))}
               {provided.placeholder}
-              {dogs.map((dog, id) =>
-                <Grid item sm={3} md={3} key={dog[1].id}>
-                  <Draggable
-                    draggableId={`dog-${id}`}
-                    index={dog[1].id}>
-                    {(provided, snapshot) => (
-                      <Box ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}>
-                        <Dog
-                          dog={dog[1]}
-                        />
-                      </Box>
-                    )}
-                  </Draggable>
-                </Grid>
-              )}
             </Grid>
           )}
         </Droppable>
       </Container>
-    </DragDropContext>
+    </DragDropContext >
   );
 
 };
