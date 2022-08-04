@@ -1,24 +1,20 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getForm } from "../services/contactServices";
-import { useGlobalState } from "../utils";
 
 const ContactDetails = () => {
   const initialContactDetails = {
   };
   const params = useParams();
-  const { store } = useGlobalState();
 
   const [contactDetails, setContactDetails] = useState(initialContactDetails);
   useEffect(() => {
-    if (store.loggedInUser.admin) {
-      getForm(params.id)
-        .then((form) => {
-          console.log(form);
-          setContactDetails(form);
-        })
-        .catch(e => console.log(e));
-    }
+    getForm(params.id)
+      .then((form) => {
+        console.log(form);
+        setContactDetails(form);
+      })
+      .catch(e => console.log(e));
   }, []);
 
   return (

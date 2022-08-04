@@ -1,6 +1,7 @@
-import { Container, Button, Grid } from "@mui/material";
+import { Container, Button, Grid, Box, Paper, Typography, FormControl, TextField, InputAdornment, IconButton } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
-import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useGlobalState } from "../utils";
 import { signIn } from "../services/authServices";
@@ -13,8 +14,19 @@ const SignInForm = () => {
     email: "",
     password: ""
   };
-
   const [formData, setFormData] = useState(initialFormData);
+
+  const handleShowPassword = () => {
+    setFormData({
+      ...formData,
+      showPassword: !formData.showPassword
+    });
+    console.log(formData);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,7 +55,7 @@ const SignInForm = () => {
       });
   };
 
-  const handleFormData = (e) => {
+  const handleInput = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value
@@ -67,31 +79,64 @@ const SignInForm = () => {
   };
 
   return (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} sm={8} md={6} lg={6}>
-        <Form onSubmit={handleSubmit}>
-          <Container>
-            <h2>Sign In</h2>
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control required type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control required type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="contactFormSubmitButton">
+    <>
+      <Box component="form" onSubmit={(e) => handleSubmit(e)} sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        ml: 'auto',
+        mr: 'auto',
+        maxWidth: "sm",
+      }}>
+        <Paper sx={{ padding: 4 }}>
+          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+            <Grid item xs={12} sx={{ mb: 3 }}>
+              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign Up</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField
+                  name="password"
+                  required
+                  id="password_id"
+                  label="Password"
+                  type={formData.showPassword ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment:
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {formData.showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                  }}
+                  onChange={handleInput}
+                  value={formData.password}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <Container fluid="true">
-                <Button variant="contained" type="submit" >Sign In</Button>
+                <Button variant="contained" type="submit">Sign In</Button>
                 <Button variant="text" href="/signUp">sign up</Button>
               </Container>
-            </Form.Group>
-          </Container>
-          <Button variant="contained" onClick={handleAdminLogin} type="submit">Log In Admin</Button>
-          <Button variant="contained" onClick={handleUserLogin} type="submit">Log In User</Button>
-        </Form>
-      </Grid>
-    </Grid>
+            </Grid>
+          </Grid>
+        </Paper>
+        <Button variant="contained" onClick={handleAdminLogin} type="submit">Log In Admin</Button>
+        <Button variant="contained" onClick={handleUserLogin} type="submit">Log In User</Button>
+      </Box>
+
+    </>
   );
 
 };

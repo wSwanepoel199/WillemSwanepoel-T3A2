@@ -57,6 +57,9 @@ const LitterApplication = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      ml: 'auto',
+      mr: 'auto',
+      maxWidth: "sm",
     }}>
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ justifyContent: 'center' }}>

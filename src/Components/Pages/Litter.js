@@ -1,9 +1,8 @@
-import { Button, Container, Grid, Paper, Typography, Stack, Table, TableBody, TableCell, TableRow, Collapse, ClickAwayListener, ButtonBase, IconButton, Box } from "@mui/material";
+import { Button, Typography, Table, TableBody, TableCell, TableRow, Collapse, IconButton, Box } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { LitterDetails, useGlobalState } from '../utils/';
 import { useState } from "react";
 
 const Litter = (props) => {
@@ -77,9 +76,11 @@ const Litter = (props) => {
                 <TableBody>
                   <TableRow sx={{ display: 'flex' }}>
                     <TableCell align="left" size="small" >
-                      <Button variant="contained" color="success">
-                        View
-                      </Button>
+                      <Link to={`/litters/${litter.id}`}>
+                        <Button variant="contained" color="success">
+                          View
+                        </Button>
+                      </Link>
                     </TableCell>
                     <TableCell align="left" size="small">
                       <Button variant="contained" color="warning">

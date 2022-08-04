@@ -1,6 +1,6 @@
-import { Container } from "@mui/material";
-import { Form } from "react-bootstrap";
-import { Button } from "@mui/material";
+import { Container, Box, Paper, Grid, Typography, TextField, FormControl, Button, InputAdornment, IconButton } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useGlobalState } from "../utils";
 import { useNavigate } from "react-router";
 import { useState } from "react";
@@ -14,19 +14,36 @@ const SignUpForm = () => {
     username: "",
     email: "",
     password: "",
-    postcode: ""
+    postcode: "",
+    showPassword: false,
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  const handleShowPassword = () => {
+    setFormData({
+      ...formData,
+      showPassword: !formData.showPassword
+    });
+    console.log(formData);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    console.log(name, ":", value);
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    console.log("form:", formData);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password !== formData.password_confirmation) {
-      alert("confirmation password does not match password");
-      return;
-    } else {
-      alert("alls good");
-      delete formData.password_confirmation;
-    }
+    delete formData.showPassword;
     const submitForm = {
       user: {
         ...formData
@@ -53,47 +70,67 @@ const SignUpForm = () => {
       });
   };
 
-  const handleFormData = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value
-    });
-  };
-
-
   return (
     <>
-      <Form onSubmit={handleSubmit}>
-        <Container>
-          <h2>Sign Up Form</h2>
-          <Form.Group className="mb-3" controlId="username">
-            <Form.Label>Username</Form.Label>
-            <Form.Control required type="text" placeholder="Enter your username" value={formData.username} onChange={handleFormData} />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control required type="email" placeholder="Enter your email" value={formData.email} onChange={handleFormData} />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control required type="password" placeholder="Enter your password" value={formData.password} onChange={handleFormData} />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="password_confirmation">
-            <Form.Label>Enter Password Again</Form.Label>
-            <Form.Control type="password" placeholder="Enter your password again" value={formData.password_confirmation} onChange={handleFormData} />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="postcode">
-            <Form.Label>Enter Your Postcode</Form.Label>
-            <Form.Control required type="text" placeholder="Enter your postcode" value={formData.postcode} onChange={handleFormData} />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="contactFormSubmitButton">
-            <Container fluid="true">
-              <Button variant="contained" type="submit">Sign Up</Button>
-              <Button variant="text" href="/signIn">sign in</Button>
-            </Container>
-          </Form.Group>
-        </Container>
-      </Form>
+      <Box component="form" onSubmit={(e) => handleSubmit(e)} sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        ml: 'auto',
+        mr: 'auto',
+        maxWidth: "sm",
+      }}>
+        <Paper sx={{ padding: 4 }}>
+          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+            <Grid item xs={12} sx={{ mb: 3 }}>
+              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign Up</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField name="username" required id="username_id" label="Username" onChange={handleInput} value={formData.username} />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField
+                  name="password"
+                  required
+                  id="password_id"
+                  label="Password"
+                  type={formData.showPassword ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment:
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {formData.showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                  }}
+                  onChange={handleInput}
+                  value={formData.password}
+
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Container fluid="true">
+                <Button variant="contained" type="submit">Sign Up</Button>
+                <Button variant="text" href="/signIn">sign in</Button>
+              </Container>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Box>
     </>
   );
 

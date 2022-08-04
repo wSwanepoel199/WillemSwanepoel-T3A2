@@ -1,6 +1,4 @@
 import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useEffect, useState } from "react";
 import { useGlobalState, Litter } from "../utils";
 import { getUsers } from "../services/authServices";
@@ -8,17 +6,6 @@ import { getUsers } from "../services/authServices";
 const LitterManage = () => {
   const { store, dispatch } = useGlobalState();
   const { litterList, userList, dogList } = store;
-
-  useEffect(() => {
-    getUsers()
-      .then(users => {
-        dispatch({
-          type: "setUserList",
-          data: users
-        });
-      })
-      .catch(e => console.log(e));
-  }, []);
 
   const females = Object.entries(dogList).filter(dog => dog[1].sex = 2);
   const males = Object.entries(dogList).filter(dog => dog[1].sex = 1);
