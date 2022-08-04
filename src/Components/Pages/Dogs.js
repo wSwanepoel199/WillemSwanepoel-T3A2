@@ -45,7 +45,6 @@ const Dogs = (params) => {
       result.source.index,
       result.destination.index
     );
-    console.log(movedItems);
     setDogs(movedItems);
 
   };
@@ -86,7 +85,7 @@ const Dogs = (params) => {
           )}
         </Droppable>
       </Container>
-    </DragDropContext >
+    </DragDropContext>
   );
 
 };

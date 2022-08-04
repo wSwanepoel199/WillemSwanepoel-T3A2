@@ -101,7 +101,7 @@ const App = () => {
           {/* {console.log("list of dogs:", Object.entries(store.dogList))} */}
           {/* {console.log("list of litters:", Object.entries(store.litterList))} */}
           {/* {console.log("logged in user:", store.loggedInUser)} */}
-          {console.log("token", store.token)}
+          {/* {console.log("token", store.token)} */}
           {/* {console.log("list of contact attempts:", store.contactFormList)} */}
           {/* {console.log("user list:", store.userList)} */}
           {/* allows for conditional rendering based on path */}
