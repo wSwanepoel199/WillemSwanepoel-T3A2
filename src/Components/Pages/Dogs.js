@@ -73,7 +73,11 @@ const Dogs = (params) => {
   }, [store]);
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      }
+    }),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,

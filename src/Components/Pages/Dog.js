@@ -1,17 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Container, Card, CardContent, CardMedia, Button, Typography, Grid } from "@mui/material";
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from "@dnd-kit/utilities";
 
 const Dog = (props) => {
   const { dog } = props;
+  let navigate = useNavigate;
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: props.id });
+  } = useSortable({ id: dog.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -56,7 +57,7 @@ const Dog = (props) => {
           </Typography>
           {dog.context}
           <Link to={`/dogs/chosen/${dog.id}`}>
-            <Button variant="outlined">View Dog</Button>
+            <Button variant="outlined" >View Dog</Button>
           </Link>
         </CardContent>
       </Card>
