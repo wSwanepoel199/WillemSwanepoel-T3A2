@@ -9,3 +9,8 @@ export async function addPuppy(data) {
   const response = await backEndAPI.post('/add_puppy', data);
   return response.data;
 }
+
+export async function pushNewPositions(data) {
+  const response = await backEndAPI.post('/reorder_dogs', data);
+  return response;
+}

@@ -1,8 +1,9 @@
 import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
+import { SortableItem } from './SortableItem';
 import { useParams } from "react-router";
 import { Box, Container, Grid } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -12,6 +13,7 @@ import {
   useSensor,
   useSensors,
   closestCenter,
+  closestCorners,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -19,32 +21,22 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
+import { pushNewPositions } from "../services/dogsServices";
 import { Item } from "./Item";
 import { buildDeprecatedPropsWarning } from "@mui/x-date-pickers/internals";
 import { MoneyOutlined } from "@mui/icons-material";
+import { CloseButton } from "react-bootstrap";
+import { getUsers } from "../services/authServices";
 
 const Dogs = (params) => {
   const { store } = useGlobalState();
   const { dogList } = store;
-  const checkMount = useRef();
+
   const [activeId, setActiveId] = useState(null);
   const [dogs, setDogs] = useState([]);
-  const [item, setItems] = useState([
-    {
-      id: "1",
-      xsWidth: 6,
-      content: <div style={{ color: "yellow" }}>first chart is here</div>,
-      color: "red"
-    },
-    {
-      id: "2",
-      xsWidth: 6,
-      content: <div style={{ color: "white" }}>second chart is here</div>,
-      color: "blue"
-    },
-    { id: "3", xsWidth: 12, content: "third chart", color: "green" }
-  ]);
+  const [positions, setPositions] = useState([]);
 
+  // have ordering run prior to unmounting component
 
   const handleSex = (params) => {
     if (params.id === "males") {
@@ -59,16 +51,24 @@ const Dogs = (params) => {
   };
 
   useEffect(() => {
-    if (!checkMount.current) {
-      // didMount
-      handleSex(params);
-    } else {
-      // did update
-      console.log("update");
-    }
+    handleSex(params);
 
     return () => {
-      // did unmount
+      let newArr = [];
+      dogs.forEach(dog => {
+        newArr.push({ id: dog.id, position: dog.position });
+      });
+      newArr = {
+        dogs: {
+          ...newArr
+        }
+      };
+      pushNewPositions(newArr)
+        .then(reply => {
+          console.log(reply);
+        })
+        .catch(e => console.log(e));
+
     };
   }, [store]);
 
@@ -78,7 +78,12 @@ const Dogs = (params) => {
         distance: 10,
       }
     }),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 500,
+        tolerance: 25,
+      }
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -86,49 +91,61 @@ const Dogs = (params) => {
 
   const handleDragStart = (e) => {
     const { active } = e;
-    console.log(active);
-    console.log(active.id);
     setActiveId(active.id);
+    setPositions(copyPositions());
   };
 
   const handleDragEnd = (e) => {
     const { active, over } = e;
-    console.log(active.id, over.id);
     if (active.id !== over.id) {
       setDogs((dogs) => {
         var activePos = dogs.findIndex((dog) => dog.id === active.id);
         var overPos = dogs.findIndex((dog) => dog.id === over.id);
-        parsePositions(dogs, activePos, overPos);
-        return arrayMove(dogs, activePos, overPos);
+        return setNewPositions(arrayMove(dogs, activePos, overPos));
       });
     }
     setActiveId(null);
   };
 
+  const copyPositions = () => {
+    let dogPositions = [];
+    dogs.forEach(dog => dogPositions.push(dog.position));
+    console.log(dogPositions);
+    return dogPositions;
+  };
 
-  const parsePositions = (dogs, active, over) => {
-    console.log(dogs[active]);
-    console.log(dogs[over]);
+  const setNewPositions = (arrMove) => {
+    return arrMove.map((dog, id) => {
+      return {
+        ...dog,
+        position: positions[id]
+      };
+    });
   };
 
   return (
     <Container >
-      {console.log(arrayMove(dogs, 3, 6))}
-      {console.log(activeId)}
+      {console.log(dogs)}
       <Grid
         container
         spacing={2}
         justifyContent="space-evenly">
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={closestCorners}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={dogs} strategy={rectSortingStrategy}>
-            {dogs.map(dog => <Dog key={dog.id} id={dog.id} dog={dog} />)}
+            {dogs.map(dog => <SortableItem key={dog.id} id={dog.id} dog={dog} />)}
           </SortableContext>
-          <DragOverlay>{activeId ? <Item id={activeId} /> : null}</DragOverlay>
+          <DragOverlay>{activeId ?
+            <>
+              <Dog id={activeId} dog={dogs.find(dog => dog.id === activeId)} />
+            </>
+            :
+            null
+          }</DragOverlay>
         </DndContext>
       </Grid>
     </Container>
