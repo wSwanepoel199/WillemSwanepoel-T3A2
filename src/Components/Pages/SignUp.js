@@ -53,6 +53,9 @@ const SignUpForm = () => {
     signUp(submitForm)
       .then((user) => {
         console.log(user);
+        sessionStorage.setItem("id", user.id);
+        sessionStorage.setItem("username", user.username);
+        sessionStorage.setItem("admin", user.admin);
         dispatch({
           type: "setLoggedInUser",
           data: user
@@ -93,6 +96,11 @@ const SignUpForm = () => {
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.postcode} type="number" />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
