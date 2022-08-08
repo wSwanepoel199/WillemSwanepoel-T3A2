@@ -11,6 +11,7 @@ export async function addPuppy(data) {
 }
 
 export async function pushNewPositions(data) {
-  const response = await backEndAPI.post('/reorder_dogs', data);
+  console.log(data);
+  const response = await backEndAPI.patch('/reorder_dogs', data);
   return response;
 }

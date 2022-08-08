@@ -1,10 +1,10 @@
 import React, { forwardRef } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Container, Card, CardContent, CardMedia, Button, Typography, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mui/material";
 
 const Dog = forwardRef(({ id, ...props }, ref) => {
+  // makes dog available from props
   const { dog } = props;
-  let navigate = useNavigate;
 
   return (
     <Card

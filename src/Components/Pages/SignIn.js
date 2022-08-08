@@ -41,6 +41,7 @@ const SignInForm = () => {
         sessionStorage.setItem("id", user.id);
         sessionStorage.setItem("username", user.username);
         sessionStorage.setItem("admin", user.admin);
+        sessionStorage.setItem("token", user.jti);
         dispatch({
           type: "setLoggedInUser",
           data: user

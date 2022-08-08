@@ -4,6 +4,7 @@ import { Grid } from "@mui/material";
 import { Dog } from "../utils";
 
 export const SortableItem = (props) => {
+  // makes the listed attributes available from useSortable, making sure to affect specificied id
   const {
     attributes,
     listeners,
@@ -12,6 +13,7 @@ export const SortableItem = (props) => {
     transition,
   } = useSortable({ id: props.id });
 
+  // draggin affects
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,

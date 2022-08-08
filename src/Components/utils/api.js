@@ -5,7 +5,7 @@ const backEndAPI = axios.create({
 });
 
 backEndAPI.interceptors.request.use(req => {
-  console.log(req.headers["Authorization"]);
+  console.log(req);
   const token = sessionStorage.getItem("token");
   if (token) {
     console.log(token);
@@ -16,7 +16,7 @@ backEndAPI.interceptors.request.use(req => {
 });
 
 backEndAPI.interceptors.response.use(res => {
-  console.log(res.headers["Authorization"]);
+  console.log(res);
 
   return res;
 });
