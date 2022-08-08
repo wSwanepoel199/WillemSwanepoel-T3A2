@@ -24,6 +24,7 @@ import Litter from '../Pages/Litter';
 import LitterDetails from '../Pages/LitterDetails';
 import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
+import SignUpRedirect from '../Pages/SignUpRedirect';
 import SignOut from '../Pages/SignOut';
 // API
 import backEndAPI from './api';
@@ -57,6 +58,7 @@ export {
   LitterDetails,
   SignInForm,
   SignUpForm,
+  SignUpRedirect,
   SignOut,
   // helpers
   reorder,

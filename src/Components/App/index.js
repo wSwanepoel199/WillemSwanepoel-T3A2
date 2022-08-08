@@ -31,6 +31,7 @@ import {
   LitterDetails,
   SignInForm,
   SignUpForm,
+  SignUpRedirect,
   NotFound,
 } from '../utils/index';
 // A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
@@ -58,30 +59,30 @@ const App = () => {
 
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
-    getDogs()
-      .then(dogs => {
-        dispatch({
-          type: "setDogList",
-          data: dogs
-        });
-      })
-      .catch(e => console.log(e));
-    getForms()
-      .then(form => {
-        dispatch({
-          type: "setFilledForms",
-          data: form
-        });
-      })
-      .catch(e => console.log(e));
-    getLitters()
-      .then(litter => {
-        dispatch({
-          type: "setLitterList",
-          data: litter
-        });
-      })
-      .catch(e => console.log(e));
+    // getDogs()
+    //   .then(dogs => {
+    //     dispatch({
+    //       type: "setDogList",
+    //       data: dogs
+    //     });
+    //   })
+    //   .catch(e => console.log(e));
+    // getForms()
+    //   .then(form => {
+    //     dispatch({
+    //       type: "setFilledForms",
+    //       data: form
+    //     });
+    //   })
+    //   .catch(e => console.log(e));
+    // getLitters()
+    //   .then(litter => {
+    //     dispatch({
+    //       type: "setLitterList",
+    //       data: litter
+    //     });
+    //   })
+    //   .catch(e => console.log(e));
     getUsers()
       .then(users => {
         dispatch({
@@ -174,7 +175,10 @@ const App = () => {
                 </Route>
                 {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
                 <Route path="/signIn" element={<SignInForm />}></Route>
-                <Route path="/signUp" element={<SignUpForm />}></Route>
+                <Route path="/signUp" >
+                  <Route index element={<SignUpForm />} />
+                  <Route path="/signUp/confirmation" element={<SignUpRedirect />} />
+                </Route>
                 {/* sets path to render 404 page when attempting to access a route that does not exist */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

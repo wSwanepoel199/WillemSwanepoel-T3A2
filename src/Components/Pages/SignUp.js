@@ -53,15 +53,8 @@ const SignUpForm = () => {
     signUp(submitForm)
       .then((user) => {
         console.log(user);
-        sessionStorage.setItem("id", user.id);
-        sessionStorage.setItem("username", user.username);
-        sessionStorage.setItem("admin", user.admin);
-        dispatch({
-          type: "setLoggedInUser",
-          data: user
-        });
         setFormData(initialFormData);
-        navigate("/");
+        navigate("/signup/confirmation");
       })
       .catch(e => {
         console.log(e.response.data.errors);
