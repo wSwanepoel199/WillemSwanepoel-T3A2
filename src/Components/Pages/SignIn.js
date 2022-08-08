@@ -41,7 +41,7 @@ const SignInForm = () => {
         sessionStorage.setItem("id", user.id);
         sessionStorage.setItem("username", user.username);
         sessionStorage.setItem("admin", user.admin);
-        sessionStorage.setItem("token", user.jti);
+        // sessionStorage.setItem("token", user.jti);
         dispatch({
           type: "setLoggedInUser",
           data: user
@@ -59,7 +59,7 @@ const SignInForm = () => {
   const handleInput = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [e.target.name]: e.target.value
     });
   };
 
@@ -89,10 +89,11 @@ const SignInForm = () => {
         mr: 'auto',
         maxWidth: "sm",
       }}>
+        {console.log(formData)}
         <Paper sx={{ padding: 4 }}>
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid item xs={12} sx={{ mb: 3 }}>
-              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign Up</Typography>
+              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign In</Typography>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
