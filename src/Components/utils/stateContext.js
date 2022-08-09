@@ -11,12 +11,8 @@ export const StateProvider = ({ children }) => {
   const initialState = {
     dogList: {},
     litterList: {},
-    contactFormList: {},
-    loggedInUser: {
-      id: sessionStorage.getItem("id") || null,
-      username: sessionStorage.getItem("username") || null,
-      admin: sessionStorage.getItem("admin") || false,
-    },
+    contactFormList: JSON.parse(sessionStorage.getItem("filledContactForms")) || {},
+    loggedInUser: JSON.parse(sessionStorage.getItem("user")) || {},
     token: sessionStorage.getItem("token") || null,
     userList: {},
   };

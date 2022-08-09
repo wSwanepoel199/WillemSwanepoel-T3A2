@@ -8,8 +8,7 @@ backEndAPI.interceptors.request.use(req => {
   console.log(req);
   const token = sessionStorage.getItem("token");
   if (token) {
-    console.log(token);
-    req.headers["Authorization"] = `${token}`;
+    req.headers["Authorization"] = `Bearer ${token}`;
   }
 
   return req;

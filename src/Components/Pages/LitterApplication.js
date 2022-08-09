@@ -1,5 +1,6 @@
 import { Box, Paper, Grid, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { postApplication } from "../services/litterServices";
 import { useGlobalState } from "../utils";
 
@@ -14,15 +15,18 @@ const LitterApplication = () => {
   //  anything they feel might let me see that they would be a good pick for one of my pups,   I believe in the happiness of the pup first,
   // probably needs their name and contact info too >.>
 
+  const navigate = useNavigate();
+
   const initialformData = {
     fname: "",
     lname: "",
     litter_id: '',
     yardarea: 0,
     yardfenceheight: 0,
+    user_id: 0,
   };
   const [formData, setFormData] = useState(initialformData);
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const { litterList, loggedInUser } = store;
 
   const handleInput = (e) => {
@@ -39,18 +43,27 @@ const LitterApplication = () => {
     e.preventDefault();
     setFormData({
       ...formData,
-      user_id: parseInt(loggedInUser.id, 10)
+      user_id: loggedInUser.id
     });
-    console.log(formData);
-    postApplication(formData)
-      .then(application => {
-        console.log(application);
-      })
-      .catch(e => {
-        console.log(e.response);
-        alert(e.response.data.error);
-      });
   };
+
+  useEffect(() => {
+    if (formData.user_id !== 0) {
+      postApplication(formData)
+        .then(application => {
+          console.log(application);
+          dispatch({
+            type: "setApplicationForms",
+            data: application
+          });
+        })
+        .catch(e => {
+          console.log(e.response);
+          alert(e.response.data.error);
+        });
+    }
+
+  }, [formData]);
 
   return (
     <Box component="form" onSubmit={(e) => handleSubmit(e)} sx={{

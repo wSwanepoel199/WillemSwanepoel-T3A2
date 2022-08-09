@@ -1,9 +1,23 @@
 import { useGlobalState } from "../utils";
 import { Contact } from "../utils";
 import { Container, Grid } from "@mui/material";
+import { useEffect } from "react";
+import { getForms } from '../services/contactServices';
 const Contacts = () => {
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const { contactFormList } = store;
+
+  useEffect(() => {
+    getForms()
+      .then(forms => {
+        dispatch({
+          type: "setFilledForms",
+          data: forms
+        });
+        sessionStorage.setItem("filledContactForms", JSON.stringify(forms));
+      })
+      .catch(e => console.log(e));
+  }, []);
 
   return (
     <Container>

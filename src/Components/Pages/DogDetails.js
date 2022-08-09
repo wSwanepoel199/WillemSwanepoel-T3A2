@@ -1,11 +1,13 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Button } from "@mui/material";
 
 const DogDetails = () => {
   const initialDogDetails = {
   };
   const params = useParams();
+  const navigate = useNavigate();
 
   const [dogDetails, setDogDetails] = useState(initialDogDetails);
 
@@ -31,7 +33,7 @@ const DogDetails = () => {
           <p>{dogDetails.ownername}</p>
           <p>{dogDetails.breedername}</p>
           <p>{dogDetails.dob}</p>
-          <Link to="/dogs">Return</Link>
+          <Button onClick={() => navigate(-1)}>Return</Button>
         </>
         :
         <>

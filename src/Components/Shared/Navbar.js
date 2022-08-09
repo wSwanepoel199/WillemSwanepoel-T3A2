@@ -1,52 +1,58 @@
 import { Navbar, NavDropdown, Container, Nav } from "react-bootstrap";
 import { SignOut, useGlobalState } from "../utils";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const { store, dispatch, init } = useGlobalState();
+  const navigate = useNavigate();
 
   const handleSignOut = () => {
     dispatch({
       type: "clearState",
       data: init
     });
-    sessionStorage.clear();
+    sessionStorage.removeItem("user");
+  };
+
+  const handleSelect = (e) => {
+    navigate(e);
   };
 
   const NavBody = () => {
     return (
       <>
         <Nav className="justify-content-start flex-grow-1 pe-3">
-          <Nav.Link href="/">Home</Nav.Link>
+          <NavLink className="nav-link" to="/">Home</NavLink>
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="all-dogs" href="/dogs/all" id="all-dogs">All Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="male-dogs" href="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="retired-dogs" href="/dogs/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/all" id="all-dogs">All Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
           </NavDropdown>
           <NavDropdown
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="litter-application" href="/litters/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-schedule">Litter Schedule</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/shows">Shows</Nav.Link>
+          <NavLink className="nav-link" to="/shows">Shows</NavLink>
           <NavDropdown
             title="Our Company"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="about-us" href="/about">About Us</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/about">About Us</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-schedule">Legalities (Temp)</NavDropdown.Item>
-            <NavDropdown.Item eventKey="contactForm" href="/contacts/form">Contact Us</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/contacts/form">Contact Us</NavDropdown.Item>
           </NavDropdown>
           {store.loggedInUser.admin ?
             <>
               <NavDropdown
                 title="Admin Panel"
                 id={`offcanvasNavbarDropdown-expand-md`}>
-                <NavDropdown.Item eventKey="view-contacts" href="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
-                <NavDropdown.Item eventKey="manage-litters" href="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
               </NavDropdown>
@@ -65,13 +71,13 @@ const NavBar = () => {
                 align={{ md: 'end' }}
                 style={{ textAlign: 'right' }}
               >
-                <NavDropdown.Item eventKey="view-contacts" href={`/users/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
-                <NavDropdown.Item eventKey="sign-out" href="/" onClick={handleSignOut} id="sign-out">Sign Out</NavDropdown.Item>
+                <NavDropdown.Item eventKey={`/users/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/" onClick={handleSignOut} id="sign-out">Sign Out</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             :
             <Nav>
-              <Nav.Link href="/signIn">Sign In</Nav.Link>
+              <NavLink className="nav-link" to="/signIn">Sign In</NavLink>
             </Nav>
         }
       </>
@@ -80,9 +86,9 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar key='md' bg="light" expand='md' className="mb=3">
+      <Navbar key='md' bg="light" expand='md' className="mb=3" onSelect={handleSelect}>
         <Container fluid>
-          <Navbar.Brand href="/">Myshalair</Navbar.Brand>
+          <NavLink className="navbar-brand" to="/">Myshalair</NavLink>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
           <Navbar.Collapse
             id={`offcanvasNavbar-expand-md`}

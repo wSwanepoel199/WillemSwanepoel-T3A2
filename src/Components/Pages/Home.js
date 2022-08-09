@@ -1,6 +1,6 @@
 import temp_avatar from '../Shared/Assests/Temp Avatar.jpg';
 import { StyledContainer, StyledImage } from '../Shared/styles/Home.styled';
-import { Container, Typography, Grid, Card as MuiCard, CardContent, CardMedia } from '@mui/material';
+import { Container, Typography, Grid, Card as MuiCard, CardContent, CardMedia, } from '@mui/material';
 import { useGlobalState } from '../utils';
 
 const Home = () => {

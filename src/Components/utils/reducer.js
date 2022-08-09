@@ -1,3 +1,5 @@
+import { ActionTypes } from "@mui/base";
+
 export const init = (initialState) => {
   return { ...initialState };
 };
@@ -55,11 +57,23 @@ export const reducer = (state, action) => {
         contactForm: action.data
       };
     }
+    case "setApplicationForms": {
+      return {
+        ...state,
+        applicationForms: action.data
+      };
+    }
     case "updateContactForm": {
       console.log(action.data);
       return {
         ...state,
         contactForm: action.data
+      };
+    }
+    case "updateDogList": {
+      return {
+        ...state,
+        dogList: action.data
       };
     }
     default: {

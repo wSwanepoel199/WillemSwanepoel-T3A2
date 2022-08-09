@@ -2,7 +2,7 @@ import { useGlobalState } from "../utils";
 import { Dog } from "../utils";
 import { SortableItem } from './SortableItem';
 import { Container, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -23,23 +23,50 @@ import { pushNewPositions } from "../services/dogsServices";
 
 const Dogs = (params) => {
   // initalises store from global state
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   // makes doglist available
   const { dogList } = store;
 
   // sets initial states of page
-  const [isMounted, setIsMounted] = useState(true);
+  const mounted = useRef();
   const [activeId, setActiveId] = useState(null);
   const [positions, setPositions] = useState([]);
   const [dogs, setDogs] = useState([]);
+  const [updatedDogs, setUpdatedDogs] = useState({});
 
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
   useEffect(() => {
     setDogs(Object.values(dogList).sort((a, b) => a.position - b.position));
-    return () => {
-      setIsMounted(false);
+  }, [dogList, mounted]);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      console.log(mounted);
+      console.log(dogList);
+      console.log("newly mounted");
+      mounted.current = true;
+    } else {
+      if (dogs.length === 0 && dogList) {
+        console.log("dogs empty");
+        setDogs(Object.values(dogList).sort((a, b) => a.position - b.position));
+      }
+    }
+  });
+
+  useEffect(() => {
+    const requestList = {
+      dogs: Object.values(updatedDogs)
     };
-  }, [isMounted, dogList]);
+    console.log(requestList);
+    pushNewPositions(requestList)
+      .then(reply => {
+        console.log(reply);
+      })
+      .catch(e => console.log(e));
+    return () => {
+
+    };
+  }, []);
 
   // filters dogs based on passed params
   const handleSex = (params, dogs) => {
@@ -74,13 +101,8 @@ const Dogs = (params) => {
           "position": dog.position
         });
       });
-      const sentList = {
-        dogs: [
-          ...finalList
-        ]
-      };
-      pushNewPositions(sentList)
-        .then(reply => console.log(reply));
+      console.log(finalList);
+      setUpdatedDogs(finalList);
     }
   }, [activeId]);
 
@@ -134,7 +156,6 @@ const Dogs = (params) => {
 
   return (
     <Container >
-      {console.log(dogs)}
       <Grid
         container
         spacing={2}

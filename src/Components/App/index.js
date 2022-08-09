@@ -1,9 +1,9 @@
-import React, { useEffect, useReducer } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import React, { useEffect, useMemo } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
 import { getLitters } from '../services/litterServices';
-import { getForms } from '../services/contactServices';
+import { getUsers } from '../services/authServices';
 // centralises imports of reducer, global state, the shared components and pages to a single file.
 import {
   // shared components
@@ -31,11 +31,36 @@ import {
 // A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
 import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
-import { PrivateRoute } from '../utils/PrivateRoute';
-import { getUsers } from '../services/authServices';
+import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
+import { Alert, AlertTitle, IconButton, Collapse } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
+
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+
+  let timeoutID;
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    clearTimeout(timeoutID);
+    navigate("."); // <-- redirect to current path w/o state
+  };
+
+  useEffect(() => {
+    if (state && state.alert) {
+      setOpen(true);
+      timeoutID = setTimeout(() => {
+        handleClose();
+      },
+        5000
+      );
+    }
+  }, [state]);
+
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
     getDogs()
@@ -46,40 +71,59 @@ const App = () => {
         });
       })
       .catch(e => console.log(e));
-    // getForms()
-    //   .then(form => {
-    //     dispatch({
-    //       type: "setFilledForms",
-    //       data: form
-    //     });
-    //   })
-    //   .catch(e => console.log(e));
-    // getLitters()
-    //   .then(litter => {
-    //     dispatch({
-    //       type: "setLitterList",
-    //       data: litter
-    //     });
-    //   })
-    //   .catch(e => console.log(e));
-    // getUsers()
-    //   .then(users => {
-    //     dispatch({
-    //       type: "setUserList",
-    //       data: users
-    //     });
-    //   })
-    //   .catch(e => console.log(e));
+    getLitters()
+      .then(litter => {
+        dispatch({
+          type: "setLitterList",
+          data: litter
+        });
+      })
+      .catch(e => console.log(e));
+    getUsers()
+      .then(users => {
+        dispatch({
+          type: "setUserList",
+          data: users
+        });
+      })
+      .catch(e => console.log(e));
   }, []);
 
   return (
     <>
       {console.log("list of dogs:", Object.entries(store.dogList))}
       {/* {console.log("list of litters:", Object.entries(store.litterList))} */}
-      {/* {console.log("logged in user:", store.loggedInUser)} */}
+      {console.log("logged in user:", store.loggedInUser)}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
+      {console.log(location)}
+      {state && state.alert ?
+        <Collapse in={open}>
+          <Alert
+            severity={state.severity}
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  handleClose();
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ mb: 2 }}
+          >
+            <AlertTitle>
+              {state.title}
+            </AlertTitle>
+            {state.body}
+          </Alert>
+        </Collapse>
+        :
+        null}
       {/* renders the header which contains the Myshalair logo*/}
       <Header data-testid="header" />
       {/* renders navbar, which is the main form of navigation */}
@@ -94,7 +138,7 @@ const App = () => {
           {/* sets the main path for dogs */}
           <Route path="/dogs" >
             {/* automatically routes path: "/dogs" to "/dogs/all" */}
-            <Route index element={<Navigate to={'/dogs/all'} />} />
+            <Route index element={<Navigate to={'/dogs/all'} replace={true} />} />
             {/* allows the mapped paths to be used to route the same element */}
             {['all', 'males', 'females', 'retired'].map((path, index) => {
               return (
@@ -108,17 +152,17 @@ const App = () => {
           </Route>
           {/* sets base path for contacts*/}
           <Route path="/contacts">
-            {/* sets Contacts element as base path using index. Uses PrivateRoute to manage unautherised access*/}
+            {/* sets Contacts element as base path using index. Uses AdminRoute to manage unautherised access*/}
             <Route index element={
-              <PrivateRoute>
+              <AdminRoute>
                 <Contacts />
-              </PrivateRoute>
+              </AdminRoute>
             } />
-            {/* sets path for ContactDetails using a non absolute path, will only be routed to if path hasn't been assinged to another element. element uses PrivateRoute to manage unautherised access*/}
+            {/* sets path for ContactDetails using a non absolute path, will only be routed to if path hasn't been assinged to another element. element uses AdminRoute to manage unautherised access*/}
             <Route path=":id" element={
-              <PrivateRoute>
+              <AdminRoute>
                 <ContactDetails />
-              </PrivateRoute>
+              </AdminRoute>
             } />
             {/* sets path for contact form element */}
             <Route path="/contacts/form" element={<ContactForm />} />
@@ -129,22 +173,22 @@ const App = () => {
             <Route index element={<Navigate to={'/litters/apply'} />} />
             {/* sets path for litter application page */}
             <Route path="/litters/apply" element={<LitterApplication />} />
-            {/* sets path for litter management page and uses PrivateRoute to manage autherisation*/}
+            {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
             <Route path="/litters/manage" element={
-              <PrivateRoute>
+              <AdminRoute>
                 <LitterManage />
-              </PrivateRoute>} />
-            {/* sets path for litter creation page and uses PrivateRoute to manage autherisation*/}
+              </AdminRoute>} />
+            {/* sets path for litter creation page and uses AdminRoute to manage autherisation*/}
             <Route path="/litters/create" element={
-              <PrivateRoute>
+              <AdminRoute>
                 <LitterCreationForm />
-              </PrivateRoute>
+              </AdminRoute>
             } />
-            {/* sets path to access LitterDetails to a non absolute path and uses PrivateRoute to manage autherisation */}
+            {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
             <Route path=":id" element={
-              <PrivateRoute>
+              <AdminRoute>
                 <LitterDetails />
-              </PrivateRoute>} />
+              </AdminRoute>} />
           </Route>
           {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
           <Route path="/signIn" element={<SignInForm />}></Route>
