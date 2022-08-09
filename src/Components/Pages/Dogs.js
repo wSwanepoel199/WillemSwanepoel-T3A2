@@ -134,6 +134,7 @@ const Dogs = (params) => {
 
   return (
     <Container >
+      {console.log(dogs)}
       <Grid
         container
         spacing={2}

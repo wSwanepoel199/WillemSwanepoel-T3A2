@@ -81,7 +81,7 @@ const SignInForm = () => {
 
   return (
     <>
-      <Box component="form" onSubmit={(e) => handleSubmit(e)} sx={{
+      <Box component="form" data-testid="form" onSubmit={(e) => handleSubmit(e)} sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -93,11 +93,18 @@ const SignInForm = () => {
         <Paper sx={{ padding: 4 }}>
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid item xs={12} sx={{ mb: 3 }}>
-              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign In</Typography>
+              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }} data-testid="sign-in-title">Sign In</Typography>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+                <TextField
+                  name="email"
+                  required id="email_id"
+                  type="email"
+                  label="Email"
+                  onChange={handleInput}
+                  value={formData.email}
+                  inputProps={{ "data-testid": "sign-in-email" }} />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
@@ -105,9 +112,13 @@ const SignInForm = () => {
                 <TextField
                   name="password"
                   required
+                  data-testid="password"
                   id="password_id"
                   label="Password"
+                  onChange={handleInput}
+                  value={formData.password}
                   type={formData.showPassword ? 'text' : 'password'}
+                  inputProps={{ "data-testid": "sign-in-password" }}
                   InputProps={{
                     endAdornment:
                       <InputAdornment position="end">
@@ -121,14 +132,13 @@ const SignInForm = () => {
                         </IconButton>
                       </InputAdornment>
                   }}
-                  onChange={handleInput}
-                  value={formData.password}
+
                 />
               </FormControl>
             </Grid>
             <Grid item xs={12}>
               <Container fluid="true">
-                <Button variant="contained" type="submit">Sign In</Button>
+                <Button variant="contained" type="submit" data-testid="sign-in-submit">Sign In</Button>
                 <Button variant="text" href="/signUp">sign up</Button>
               </Container>
             </Grid>

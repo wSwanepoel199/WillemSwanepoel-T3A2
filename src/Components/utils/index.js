@@ -1,6 +1,6 @@
 // Import Utils
 import { reducer, init } from './reducer';
-import { StateContext, useGlobalState } from './stateContext';
+import { StateProvider, useGlobalState } from './stateContext';
 
 // Import Shared Components
 import Header from '../Shared/Header';
@@ -34,7 +34,7 @@ export {
   // Utils
   reducer,
   init,
-  StateContext,
+  StateProvider,
   useGlobalState,
   // Shared Components
   Header,

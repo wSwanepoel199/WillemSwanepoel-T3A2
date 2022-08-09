@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <>
       <HeaderContainer id="header" className='header'>
-        <HeaderImage src={banner} alt="Banner" />
+        <HeaderImage src={banner} alt="Banner" data-testid="header-img" />
       </HeaderContainer>
     </>
   );
