@@ -15,6 +15,10 @@ export const StateProvider = ({ children }) => {
     loggedInUser: JSON.parse(sessionStorage.getItem("user")) || {},
     token: sessionStorage.getItem("token") || null,
     userList: JSON.parse(sessionStorage.getItem("userList")) || {},
+    mergedLitterList: {},
+    breeders: {},
+    sires: {},
+    bitches: {},
   };
 
   // uses reducer to globalise state.

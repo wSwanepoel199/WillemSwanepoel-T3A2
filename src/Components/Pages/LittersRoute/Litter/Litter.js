@@ -3,35 +3,17 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Litter = (props) => {
-  const { litter, breeder, sire, bitch } = props;
+  const { litter } = props;
+  const { breeder, sire, bitch } = litter;
   const [open, setOpen] = useState(false);
-
-  let Breeder = {};
-  let Sire = {};
-  let Bitch = {};
-
-  breeder.forEach(user => {
-    if (user[1].id === litter.breeder_id) {
-      Breeder = user[1];
-    }
-  });
-  sire.forEach(sire => {
-    if (sire[1].id === litter.sire_id) {
-      Sire = sire[1];
-    }
-  });
-  bitch.forEach(bitch => {
-    if (bitch[1].id === litter.bitch_id) {
-      Bitch = bitch[1];
-    }
-  });
 
   return (
     <>
       <TableRow>
+        {console.log(litter)}
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -45,13 +27,13 @@ const Litter = (props) => {
           <Typography>{litter.lname}</Typography>
         </TableCell>
         <TableCell>
-          <Typography>{Breeder.username}</Typography>
+          <Typography>{breeder.username}</Typography>
         </TableCell>
         <TableCell>
-          <Typography>{Sire.realname}</Typography>
+          <Typography>{sire.realname}</Typography>
         </TableCell>
         <TableCell>
-          <Typography>{Bitch.realname}</Typography>
+          <Typography>{bitch.realname}</Typography>
         </TableCell>
         <TableCell>
           {litter.edate ?
@@ -83,9 +65,11 @@ const Litter = (props) => {
                       </Link>
                     </TableCell>
                     <TableCell align="left" size="small">
-                      <Button variant="contained" color="warning">
-                        Edit
-                      </Button>
+                      <Link to={`/litters/${litter.id}/edit`}>
+                        <Button variant="contained" color="warning">
+                          Edit
+                        </Button>
+                      </Link>
                     </TableCell>
                     <TableCell align="left" size="small">
                       <Button variant="contained" color="error">

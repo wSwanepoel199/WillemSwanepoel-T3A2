@@ -1,14 +1,17 @@
 import { Grid, FormControl, Input, InputLabel, FormHelperText, Container, Paper, FormGroup, Typography, TextField, Select, MenuItem, Button, Slider } from "@mui/material";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { useGlobalState } from "../utils";
-import { postLitter } from "../services/litterServices";
+import { useGlobalState } from "../../../utils";
+import { postLitter } from "../../../services/litterServices";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 const LitterCreationForm = () => {
   const { store, dispatch } = useGlobalState();
-  const { dogList, userList } = store;
+  const { breeders, sires, bitches } = store;
+  const navigate = useNavigate();
 
   const initialFormData = {
     lname: "",
@@ -21,15 +24,14 @@ const LitterCreationForm = () => {
     esize: 1,
   };
 
-  const females = Object.values(dogList).filter(dog => dog.sex === 2);
-  const males = Object.values(dogList).filter(dog => dog.sex === 1);
-  const breeder = Object.values(userList).filter(user => user.breeder = true);
+
   const [formData, setformData] = useState(initialFormData);
+
 
   const handleDate = (e, name) => {
     console.log(e);
-    console.log(moment(e).format('YYYY-MM-DDTHH:mm'));
-    const date = moment(e).format('YYYY-MM-DDTHH:mm');
+    console.log(moment(e).format('YYYY-MM-DD'));
+    const date = moment(e).format('YYYY-MM-DD');
     const newDate = {
       target: {
         name: name,
@@ -81,6 +83,10 @@ const LitterCreationForm = () => {
         console.log(e.response.data.message);
         alert(e.response.data.message);
       });
+
+    setformData(initialFormData);
+    navigate('/litters/manage');
+
   };
 
 
@@ -90,8 +96,7 @@ const LitterCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {console.log(females)}
-      {console.log(males)}
+      {console.log(store)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
           <Grid item xs={12} sx={{ mb: 3 }}>
@@ -111,7 +116,7 @@ const LitterCreationForm = () => {
                 onChange={handleInput}
                 value={formData.breeder_id}
               >
-                {breeder.map(breeder => {
+                {Object.values(breeders).map(breeder => {
                   return (
                     <MenuItem key={breeder.id} value={breeder.id}>{breeder.username}</MenuItem>
                   );
@@ -131,7 +136,7 @@ const LitterCreationForm = () => {
                 onChange={handleInput}
                 value={formData.bitch_id}
               >
-                {females.map(dog => {
+                {Object.values(bitches).map(dog => {
                   return (
                     <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
                   );
@@ -151,7 +156,7 @@ const LitterCreationForm = () => {
                 onChange={handleInput}
                 value={formData.sire_id}
               >
-                {males.map(dog => {
+                {Object.values(sires).map(dog => {
                   return (
                     <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
                   );
@@ -161,58 +166,52 @@ const LitterCreationForm = () => {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <DateTimePicker
+              <DatePicker
                 name="pdate"
                 id="pdate_picker"
                 label="Select Predicted Delivery Date"
                 ampm
                 required
-                inputFormat="DD/MM/YYYY HH:mm"
-                mask="__/__/____ __:__"
-                views={['year', 'month', 'day', 'hours', 'minutes']}
-                minTime={moment('0:0', 'HH:mm')}
-                maxTime={moment('23:59', 'HH:mm')}
+                inputFormat="DD/MM/YYYY"
+                mask="__/__/____"
+                views={['year', 'month', 'day']}
                 value={formData.pdate}
                 onChange={(e) => { handleDate(e, "pdate"); }}
                 onAccept={(e) => { handleDate(e, "pdate"); }}
-                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
+                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy"></TextField>}
               />
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <DateTimePicker
+              <DatePicker
                 name="edate"
                 id="edate_picker"
                 label="Select Expected Delivery Date"
                 ampm
-                inputFormat="DD/MM/YYYY HH:mm"
-                mask="__/__/____ __:__"
-                views={['year', 'month', 'day', 'hours', 'minutes']}
-                minTime={moment('0:0', 'HH:mm')}
-                maxTime={moment('23:59', 'HH:mm')}
+                inputFormat="DD/MM/YYYY"
+                mask="__/__/____"
+                views={['year', 'month', 'day']}
                 value={formData.edate}
                 onChange={(e) => { handleDate(e, "edate"); }}
                 onAccept={(e) => { handleDate(e, "edate"); }}
-                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
+                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy"></TextField>}
               />
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <DateTimePicker
+              <DatePicker
                 name="adate"
                 id="adate_picker"
                 label="Select Actual Delivery Date"
                 ampm
-                inputFormat="DD/MM/YYYY HH:mm"
-                mask="__/__/____ __:__"
-                views={['year', 'month', 'day', 'hours', 'minutes']}
-                minTime={moment('0:0', 'HH:mm')}
-                maxTime={moment('23:59', 'HH:mm')}
+                inputFormat="DD/MM/YYYY"
+                mask="__/__/____"
+                views={['year', 'month', 'day']}
                 value={formData.adate}
                 onChange={(e) => { handleDate(e, "adate"); }}
-                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
+                renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy"></TextField>}
               />
             </FormControl>
           </Grid>
@@ -237,6 +236,11 @@ const LitterCreationForm = () => {
               <Button variant="contained" type='submit'>
                 Create Litter
               </Button>
+              <Link to="..">
+                <Button variant="text">
+                  Return
+                </Button>
+              </Link>
             </Container>
           </Grid>
         </Grid>

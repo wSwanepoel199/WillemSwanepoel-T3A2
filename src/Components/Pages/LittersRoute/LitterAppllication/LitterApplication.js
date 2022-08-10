@@ -1,8 +1,8 @@
 import { Box, Paper, Grid, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { postApplication } from "../services/litterServices";
-import { useGlobalState } from "../utils";
+import { postApplication } from "../../../services/litterServices";
+import { useGlobalState } from "../../../utils";
 
 const LitterApplication = () => {
 

@@ -20,6 +20,7 @@ import {
   DogDetails,
   LitterApplication,
   LitterCreationForm,
+  LitterUpdateForm,
   LitterManage,
   LitterDetails,
   SignInForm,
@@ -47,6 +48,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
+  const { dogList, litterList, userList } = store;
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
@@ -73,7 +75,7 @@ const App = () => {
 
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
-    if (store.dogList) {
+    if (dogList) {
       getDogs()
         .then(dogs => {
           dispatch({
@@ -83,7 +85,7 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (store.litterList) {
+    if (litterList) {
       getLitters()
         .then(litter => {
           dispatch({
@@ -93,7 +95,7 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (store.userList) {
+    if (userList) {
       getUsers()
         .then(users => {
           dispatch({
@@ -105,10 +107,55 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    updateLitters();
+    updateValidBreeders();
+    updateValidSires();
+    updateValidBitches();
+  }, userList, litterList, dogList);
+
+  const updateLitters = () => {
+    console.log(userList);
+    dispatch({
+      type: "mergeLitterWithBreederSireAndBitch",
+      data: Object.values(litterList).map((litter) => {
+        const breeder = Object.values(userList).find(breeder => breeder.id === litter.breeder_id);
+        const sire = Object.values(dogList).find(sire => sire.id === litter.sire_id);
+        const bitch = Object.values(dogList).find(bitch => bitch.id === litter.bitch_id);
+        return {
+          ...litter,
+          breeder,
+          sire,
+          bitch
+        };
+      })
+    });
+  };
+
+  const updateValidBreeders = () => {
+    dispatch({
+      type: "updateValidBreeders",
+      data: Object.values(userList).filter(user => user),
+    });
+  };
+  const updateValidSires = () => {
+    dispatch({
+      type: "updateValidSires",
+      data: Object.values(dogList).filter(dog => dog.sex === 1),
+    });
+  };
+  const updateValidBitches = () => {
+    dispatch({
+      type: "updateValidBitches",
+      data: Object.values(dogList).filter(dog => dog.sex === 2),
+    });
+  };
+
   return (
     <>
+      {console.log("store:", store)}
       {console.log("list of dogs:", Object.entries(store.dogList))}
-      {/* {console.log("list of litters:", Object.entries(store.litterList))} */}
+      {console.log("list of litters:", Object.entries(store.litterList))}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
@@ -191,7 +238,7 @@ const App = () => {
           {/* sets default path for litters */}
           <Route path="/litters" >
             {/* automatically routes path: "/litters" to "/litters/apply" */}
-            <Route index element={<Navigate to={'/litters/apply'} />} />
+            <Route index element={<Navigate to={'/litters/manage'} />} />
             {/* sets path for litter application page */}
             <Route path="/litters/apply" element={<LitterApplication />} />
             {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
@@ -203,6 +250,12 @@ const App = () => {
             <Route path="/litters/create" element={
               <AdminRoute>
                 <LitterCreationForm />
+              </AdminRoute>
+            } />
+            {/* sets path for litter update page and uses AdminRoute to manage autherisation*/}
+            <Route path="/litters/:id/edit" element={
+              <AdminRoute>
+                <LitterUpdateForm />
               </AdminRoute>
             } />
             {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}

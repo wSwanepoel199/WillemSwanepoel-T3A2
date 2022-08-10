@@ -1,10 +1,10 @@
 import { Box, Container, Grid, Typography, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
-import { customTheme } from "../utils/customPalette";
+import { customTheme } from "../../../utils/customPalette";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { getLitter } from "../services/litterServices";
-import { useGlobalState } from "../utils";
+import { getLitter } from "../../../services/litterServices";
+import { useGlobalState } from "../../../utils";
 
 const LitterDetails = () => {
   const params = useParams();

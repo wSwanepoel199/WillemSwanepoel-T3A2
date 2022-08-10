@@ -82,6 +82,35 @@ export const reducer = (state, action) => {
         dogList: action.data
       };
     }
+    case "mergeLitterWithBreederSireAndBitch": {
+      // merges litter with referanances breeder, sire and bitch ids
+      return {
+        ...state,
+        mergedLitterList: action.data
+      };
+    }
+    case "updateValidBreeders": {
+      // fills list of valid breeders
+      return {
+        ...state,
+        breeders: action.data
+      };
+    }
+    case "updateValidSires": {
+      // fills list of valid sires
+      return {
+        ...state,
+        sires: action.data
+      };
+    }
+    case "updateValidBitches": {
+      // fills list of valid bitches
+      console.log(action.data);
+      return {
+        ...state,
+        bitches: action.data
+      };
+    }
     default: {
       return state;
     }

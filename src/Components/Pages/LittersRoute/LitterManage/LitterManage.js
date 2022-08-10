@@ -1,19 +1,21 @@
 import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useGlobalState, Litter } from "../utils";
-import { getUsers } from "../services/authServices";
+import { useGlobalState, Litter } from "../../../utils";
+import { Link } from "react-router-dom";
 
 const LitterManage = () => {
-  const { store, dispatch } = useGlobalState();
-  const { litterList, userList, dogList } = store;
+  const { store } = useGlobalState();
+  const { mergedLitterList } = store;
 
-  const females = Object.entries(dogList).filter(dog => dog[1].sex = 2);
-  const males = Object.entries(dogList).filter(dog => dog[1].sex = 1);
-  const breeder = Object.entries(userList).filter(user => user[1].breeder = true);
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <>
       <Paper sx={{ display: 'flex' }}>
+        {console.log(mergedLitterList)}
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
           <Typography variant="h5" component="h1">Manage Litters</Typography>
           <TableContainer component={Paper}>
@@ -42,16 +44,18 @@ const LitterManage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.entries(litterList).map((litter, id) =>
-                  <Litter key={id} litter={litter[1]} breeder={breeder} sire={males} bitch={females} />
+                {Object.values(mergedLitterList).map((litter) =>
+                  <Litter key={litter.id} litter={litter} />
                 )}
               </TableBody>
             </Table>
           </TableContainer>
           <Container sx={{ display: "flex", alignContent: "flex-start", p: 2 }}>
-            <Button variant="contained" href="/litters/create">
-              New Litter
-            </Button>
+            <Link to="/litters/create">
+              <Button variant="contained">
+                New Litter
+              </Button>
+            </Link>
           </Container>
         </Container>
       </Paper>

@@ -17,11 +17,12 @@ import Dogs from '../Pages/Dogs';
 import Dog from '../Pages/Dog';
 import DogDetails from '../Pages/DogDetails';
 import NotFound from '../Pages/NotFound';
-import LitterApplication from '../Pages/LitterApplication';
-import LitterCreationForm from '../Pages/LitterCreate';
-import LitterManage from '../Pages/LitterManage';
-import Litter from '../Pages/Litter';
-import LitterDetails from '../Pages/LitterDetails';
+import LitterApplication from '../Pages/LittersRoute/LitterAppllication/LitterApplication';
+import LitterCreationForm from '../Pages/LittersRoute/LitterCreate/LitterCreate';
+import LitterUpdateForm from '../Pages/LittersRoute/LitterUpdate/LitterUpdate';
+import LitterManage from '../Pages/LittersRoute/LitterManage/LitterManage';
+import Litter from '../Pages/LittersRoute/Litter/Litter';
+import LitterDetails from '../Pages/LittersRoute/LitterDetails/LitterDetails';
 import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
 import SignUpRedirect from '../Pages/SignUpRedirect';
@@ -53,6 +54,7 @@ export {
   NotFound,
   LitterApplication,
   LitterCreationForm,
+  LitterUpdateForm,
   LitterManage,
   Litter,
   LitterDetails,
