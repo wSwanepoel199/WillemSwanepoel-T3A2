@@ -3,7 +3,6 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { getUsers } from "../services/authServices";
 import { useGlobalState } from "../utils";
 import { postLitter } from "../services/litterServices";
 
@@ -22,24 +21,10 @@ const LitterCreationForm = () => {
     esize: 1,
   };
 
-  const females = Object.entries(dogList).filter(dog => dog[1].sex == 2);
-  const males = Object.entries(dogList).filter(dog => dog[1].sex == 1);
-  const breeder = Object.entries(userList).filter(user => user[1].breeder = true);
-  const [formValues, setFormValues] = useState(initialFormData);
-
-  useEffect(() => {
-    getUsers()
-      .then(users => {
-        dispatch({
-          type: "setUserList",
-          data: users
-        });
-      })
-      .catch(e => console.log(e));
-    setFormValues({
-      ...formValues
-    });
-  }, []);
+  const females = Object.values(dogList).filter(dog => dog.sex === 2);
+  const males = Object.values(dogList).filter(dog => dog.sex === 1);
+  const breeder = Object.values(userList).filter(user => user.breeder = true);
+  const [formData, setformData] = useState(initialFormData);
 
   const handleDate = (e, name) => {
     console.log(e);
@@ -76,23 +61,23 @@ const LitterCreationForm = () => {
       if (fixedValue > 24) fixedValue = 24;
       if (fixedValue < 1) fixedValue = 1;
 
-      setFormValues({
-        ...formValues,
+      setformData({
+        ...formData,
         [name]: fixedValue,
       });
     } else {
-      setFormValues({
-        ...formValues,
+      setformData({
+        ...formData,
         [name]: value,
       });
     }
-    console.log("form:", formValues);
+    console.log("form:", formData);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
-    postLitter(formValues)
+    postLitter(formData)
       .then((litter) => {
         console.log(litter);
       })
@@ -109,13 +94,15 @@ const LitterCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
+      {console.log(females)}
+      {console.log(males)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
           <Grid item xs={12} sx={{ mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Create Litter Entry</Typography>
           </Grid>
           <Grid item xs={12}>
-            <TextField name="lname" required fullWidth id="lname" label="Litter Name" autoFocus onChange={handleInput} value={formValues.name} />
+            <TextField name="lname" required fullWidth id="lname" label="Litter Name" autoFocus onChange={handleInput} value={formData.name} />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -126,11 +113,11 @@ const LitterCreationForm = () => {
                 required
                 label="breeder_label"
                 onChange={handleInput}
-                value={formValues.breeder_id}
+                value={formData.breeder_id}
               >
                 {breeder.map(breeder => {
                   return (
-                    <MenuItem key={breeder[0]} value={breeder[1].id}>{breeder[1].username}</MenuItem>
+                    <MenuItem key={breeder.id} value={breeder.id}>{breeder.username}</MenuItem>
                   );
                 })}
               </Select>
@@ -146,11 +133,11 @@ const LitterCreationForm = () => {
                 id="bitch_id"
                 label="bitch_label"
                 onChange={handleInput}
-                value={formValues.bitch_id}
+                value={formData.bitch_id}
               >
                 {females.map(dog => {
                   return (
-                    <MenuItem key={dog[0]} value={dog[1].id}>{dog[1].callname}</MenuItem>
+                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
                   );
                 })}
               </Select>
@@ -166,11 +153,11 @@ const LitterCreationForm = () => {
                 id="sire_id"
                 label="sire_label"
                 onChange={handleInput}
-                value={formValues.sire_id}
+                value={formData.sire_id}
               >
                 {males.map(dog => {
                   return (
-                    <MenuItem key={dog[0]} value={dog[1].id}>{dog[1].callname}</MenuItem>
+                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
                   );
                 })}
               </Select>
@@ -189,7 +176,7 @@ const LitterCreationForm = () => {
                 views={['year', 'month', 'day', 'hours', 'minutes']}
                 minTime={moment('0:0', 'HH:mm')}
                 maxTime={moment('23:59', 'HH:mm')}
-                value={formValues.pdate}
+                value={formData.pdate}
                 onChange={(e) => { handleDate(e, "pdate"); }}
                 onAccept={(e) => { handleDate(e, "pdate"); }}
                 renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
@@ -208,7 +195,7 @@ const LitterCreationForm = () => {
                 views={['year', 'month', 'day', 'hours', 'minutes']}
                 minTime={moment('0:0', 'HH:mm')}
                 maxTime={moment('23:59', 'HH:mm')}
-                value={formValues.edate}
+                value={formData.edate}
                 onChange={(e) => { handleDate(e, "edate"); }}
                 onAccept={(e) => { handleDate(e, "edate"); }}
                 renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
@@ -227,7 +214,7 @@ const LitterCreationForm = () => {
                 views={['year', 'month', 'day', 'hours', 'minutes']}
                 minTime={moment('0:0', 'HH:mm')}
                 maxTime={moment('23:59', 'HH:mm')}
-                value={formValues.adate}
+                value={formData.adate}
                 onChange={(e) => { handleDate(e, "adate"); }}
                 renderInput={(params) => <TextField {...params} helperText="dd/mm/yyyy hh:mm(24 hour time)"></TextField>}
               />
@@ -235,7 +222,7 @@ const LitterCreationForm = () => {
           </Grid>
           <Grid item xs={6} sm={3} sx={{ display: "flex", justifyContent: "center" }}>
             <FormControl fullWidth>
-              <TextField name="esize" id="esize-input" label="Expected Litter Size" onChange={handleInput} value={formValues.esize} type="number" />
+              <TextField name="esize" id="esize-input" label="Expected Litter Size" onChange={handleInput} value={formData.esize} type="number" />
               <Slider
                 name="esize"
                 id="esize-slider"
@@ -245,7 +232,7 @@ const LitterCreationForm = () => {
                 getAriaValueText={sliderValue}
                 valueLabelDisplay="auto"
                 onChange={handleInput}
-                value={formValues.esize}
+                value={formData.esize}
               />
             </FormControl>
           </Grid>

@@ -9,12 +9,12 @@ export const StateContext = createContext();
 export const StateProvider = ({ children }) => {
   // sets the inital state of the application
   const initialState = {
-    dogList: {},
-    litterList: {},
+    dogList: JSON.parse(sessionStorage.getItem("dogList")) || {},
+    litterList: JSON.parse(sessionStorage.getItem("litterList")) || {},
     contactFormList: JSON.parse(sessionStorage.getItem("filledContactForms")) || {},
     loggedInUser: JSON.parse(sessionStorage.getItem("user")) || {},
     token: sessionStorage.getItem("token") || null,
-    userList: {},
+    userList: JSON.parse(sessionStorage.getItem("userList")) || null,
   };
 
   // uses reducer to globalise state.

@@ -43,34 +43,40 @@ const App = () => {
   const location = useLocation();
   const { state } = location;
 
-  let timeoutID;
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
-    clearTimeout(timeoutID);
     navigate("."); // <-- redirect to current path w/o state
   };
 
   useEffect(() => {
+    let timer1;
     if (state && state.alert) {
       setOpen(true);
-      timeoutID = setTimeout(() => {
+      timer1 = setTimeout(() => {
         handleClose();
       },
         5000
       );
     }
+    return () => {
+      clearTimeout(timer1);
+    };
   }, [state]);
 
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
-    getDogs()
-      .then(dogs => {
-        dispatch({
-          type: "setDogList",
-          data: dogs
-        });
-      })
-      .catch(e => console.log(e));
+    if (store.dogList) {
+      console.log("there is a doglist");
+      getDogs()
+        .then(dogs => {
+          dispatch({
+            type: "setDogList",
+            data: dogs
+          });
+        })
+        .catch(e => console.log(e));
+    }
+
     getLitters()
       .then(litter => {
         dispatch({
@@ -93,7 +99,7 @@ const App = () => {
     <>
       {console.log("list of dogs:", Object.entries(store.dogList))}
       {/* {console.log("list of litters:", Object.entries(store.litterList))} */}
-      {console.log("logged in user:", store.loggedInUser)}
+      {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}

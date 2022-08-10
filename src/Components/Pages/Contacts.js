@@ -14,7 +14,6 @@ const Contacts = () => {
           type: "setFilledForms",
           data: forms
         });
-        sessionStorage.setItem("filledContactForms", JSON.stringify(forms));
       })
       .catch(e => console.log(e));
   }, []);

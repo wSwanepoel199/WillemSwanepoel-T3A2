@@ -11,6 +11,7 @@ export const reducer = (state, action) => {
     }
     case "setDogList": {
       // updates the dogList value
+      sessionStorage.setItem("dogList", JSON.stringify(action.data));
       return {
         ...state,
         dogList: action.data
@@ -18,18 +19,23 @@ export const reducer = (state, action) => {
     }
     case "setFilledForms": {
       // updates the contactFormList value
+      sessionStorage.setItem("filledContactForms", JSON.stringify(action.data));
       return {
         ...state,
         contactFormList: action.data
       };
     }
     case "setLitterList": {
+      // updates the litterList value
+      sessionStorage.setItem("litterList", JSON.stringify(action.data));
       return {
         ...state,
         litterList: action.data
       };
     }
     case "setUserList": {
+      // updates the userList value
+      sessionStorage.setItem("userList", JSON.stringify(action.data));
       return {
         ...state,
         userList: action.data

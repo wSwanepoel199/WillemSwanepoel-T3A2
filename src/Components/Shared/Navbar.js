@@ -26,10 +26,10 @@ const NavBar = () => {
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/dogs/all" id="all-dogs">All Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/dogs/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/all" href="/dogs/all" id="all-dogs">All Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/males" href="/dogs/males" id="male-dogs">Male Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/females" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/retired" href="/dogs/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
           </NavDropdown>
           <NavDropdown
             title="Litters"
