@@ -18,23 +18,19 @@ const AdminRoute = ({ children }) => {
     }
   }, []);
 
-  if (admin) {
-    return (
-      <>
-        {admin ?
-          <>
-            {children}
-          </>
-          :
-          <>
+  return (
+    <>
+      {admin ?
+        <>
+          {children}
+        </>
+        :
+        <>
 
-          </>
-        }
-      </>
-    );
-  } else {
-    return <></>;
-  }
+        </>
+      }
+    </>
+  );
 };
 
 const SecuredRoute = ({ children }) => {

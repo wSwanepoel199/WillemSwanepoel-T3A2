@@ -39,10 +39,6 @@ const LitterCreationForm = () => {
     handleInput(newDate);
   };
 
-  const consoleLog = (e, id) => {
-    console.log("Event:", e, "ID", id);
-  };
-
   const sliderValue = (value) => {
     return `${value} puppies`;
   };

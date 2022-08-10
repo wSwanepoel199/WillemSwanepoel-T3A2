@@ -8,7 +8,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { StateProvider } from './Components/utils';
-import App from './Components/App';
+import App from './Components/App/App';
 
 const root = createRoot(document.getElementById('root'));
 root.render(

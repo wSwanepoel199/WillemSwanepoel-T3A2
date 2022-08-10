@@ -14,7 +14,7 @@ export const StateProvider = ({ children }) => {
     contactFormList: JSON.parse(sessionStorage.getItem("filledContactForms")) || {},
     loggedInUser: JSON.parse(sessionStorage.getItem("user")) || {},
     token: sessionStorage.getItem("token") || null,
-    userList: JSON.parse(sessionStorage.getItem("userList")) || null,
+    userList: JSON.parse(sessionStorage.getItem("userList")) || {},
   };
 
   // uses reducer to globalise state.

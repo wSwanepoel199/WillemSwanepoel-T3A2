@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
@@ -32,9 +32,17 @@ import {
 import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
-import { Alert, AlertTitle, IconButton, Collapse } from '@mui/material';
+import { Alert, AlertTitle, IconButton, Collapse, Container, Box } from '@mui/material';
+import { positions } from '@mui/system';
 import CloseIcon from '@mui/icons-material/Close';
 
+// TO-DO Sprint 5
+// US 1.11: impliment ability to add puppies to litter creation as to start the pedigree chain
+// US 2.6 add ability for litter application to add pets and children
+// US 1.12 1.21 add ability for admin to assign born puppies to specific litter applications
+
+// to look at, display litters on a clander
+// MISC GET DONE block non signed in users from accessing litter application
 
 
 const App = () => {
@@ -43,8 +51,8 @@ const App = () => {
   const location = useLocation();
   const { state } = location;
 
-  const [open, setOpen] = React.useState(false);
-  const handleClose = () => {
+  const [open, setOpen] = useState(false);
+  const handleEnd = () => {
     navigate("."); // <-- redirect to current path w/o state
   };
 
@@ -53,7 +61,7 @@ const App = () => {
     if (state && state.alert) {
       setOpen(true);
       timer1 = setTimeout(() => {
-        handleClose();
+        setOpen(false);
       },
         5000
       );
@@ -66,7 +74,6 @@ const App = () => {
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
     if (store.dogList) {
-      console.log("there is a doglist");
       getDogs()
         .then(dogs => {
           dispatch({
@@ -76,23 +83,26 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-
-    getLitters()
-      .then(litter => {
-        dispatch({
-          type: "setLitterList",
-          data: litter
-        });
-      })
-      .catch(e => console.log(e));
-    getUsers()
-      .then(users => {
-        dispatch({
-          type: "setUserList",
-          data: users
-        });
-      })
-      .catch(e => console.log(e));
+    if (store.litterList) {
+      getLitters()
+        .then(litter => {
+          dispatch({
+            type: "setLitterList",
+            data: litter
+          });
+        })
+        .catch(e => console.log(e));
+    }
+    if (store.userList) {
+      getUsers()
+        .then(users => {
+          dispatch({
+            type: "setUserList",
+            data: users
+          });
+        })
+        .catch(e => console.log(e));
+    }
   }, []);
 
   return (
@@ -103,37 +113,42 @@ const App = () => {
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
-      {console.log(location)}
-      {state && state.alert ?
-        <Collapse in={open}>
-          <Alert
-            severity={state.severity}
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  handleClose();
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-            sx={{ mb: 2 }}
-          >
-            <AlertTitle>
-              {state.title}
-            </AlertTitle>
-            {state.body}
-          </Alert>
-        </Collapse>
-        :
-        null}
       {/* renders the header which contains the Myshalair logo*/}
       <Header data-testid="header" />
       {/* renders navbar, which is the main form of navigation */}
       <NavBar />
+      {/* renders an alert with customisable fields depending on requirement */}
+      {state && state.alert ?
+        <Box sx={{ width: '100%' }}>
+          <Collapse
+            in={open}
+            onExited={() => { handleEnd(); }}
+          >
+            <Alert
+              severity={state.severity}
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => { setOpen(false); }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+              sx={{
+                mb: 2,
+              }}
+            >
+              <AlertTitle>
+                {state.title}
+              </AlertTitle>
+              {state.body}
+            </Alert>
+          </Collapse>
+        </Box>
+        :
+        null}
       <StyledContainer>
         {/* specifies the routes, the path and its associated element, the router has access to */}
         <Routes>
