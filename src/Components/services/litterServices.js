@@ -1,4 +1,4 @@
-import { backEndAPI } from "../utils";
+import { backEndAPI } from "../utils/componentIndex";
 
 export async function getLitters() {
   const response = await backEndAPI.get('/litters');
@@ -18,7 +18,7 @@ export async function getLitter(data) {
 }
 
 export async function postApplication(data) {
-  console.log(JSON.stringify(data));
-  const response = await backEndAPI.get('/litter_applications', data);
+  console.log(data);
+  const response = await backEndAPI.post('/lazy_litter_application_create', data);
   return response.data;
 }

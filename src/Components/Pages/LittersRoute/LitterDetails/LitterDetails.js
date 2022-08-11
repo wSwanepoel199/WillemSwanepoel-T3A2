@@ -4,7 +4,7 @@ import { customTheme } from "../../../utils/customPalette";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getLitter } from "../../../services/litterServices";
-import { useGlobalState } from "../../../utils";
+import { useGlobalState } from "../../../utils/componentIndex";
 
 const LitterDetails = () => {
   const params = useParams();

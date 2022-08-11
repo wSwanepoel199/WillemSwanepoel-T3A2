@@ -49,6 +49,13 @@ export const reducer = (state, action) => {
         loggedInUser: action.data
       };
     }
+    case "signOutUser": {
+      return {
+        ...state,
+        loggedInUser: action.data,
+        token: action.data
+      };
+    }
     case "setToken": {
       //updates the token value
       return {

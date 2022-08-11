@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGlobalState } from "../utils";
+import { useGlobalState } from "../utils/componentIndex";
 import { Container, Form, InputGroup, Dropdown, DropdownButton } from "react-bootstrap";
 import { StyledFormContainer, StyledFormGroup, StyledSubmitButton } from "../Shared/styles/ContactForm.styled";
 import { Box, Paper, Grid, Typography, InputLabel, TextField, FormControl, MenuItem, Select, TextareaAutosize, Button } from "@mui/material";

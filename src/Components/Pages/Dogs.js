@@ -1,5 +1,5 @@
-import { useGlobalState } from "../utils";
-import { Dog } from "../utils";
+import { useGlobalState } from "../utils/componentIndex";
+import { Dog } from "../utils/componentIndex";
 import { SortableItem } from './SortableItem';
 import { Container, Grid, Typography } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
@@ -21,6 +21,10 @@ import {
 } from '@dnd-kit/sortable';
 import { getDogs, pushNewPositions } from "../services/dogsServices";
 import { useLocation } from "react-router";
+
+// known issues; patching to often, patching with to much data(not sure if avoidable)
+// honestly whole page needs rework
+// https://overreacted.io/how-are-function-components-different-from-classes/ worth using either class or implimented another use of useRef for dogs
 
 const Dogs = (params) => {
   // initalises store from global state
@@ -104,6 +108,7 @@ const Dogs = (params) => {
     if (updatedPositions !== []) {
       pushNewPositions(updatedPositions)
         .then(reply => {
+          console.log(reply);
         })
         .catch(e => console.log(e));
     }

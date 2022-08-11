@@ -1,5 +1,5 @@
 import { Navbar, NavDropdown, Container, Nav } from "react-bootstrap";
-import { SignOut, useGlobalState } from "../utils";
+import { useGlobalState } from "../utils/componentIndex";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
@@ -8,10 +8,11 @@ const NavBar = () => {
 
   const handleSignOut = () => {
     dispatch({
-      type: "clearState",
-      data: init
+      type: "signOutUser",
+      data: {}
     });
-    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem('user');
   };
 
   const handleSelect = (e) => {
@@ -21,8 +22,10 @@ const NavBar = () => {
   const NavBody = () => {
     return (
       <>
-        <Nav className="justify-content-start flex-grow-1 pe-3">
-          <NavLink className="nav-link" to="/">Home</NavLink>
+        <Nav
+          className="justify-content-start flex-grow-1 pe-3"
+        >
+          <Nav.Link className="nav-link" eventKey="/">Home</Nav.Link>
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
@@ -38,7 +41,7 @@ const NavBar = () => {
             <NavDropdown.Item eventKey="litter-schedule">Litter Schedule</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
-          <NavLink className="nav-link" to="/shows">Shows</NavLink>
+          <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
           <NavDropdown
             title="Our Company"
             id={`offcanvasNavbarDropdown-expand-md`}>
@@ -77,7 +80,7 @@ const NavBar = () => {
             </Nav>
             :
             <Nav>
-              <NavLink className="nav-link" to="/signIn">Sign In</NavLink>
+              <Nav.Link className="nav-link" eventKey="/signIn">Sign In</Nav.Link>
             </Nav>
         }
       </>
@@ -86,13 +89,14 @@ const NavBar = () => {
 
   return (
     <>
-      <Navbar key='md' bg="light" expand='md' className="mb=3" onSelect={handleSelect}>
+      <Navbar key='md' bg="light" expand='md' className="mb=3" onSelect={handleSelect} collapseOnSelect>
         <Container fluid>
-          <NavLink className="navbar-brand" to="/">Myshalair</NavLink>
+          <Nav.Link className="navbar-brand" eventKey="/">Myshalair</Nav.Link>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
           <Navbar.Collapse
             id={`offcanvasNavbar-expand-md`}
-            aria-labelledby={`offcanvasNavbar-expand-md`}>
+            aria-labelledby={`offcanvasNavbar-expand-md`}
+          >
             <NavBody />
           </Navbar.Collapse>
         </Container>

@@ -1,16 +1,11 @@
 import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useGlobalState, Litter } from "../../../utils";
+import { useGlobalState, Litter } from "../../../utils/componentIndex";
 import { Link } from "react-router-dom";
 
 const LitterManage = () => {
   const { store } = useGlobalState();
   const { mergedLitterList } = store;
-
-
-  useEffect(() => {
-
-  }, []);
 
   return (
     <>

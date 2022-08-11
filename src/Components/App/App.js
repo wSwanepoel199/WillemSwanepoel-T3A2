@@ -28,7 +28,7 @@ import {
   SignUpRedirect,
   NotFound,
   useGlobalState,
-} from '../utils/index';
+} from '../utils/componentIndex';
 // A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
 import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
@@ -112,10 +112,9 @@ const App = () => {
     updateValidBreeders();
     updateValidSires();
     updateValidBitches();
-  }, userList, litterList, dogList);
+  }, [userList, litterList, dogList]);
 
   const updateLitters = () => {
-    console.log(userList);
     dispatch({
       type: "mergeLitterWithBreederSireAndBitch",
       data: Object.values(litterList).map((litter) => {
@@ -160,13 +159,9 @@ const App = () => {
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
-      {/* renders the header which contains the Myshalair logo*/}
-      <Header data-testid="header" />
-      {/* renders navbar, which is the main form of navigation */}
-      <NavBar />
       {/* renders an alert with customisable fields depending on requirement */}
       {state && state.alert ?
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', position: 'absolute', zIndex: '2' }}>
           <Collapse
             in={open}
             onExited={() => { handleEnd(); }}
@@ -196,6 +191,11 @@ const App = () => {
         </Box>
         :
         null}
+      {/* renders the header which contains the Myshalair logo*/}
+      <Header data-testid="header" />
+      {/* renders navbar, which is the main form of navigation */}
+      <NavBar />
+
       <StyledContainer>
         {/* specifies the routes, the path and its associated element, the router has access to */}
         <Routes>

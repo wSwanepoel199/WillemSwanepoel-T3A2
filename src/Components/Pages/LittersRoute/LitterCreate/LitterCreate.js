@@ -3,7 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { useGlobalState } from "../../../utils";
+import { useGlobalState } from "../../../utils/componentIndex";
 import { postLitter } from "../../../services/litterServices";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";

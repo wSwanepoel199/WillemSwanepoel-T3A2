@@ -3,7 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useGlobalState } from "../../../utils";
+import { useGlobalState } from "../../../utils/componentIndex";
 import { getLitter } from "../../../services/litterServices";
 
 const LitterUpdateForm = () => {
@@ -28,7 +28,6 @@ const LitterUpdateForm = () => {
 
 
   useEffect(() => {
-    console.log(params);
     getLitter(params.id)
       .then(litter => {
         console.log("litter", litter);
@@ -86,6 +85,8 @@ const LitterUpdateForm = () => {
     console.log(e);
 
   };
+
+  // introduce puppy creation
 
   return (
     <>

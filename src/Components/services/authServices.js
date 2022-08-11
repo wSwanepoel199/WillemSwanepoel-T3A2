@@ -1,4 +1,4 @@
-import { backEndAPI } from "../utils";
+import { backEndAPI } from "../utils/componentIndex";
 
 export async function signUp(data) {
   const response = await backEndAPI.post('/users', data);

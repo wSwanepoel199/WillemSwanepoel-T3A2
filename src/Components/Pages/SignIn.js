@@ -3,7 +3,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useGlobalState } from "../utils";
+import { useGlobalState } from "../utils/componentIndex";
 import { signIn } from "../services/authServices";
 
 const SignInForm = () => {

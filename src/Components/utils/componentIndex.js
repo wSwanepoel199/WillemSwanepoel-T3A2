@@ -26,7 +26,6 @@ import LitterDetails from '../Pages/LittersRoute/LitterDetails/LitterDetails';
 import SignInForm from '../Pages/SignIn';
 import SignUpForm from '../Pages/SignUp';
 import SignUpRedirect from '../Pages/SignUpRedirect';
-import SignOut from '../Pages/SignOut';
 // API
 import backEndAPI from './api';
 
@@ -61,17 +60,6 @@ export {
   SignInForm,
   SignUpForm,
   SignUpRedirect,
-  SignOut,
-  // helpers
-  reorder,
   // api
   backEndAPI,
-};
-
-const reorder = (item, startIndex, endIndex) => {
-  const result = Array.from(item);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
 };

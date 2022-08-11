@@ -1,4 +1,4 @@
-import { backEndAPI } from "../utils";
+import { backEndAPI } from "../utils/componentIndex";
 
 export async function getDogs() {
   const response = await backEndAPI.get('/dogs');

@@ -1,5 +1,5 @@
-import { useGlobalState } from "../utils";
-import { Contact } from "../utils";
+import { useGlobalState } from "../utils/componentIndex";
+import { Contact } from "../utils/componentIndex";
 import { Container, Grid } from "@mui/material";
 import { useEffect } from "react";
 import { getForms } from '../services/contactServices';

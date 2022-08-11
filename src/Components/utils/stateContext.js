@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
-import { reducer, init } from './index';
+import { reducer, init } from './componentIndex';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
