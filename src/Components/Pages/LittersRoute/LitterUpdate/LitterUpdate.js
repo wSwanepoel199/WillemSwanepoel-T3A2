@@ -1,4 +1,5 @@
-import { Box, Paper, Grid, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Slider, Container } from "@mui/material";
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2/";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -21,16 +22,34 @@ const LitterUpdateForm = () => {
     adate: '',
     pdate: '',
     esize: 1,
+    asize: '',
+    puppies: []
   };
-
-
-  const [formData, setformData] = useState(initialFormData);
+  const initialPuppyData = {
+    realname: '',
+    callname: '',
+    sex: '',
+  };
+  const [formData, setFormData] = useState(initialFormData);
+  const [puppyData, setPuppyData] = useState();
+  const [open, setOpen] = useState(false);
 
 
   useEffect(() => {
     getLitter(params.id)
       .then(litter => {
         console.log("litter", litter);
+        setFormData({
+          lname: litter.lname,
+          breeder_id: litter.breeder_id,
+          bitch_id: litter.bitch_id,
+          sire_id: litter.sire_id,
+          edate: litter.edate,
+          adate: litter.adate,
+          pdate: litter.pdate,
+          esize: 8,
+          puppies: [...litter.puppies],
+        });
       })
       .catch(e => console.log(e));
   }, []);
@@ -56,7 +75,7 @@ const LitterUpdateForm = () => {
   const handleInput = (e) => {
     const { name, value } = e.target;
     console.log(name, ":", value);
-    if (name === "esize") {
+    if (name === "esize" || name === 'asize') {
       let fixedValue = 1;
       if (Boolean(parseInt(e.target.value))) {
         fixedValue = parseInt(e.target.value);
@@ -67,12 +86,12 @@ const LitterUpdateForm = () => {
       if (fixedValue > 24) fixedValue = 24;
       if (fixedValue < 1) fixedValue = 1;
 
-      setformData({
+      setFormData({
         ...formData,
         [name]: fixedValue,
       });
     } else {
-      setformData({
+      setFormData({
         ...formData,
         [name]: value,
       });
@@ -94,16 +113,22 @@ const LitterUpdateForm = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        maxWidth: "md",
+        ml: 'auto',
+        mr: 'auto',
       }}>
+        {console.log(formData)}
         <Paper sx={{ padding: 4 }}>
-          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
-            <Grid item xs={12} sx={{ mb: 3 }}>
-              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Update { }</Typography>
+          <Grid container spacing={2} sx={{ justifyContent: 'space-around' }}>
+            <Grid xs={12} sx={{ mb: 3 }}>
+              <Typography variant="h4" component="h1" sx={{ textAlign: "center" }}>Update { }</Typography>
             </Grid>
-            <Grid item xs={12}>
-              <TextField name="lname" required fullWidth id="lname" label="Litter Name" autoFocus onChange={handleInput} value={formData.name} />
+            <Grid xs={12}>
+              <FormControl fullWidth >
+                <TextField name="lname" required id="lname-input" label="Litter Name" onChange={handleInput} value={formData.lname} />
+              </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="breeder_label">Select Breeder</InputLabel>
                 <Select
@@ -122,7 +147,7 @@ const LitterUpdateForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel id="bitch_label">Select Bitch</InputLabel>
                 <Select
@@ -142,7 +167,7 @@ const LitterUpdateForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel id="sire_label">Select Sire</InputLabel>
                 <Select
@@ -162,7 +187,7 @@ const LitterUpdateForm = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <FormControl fullWidth>
                 <DatePicker
                   name="pdate"
@@ -180,7 +205,7 @@ const LitterUpdateForm = () => {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <DatePicker
                   name="edate"
@@ -197,7 +222,7 @@ const LitterUpdateForm = () => {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <DatePicker
                   name="adate"
@@ -213,23 +238,95 @@ const LitterUpdateForm = () => {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={6} sm={3} sx={{ display: "flex", justifyContent: "center" }}>
-              <FormControl fullWidth>
-                <TextField name="esize" id="esize-input" label="Expected Litter Size" onChange={handleInput} value={formData.esize} type="number" />
-                <Slider
-                  name="esize"
-                  id="esize-slider"
-                  label="esize-label"
-                  min={1}
-                  max={24}
-                  getAriaValueText={sliderValue}
-                  valueLabelDisplay="auto"
-                  onChange={handleInput}
-                  value={formData.esize}
-                />
+            <Grid xs={12} sm={5} >
+              <FormControl fullWidth sx={{ display: "flex", alignItems: "center" }} >
+                <TextField name="esize" id="esize-input" label="Expected Litter Size" onChange={handleInput} value={formData.esize} type="text" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12} sm={5}>
+              <FormControl fullWidth sx={{ display: "flex", alignItems: 'center' }}>
+                <TextField name="asize" id="asize-input" label="Actual Litter Size" onChange={handleInput} value={formData.asize}
+                  type="text" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
+              </FormControl>
+            </Grid>
+            <Grid xs={12} sx={{ display: "flex", justifyContent: 'center' }}>
+              <Typography variant="h6">Add/Manage Puppies</Typography>
+            </Grid>
+
+            <Grid xs={12} sm={4} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl>
+                <TextField name="pets_age" id="pets_age_id" label="Age" type="number" onChange={handleInput} value={formData.pets_age} />
+              </FormControl>
+            </Grid>
+            <Grid xs={12} sm={4} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl>
+                <TextField name="pets_type" id="pets_type_id" label="Type of Pet" onChange={handleInput} value={formData.pets_type} />
+              </FormControl>
+            </Grid>
+            <Grid xs={12} sm={4} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl>
+                <TextField name="pets_breed" id="pets_breed_id" label="Breed of Pet" onChange={handleInput} value={formData.pets_breed} />
+              </FormControl>
+            </Grid>
+            <Grid xs={12}>
+              <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+                <Button variant="outlined" name="add_pet" onClick={() => setOpen(!open)}>
+                  Manage Puppies
+                </Button>
+              </Box>
+            </Grid>
+            <Dialog
+              open={open}
+              onClose={() => setOpen(!open)}
+            >
+              <DialogTitle>Manage Puppies</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Add or remove puppies from litter.
+                </DialogContentText>
+                <TextField id="test ID" />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpen(!open)}>Cancel</Button>
+                <Button onClick={() => setOpen(!open)}>Do Nothing</Button>
+              </DialogActions>
+            </Dialog>
+            <Grid xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+              <Grid xs={12}>
+                <TableContainer component={Paper}>
+                  <Table size='small' >
+                    <TableHead >
+                      <TableRow>
+                        <TableCell align="center">
+                          <TableSortLabel>Name</TableSortLabel>
+                        </TableCell>
+                        <TableCell align="center">Intended Call name</TableCell>
+                        <TableCell align="center">Sex</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {formData.puppies.map((dog) => (
+                        <TableRow key={dog.id}>
+                          <TableCell align="center">
+                            {dog.realname}
+                          </TableCell>
+                          <TableCell align="center">
+                            {dog.callname}
+                          </TableCell>
+                          {dog.sex === 2 ?
+                            <TableCell align="center">female</TableCell>
+                            :
+                            <TableCell align="center">male</TableCell>
+                          }
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid>
+
+            <Grid xs={12}>
               <Container>
                 <Button variant="contained" type='submit'>
                   Create Litter
@@ -249,3 +346,27 @@ const LitterUpdateForm = () => {
 };
 
 export default LitterUpdateForm;
+
+
+const PuppyDialog = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog
+      open={open}
+      onClose={() => setOpen(!open)}
+    >
+      <DialogTitle>Manage Puppies</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Add or remove puppies from litter.
+        </DialogContentText>
+        <TextField id="test ID" />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(!open)}>Cancel</Button>
+        <Button onClick={() => setOpen(!open)}>Do Nothing</Button>
+      </DialogActions>
+    </Dialog>
+  );
+};

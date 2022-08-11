@@ -25,7 +25,7 @@ const LitterCreationForm = () => {
   };
 
 
-  const [formData, setformData] = useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData);
 
 
   const handleDate = (e, name) => {
@@ -59,12 +59,12 @@ const LitterCreationForm = () => {
       if (fixedValue > 24) fixedValue = 24;
       if (fixedValue < 1) fixedValue = 1;
 
-      setformData({
+      setFormData({
         ...formData,
         [name]: fixedValue,
       });
     } else {
-      setformData({
+      setFormData({
         ...formData,
         [name]: value,
       });
@@ -84,7 +84,7 @@ const LitterCreationForm = () => {
         alert(e.response.data.message);
       });
 
-    setformData(initialFormData);
+    setFormData(initialFormData);
     navigate('/litters/manage');
 
   };
