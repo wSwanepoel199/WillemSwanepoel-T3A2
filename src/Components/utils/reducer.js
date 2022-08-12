@@ -12,6 +12,7 @@ export const reducer = (state, action) => {
     case "setDogList": {
       // updates the dogList value
       sessionStorage.setItem("dogList", JSON.stringify(action.data));
+      console.log(action.data);
       return {
         ...state,
         dogList: action.data
@@ -83,7 +84,9 @@ export const reducer = (state, action) => {
         contactForm: action.data
       };
     }
+    // updates dogList by assigning new list
     case "updateDogList": {
+      sessionStorage.setItem("dogList", JSON.stringify(action.data));
       return {
         ...state,
         dogList: action.data

@@ -6,6 +6,7 @@ import { StateProvider, useGlobalState } from './stateContext';
 import Header from '../Shared/Header';
 import NavBar from '../Shared/Navbar';
 import Footer from '../Shared/Footer';
+import AlertComponent from '../Shared/Alert/GeneralAlert';
 // Import Pages Components
 import Home from '../Pages/Home';
 import About from '../Pages/About';
@@ -40,6 +41,7 @@ export {
   Header,
   NavBar,
   Footer,
+  AlertComponent,
   // Pages
   Home,
   About,

@@ -17,6 +17,16 @@ export async function getLitter(data) {
   return response.data;
 }
 
+export async function postNewPuppies(data) {
+  const response = await backEndAPI.post('/add_puppies', data);
+  return response.data;
+}
+
+export async function patchLitter(id, data) {
+  const response = await backEndAPI.patch(`/litters/${id}`, data);
+  return response.data;
+}
+
 export async function postApplication(data) {
   console.log(data);
   const response = await backEndAPI.post('/lazy_litter_application_create', data);

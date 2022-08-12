@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
@@ -10,6 +10,7 @@ import {
   Header,
   NavBar,
   Footer,
+  AlertComponent,
   // pages
   Home,
   About,
@@ -44,6 +45,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // to look at, display litters on a clander
 // MISC GET DONE block non signed in users from accessing litter application
+// Impliment allerts for successful login/logout
 
 
 const App = () => {
@@ -75,7 +77,7 @@ const App = () => {
 
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
-    if (dogList) {
+    if (sessionStorage.getItem("dogList") === null) {
       getDogs()
         .then(dogs => {
           dispatch({
@@ -85,7 +87,7 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (litterList) {
+    if (sessionStorage.getItem("litterList") === null) {
       getLitters()
         .then(litter => {
           dispatch({
@@ -95,7 +97,7 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (userList) {
+    if (sessionStorage.getItem("userList") === null) {
       getUsers()
         .then(users => {
           dispatch({
@@ -115,6 +117,9 @@ const App = () => {
   }, [userList, litterList, dogList]);
 
   const updateLitters = () => {
+    console.log(litterList);
+    console.log(userList);
+    console.log(dogList);
     dispatch({
       type: "mergeLitterWithBreederSireAndBitch",
       data: Object.values(litterList).map((litter) => {
@@ -153,7 +158,7 @@ const App = () => {
   return (
     <>
       {console.log("store:", store)}
-      {console.log("list of dogs:", Object.entries(store.dogList))}
+      {console.log("list of dogs:", Object.values(store.dogList))}
       {console.log("list of litters:", Object.entries(store.litterList))}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
@@ -161,7 +166,8 @@ const App = () => {
       {/* {console.log("user list:", store.userList)} */}
       {/* renders an alert with customisable fields depending on requirement */}
       {state && state.alert ?
-        <Box sx={{ width: '100%', position: 'absolute', zIndex: '2' }}>
+        <>
+          {/* <Box sx={{ width: '100%', position: 'absolute', zIndex: '2' }}>
           <Collapse
             in={open}
             onExited={() => { handleEnd(); }}
@@ -188,7 +194,9 @@ const App = () => {
               {state.body}
             </Alert>
           </Collapse>
-        </Box>
+        </Box> */}
+          <AlertComponent severity={state.severity} title={state.title} body={state.body} />
+        </>
         :
         null}
       {/* renders the header which contains the Myshalair logo*/}
@@ -240,7 +248,10 @@ const App = () => {
             {/* automatically routes path: "/litters" to "/litters/apply" */}
             <Route index element={<Navigate to={'/litters/manage'} />} />
             {/* sets path for litter application page */}
-            <Route path="/litters/apply" element={<LitterApplication />} />
+            <Route path="/litters/apply" element={
+              <SecuredRoute>
+                <LitterApplication />
+              </SecuredRoute>} />
             {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
             <Route path="/litters/manage" element={
               <AdminRoute>
