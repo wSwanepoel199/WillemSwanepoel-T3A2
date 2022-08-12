@@ -28,15 +28,14 @@ import {
   SignUpForm,
   SignUpRedirect,
   NotFound,
+  // state
   useGlobalState,
+  DisplayLitterApps,
 } from '../utils/componentIndex';
 // A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
 import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
-import { Alert, AlertTitle, IconButton, Collapse, Container, Box } from '@mui/material';
-import { positions } from '@mui/system';
-import CloseIcon from '@mui/icons-material/Close';
 
 // TO-DO Sprint 5
 // US 1.11: impliment ability to add puppies to litter creation as to start the pedigree chain
@@ -51,29 +50,8 @@ import CloseIcon from '@mui/icons-material/Close';
 const App = () => {
   const { store, dispatch } = useGlobalState();
   const { dogList, litterList, userList } = store;
-  const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
-
-  const [open, setOpen] = useState(false);
-  const handleEnd = () => {
-    navigate("."); // <-- redirect to current path w/o state
-  };
-
-  useEffect(() => {
-    let timer1;
-    if (state && state.alert) {
-      setOpen(true);
-      timer1 = setTimeout(() => {
-        setOpen(false);
-      },
-        5000
-      );
-    }
-    return () => {
-      clearTimeout(timer1);
-    };
-  }, [state]);
 
   // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
   useEffect(() => {
@@ -164,39 +142,10 @@ const App = () => {
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
+
       {/* renders an alert with customisable fields depending on requirement */}
       {state && state.alert ?
-        <>
-          {/* <Box sx={{ width: '100%', position: 'absolute', zIndex: '2' }}>
-          <Collapse
-            in={open}
-            onExited={() => { handleEnd(); }}
-          >
-            <Alert
-              severity={state.severity}
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => { setOpen(false); }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              sx={{
-                mb: 2,
-              }}
-            >
-              <AlertTitle>
-                {state.title}
-              </AlertTitle>
-              {state.body}
-            </Alert>
-          </Collapse>
-        </Box> */}
-          <AlertComponent severity={state.severity} title={state.title} body={state.body} />
-        </>
+        <AlertComponent severity={state.severity} title={state.title} body={state.body} />
         :
         null}
       {/* renders the header which contains the Myshalair logo*/}
@@ -218,13 +167,13 @@ const App = () => {
             {/* allows the mapped paths to be used to route the same element */}
             {['all', 'males', 'females', 'retired'].map((path, index) => {
               return (
-                <Route path={`/dogs/${path}`} element={
+                <Route path={`${path}`} element={
                   <Dogs id={path} />
                 } key={index} />
               );
             })}
             {/* sets the path for a selected dog using a non absolute path. in this case the router will accept any into as :id */}
-            <Route path="/dogs/chosen/:id" element={<DogDetails />} />
+            <Route path="chosen/:id" element={<DogDetails />} />
           </Route>
           {/* sets base path for contacts*/}
           <Route path="/contacts">
@@ -241,30 +190,35 @@ const App = () => {
               </AdminRoute>
             } />
             {/* sets path for contact form element */}
-            <Route path="/contacts/form" element={<ContactForm />} />
+            <Route path="form" element={<ContactForm />} />
           </Route>
           {/* sets default path for litters */}
           <Route path="/litters" >
             {/* automatically routes path: "/litters" to "/litters/apply" */}
             <Route index element={<Navigate to={'/litters/manage'} />} />
             {/* sets path for litter application page */}
-            <Route path="/litters/apply" element={
+            <Route path="apply" element={
               <SecuredRoute>
                 <LitterApplication />
               </SecuredRoute>} />
+            <Route path="applications" element={
+              <AdminRoute>
+                <DisplayLitterApps />
+              </AdminRoute>
+            } />
             {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
-            <Route path="/litters/manage" element={
+            <Route path="manage" element={
               <AdminRoute>
                 <LitterManage />
               </AdminRoute>} />
             {/* sets path for litter creation page and uses AdminRoute to manage autherisation*/}
-            <Route path="/litters/create" element={
+            <Route path="create" element={
               <AdminRoute>
                 <LitterCreationForm />
               </AdminRoute>
             } />
             {/* sets path for litter update page and uses AdminRoute to manage autherisation*/}
-            <Route path="/litters/:id/edit" element={
+            <Route path=":id/edit" element={
               <AdminRoute>
                 <LitterUpdateForm />
               </AdminRoute>
@@ -279,7 +233,7 @@ const App = () => {
           <Route path="/signIn" element={<SignInForm />}></Route>
           <Route path="/signUp" >
             <Route index element={<SignUpForm />} />
-            <Route path="/signUp/confirmation" element={<SignUpRedirect />} />
+            <Route path="confirmation" element={<SignUpRedirect />} />
           </Route>
           {/* sets path to render 404 page when attempting to access a route that does not exist */}
           <Route path="*" element={<NotFound />} />

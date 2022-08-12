@@ -19,6 +19,7 @@ export const StateProvider = ({ children }) => {
     breeders: {},
     sires: {},
     bitches: {},
+    applicationForms: {},
   };
 
   // uses reducer to globalise state.

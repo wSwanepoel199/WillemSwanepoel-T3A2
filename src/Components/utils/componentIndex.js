@@ -18,7 +18,9 @@ import Dogs from '../Pages/Dogs';
 import Dog from '../Pages/Dog';
 import DogDetails from '../Pages/DogDetails';
 import NotFound from '../Pages/NotFound';
-import LitterApplication from '../Pages/LittersRoute/LitterAppllication/LitterApplication';
+import LitterApplication from '../Pages/LittersRoute/LitterAppllicationForm/LitterApplicationForm';
+import DisplayLitterApps from '../Pages/LittersRoute/LitterApplications.js/LitterApplications';
+import Application from '../Pages/LittersRoute/Application/Application';
 import LitterCreationForm from '../Pages/LittersRoute/LitterCreate/LitterCreate';
 import LitterUpdateForm from '../Pages/LittersRoute/LitterUpdate/LitterUpdate';
 import LitterManage from '../Pages/LittersRoute/LitterManage/LitterManage';
@@ -54,6 +56,8 @@ export {
   DogDetails,
   NotFound,
   LitterApplication,
+  DisplayLitterApps,
+  Application,
   LitterCreationForm,
   LitterUpdateForm,
   LitterManage,

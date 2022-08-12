@@ -32,3 +32,8 @@ export async function postApplication(data) {
   const response = await backEndAPI.post('/lazy_litter_application_create', data);
   return response.data;
 }
+
+export async function getLitterApps() {
+  const response = await backEndAPI.get('/litter_applications');
+  return response.data;
+}

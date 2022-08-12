@@ -143,10 +143,10 @@ const LitterApplication = () => {
     postApplication(appForm)
       .then(application => {
         console.log(application);
-        dispatch({
-          type: "setApplicationForms",
-          data: application
-        });
+        // dispatch({
+        //   type: "setApplicationForms",
+        //   data: application
+        // });
       })
       .catch(e => {
         console.log(e.response);
