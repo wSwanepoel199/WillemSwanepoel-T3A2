@@ -9,7 +9,7 @@ export async function postLitter(data) {
   console.log(JSON.stringify(data));
   const response = await backEndAPI.post('/litters', data);
   console.log(response);
-  return response.data;
+  return response;
 }
 
 export async function getLitter(id) {

@@ -53,7 +53,7 @@ const NavBar = () => {
               <NavDropdown
                 title="Admin Panel"
                 id={`offcanvasNavbarDropdown-expand-md`}>
-                <NavDropdown.Item eventKey="/contacts/form" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>

@@ -1,7 +1,7 @@
 import { Box, Paper, Grid, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogContentText, IconButton, TableContainer } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState } from "../../../utils/componentIndex";
 
@@ -22,6 +22,7 @@ const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();
   const { litterList, loggedInUser } = store;
   const navigate = useNavigate();
+  const location = useLocation();
 
   const initialformData = {
     litter_id: '',
@@ -44,7 +45,10 @@ const LitterApplicationForm = () => {
   useEffect(() => {
     setFormData({
       ...formData,
-      user_id: loggedInUser.id
+      user_id: loggedInUser.id,
+      litterList: litterList.filter(litter => {
+        return litter.breeder_id !== loggedInUser.id && litter.national !== true;
+      })
     });
 
   }, []);
@@ -108,7 +112,6 @@ const LitterApplicationForm = () => {
   const handleHaveChildren = (e) => {
     const { value } = e.target;
     setChildren(value);
-    // initialLitterPost();
 
   };
 
@@ -145,18 +148,17 @@ const LitterApplicationForm = () => {
     };
     postApplication(appForm)
       .then(application => {
-        console.log(application);
         // dispatch({
         //   type: "setApplicationForms",
         //   data: application
         // });
+        navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e.response);
-        alert(e.response.data.error);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
       });
   };
-
 
 
   return (
@@ -168,6 +170,7 @@ const LitterApplicationForm = () => {
       mr: 'auto',
       maxWidth: "sm",
     }}>
+      {console.log(formData)}
       <Paper sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4 }}>
         <Grid container spacing={2} >
           <Grid item xs={12} sx={{ mb: 3 }}>
@@ -184,9 +187,9 @@ const LitterApplicationForm = () => {
                 onChange={handleInput}
                 value={formData.litter_id}
               >
-                {Object.entries(litterList).map(litter => {
+                {formData.litterList && formData.litterList.map(litter => {
                   return (
-                    <MenuItem key={litter[0]} value={litter[1].id}>{litter[1].lname}</MenuItem>
+                    <MenuItem key={litter.id} value={litter.id}>{litter.lname}</MenuItem>
                   );
                 })}
               </Select>

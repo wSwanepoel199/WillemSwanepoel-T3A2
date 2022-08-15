@@ -4,11 +4,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router';
 
 const AlertComponent = (props) => {
-  const { severity, title, body } = props;
+  const { location, severity, title, body } = props;
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const handleEnd = () => {
-    navigate("."); // <-- redirect to current path w/o state
+    navigate(location); // <-- redirect to current path w/o state
   };
 
   useEffect(() => {

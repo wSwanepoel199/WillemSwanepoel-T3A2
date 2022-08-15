@@ -4,11 +4,11 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import { AlertComponent, useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppies } from "../../../services/litterServices";
-import { getDogs } from "../../../services/dogsServices";
+import { getDogs, patchDogs } from "../../../services/dogsServices";
 
 // TODO, include link to full dogs edit page
 
@@ -17,6 +17,7 @@ const LitterUpdateForm = () => {
   const { store, dispatch } = useGlobalState();
   const { breeders, sires, bitches } = store;
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -48,30 +49,39 @@ const LitterUpdateForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [puppiesOpen, setPuppiesOpen] = useState(false);
 
+  const mounted = useRef();
+
   // on page mount makes get request for specified litter
   useEffect(() => {
-    getLitter(params.id)
-      .then(litter => {
-        console.log("litter", litter);
-        // spreads litter into a new object to make it mutable
-        let updatingLitter = { ...litter };
-        // clears out null values and replaces them with an empty string
-        Object.keys(updatingLitter).forEach((key) => {
-          if (updatingLitter[key] === null) {
-            updatingLitter[key] = '';
+    if (!mounted.current) {
+      getLitter(params.id)
+        .then(litter => {
+          console.log("litter", litter);
+          // spreads litter into a new object to make it mutable
+          let updatingLitter = { ...litter };
+          // clears out null values and replaces them with an empty string
+          Object.keys(updatingLitter).forEach((key) => {
+            if (updatingLitter[key] === null) {
+              updatingLitter[key] = '';
+            }
+          });
+          // assigns newly mutated object to formData
+          setFormData({
+            ...updatingLitter
+          });
+          // checks if puppies where attached, if so assigns them to puppyData
+          if (litter.puppies) {
+            setPuppyData([...litter.puppies]);
           }
+        })
+        .catch(e => {
+          console.log(e.toJSON());
+          navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
         });
-        // assigns newly mutated object to formData
-        setFormData({
-          ...updatingLitter
-        });
-        // checks if puppies where attached, if so assigns them to puppyData
-        if (litter.puppies) {
-          setPuppyData([...litter.puppies]);
-        }
-      })
-      .catch(e => console.log(e));
-  }, []);
+      mounted.current = true;
+    }
+
+  }, [!mounted.current]);
 
   // formats recieved date
   const handleDate = (e, name) => {
@@ -110,36 +120,58 @@ const LitterUpdateForm = () => {
 
   // updates puppies on the backend
   const handleUpdate = () => {
-    // filets out puppies that already exist on the back
-    const finalPuppies = puppyData.filter((pup) => {
+    // filters out puppies that already exist on the back
+    const newPuppies = puppyData.filter((pup) => {
       return !Object.keys(pup).some(key => key === "id");
     });
+    // filters out puppies that don't on the back
+    const oldPuppies = puppyData.filter((pup) => {
+      return Object.keys(pup).some(key => key === "id");
+    });
     // checks if there are any new puppies
-    if (finalPuppies.length > 0) {
+    if (newPuppies.length > 0) {
       // formats new puppy data so backend can read it
       const updatedPuppies = {
         id: formData.id,
         dogs: [
-          ...finalPuppies
+          ...newPuppies
         ]
       };
-
       // makes a post request to backend, creates new puppies
-      // TODO - post rremaining to update dogs to update any edits
+      // TO-DO dynamically update state with new puppies
       postNewPuppies(updatedPuppies)
-        .then(reply => {
-          if (reply.success === "Success") {
-            // once all puppies are known by the backend assigns them to formData state
-            setFormData({
-              ...formData,
-              puppies: [...puppyData],
-            });
-          } else {
-            <AlertComponent severity={"error"} title={"Puppies Failed To Update"} body={"Newly entered puppies failed to save"} />;
-          }
+        .then(puppies => {
+          console.log(puppies);
+          setFormData({
+            ...formData,
+            puppies: puppies.dogs
+          });
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          console.log(e.response);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+        });
     }
+    // checks of there are any old puppies
+    if (oldPuppies.length > 0) {
+      // itters over list of old puppies
+      oldPuppies.forEach((puppy) => {
+        // locates its version in formData
+        const originalPup = formData.puppies.find(pup => pup.id === puppy.id);
+        // compares if there are any differences, if true, makes post to update puppy on back
+        if (JSON.stringify(puppy) !== JSON.stringify(originalPup)) {
+          patchDogs(puppy.id, puppy)
+            .then(dog => {
+              console.log(dog);
+            })
+            .catch(e => {
+              console.log(e.response);
+              navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+            });
+        }
+      });
+    }
+
     // closes dialog
     setDialogOpen(!dialogOpen);
   };
@@ -180,15 +212,23 @@ const LitterUpdateForm = () => {
     e.preventDefault();
     patchLitter(formData.id, formData)
       .then(reply => {
-        getDogs()
-          .then(dogs => {
-            dispatch({
-              type: "updateDogList",
-              data: dogs
+        if (reply.status === 201) {
+          getDogs()
+            .then(dogs => {
+              dispatch({
+                type: "updateDogList",
+                data: dogs
+              });
+              navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "success", title: "Success", body: `Litter successfully updated` } });
             });
-          });
+        } else {
+
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e.toJSON());
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+      });
     // todo, add redirect if patch is successful
   };
 
@@ -202,6 +242,7 @@ const LitterUpdateForm = () => {
         ml: 'auto',
         mr: 'auto',
       }}>
+        {console.log(formData)}
         <Paper sx={{ padding: 4 }}>
           <Grid container spacing={2} sx={{ justifyContent: 'space-around' }}>
             <Grid xs={12} sx={{ mb: 3 }}>
@@ -335,12 +376,12 @@ const LitterUpdateForm = () => {
                 <TextField name="esize" id="esize-input" label="Expected Litter Size" onChange={handleInput} value={formData.esize} type="text" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
               </FormControl>
             </Grid>
-            <Grid xs={12} sm={5}>
-              {/* input field for the actual size, not sure if needed */}
-              <FormControl fullWidth sx={{ display: "flex", alignItems: 'center' }}>
+            {/* <Grid xs={12} sm={5}> */}
+            {/* input field for the actual size, not sure if needed */}
+            {/* <FormControl fullWidth sx={{ display: "flex", alignItems: 'center' }}>
                 <TextField name="asize" id="asize-input" label="Actual Litter Size" onChange={handleInput} value={formData.asize} type="text" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
-              </FormControl>
-            </Grid>
+              </FormControl> */}
+            {/* </Grid> */}
             {/* checks if actual date has been entered if not, renders nothing*/}
             {formData.adate.length < 1 ?
               null

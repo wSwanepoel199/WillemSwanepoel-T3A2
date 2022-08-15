@@ -92,6 +92,14 @@ export const reducer = (state, action) => {
         dogList: action.data
       };
     }
+    case "updateLitterList": {
+      const listLitters = [...state.litterList, action.data];
+      sessionStorage.setItem("litterList", JSON.stringify(listLitters));
+      return {
+        ...state,
+        litterList: listLitters
+      };
+    }
     case "mergeLitterWithBreederSireAndBitch": {
       // merges litter with referanances breeder, sire and bitch ids
       return {

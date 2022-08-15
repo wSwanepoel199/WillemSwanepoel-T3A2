@@ -19,6 +19,7 @@ backEndAPI.interceptors.response.use(res => {
     const jwt = res.headers['authorization'].split('Bearer ')[1];
     window.sessionStorage.setItem("token", jwt);
   }
+
   return res;
 });
 

@@ -3,10 +3,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { useGlobalState } from "../../../utils/componentIndex";
+import { AlertComponent, useGlobalState } from "../../../utils/componentIndex";
 import { postLitter } from "../../../services/litterServices";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+
 
 // TO-DO include notional checkbox for notional litters
 
@@ -14,6 +15,8 @@ const LitterCreationForm = () => {
   const { store, dispatch } = useGlobalState();
   const { breeders, sires, bitches } = store;
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const initialFormData = {
     lname: "",
@@ -79,16 +82,18 @@ const LitterCreationForm = () => {
     console.log(e);
     postLitter(formData)
       .then((litter) => {
-        console.log(litter);
+        if (litter.status === 201) {
+          dispatch({
+            type: 'updateLitterList',
+            data: litter.data
+          });
+          setFormData(initialFormData);
+          navigate('/litters/manage', { state: { alert: true, location: "/litters/manage", severity: "success", title: "Litter Created", body: `Litter ${litter.data.lname} was successfully created` } });
+        }
       })
       .catch(e => {
-        console.log(e.response.data.message);
-        alert(e.response.data.message);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: e.response.statusText } });
       });
-
-    setFormData(initialFormData);
-    navigate('/litters/manage');
-
   };
 
 

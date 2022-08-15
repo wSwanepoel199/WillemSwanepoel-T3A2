@@ -146,7 +146,7 @@ const App = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* renders an alert with customisable fields depending on requirement */}
         {state && state.alert ?
-          <AlertComponent severity={state.severity} title={state.title} body={state.body} />
+          <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
           :
           null}
         {/* renders the header which contains the Myshalair logo*/}
@@ -160,11 +160,11 @@ const App = () => {
             {/* sets the path for the home page */}
             <Route path="/" element={<Home />} />
             {/* sets the path for about page */}
-            <Route path="/about" element={<About />} />
+            <Route path="about" element={<About />} />
             {/* sets the main path for dogs */}
-            <Route path="/dogs" >
+            <Route path="dogs" >
               {/* automatically routes path: "/dogs" to "/dogs/all" */}
-              <Route index element={<Navigate to={'/dogs/all'} replace={true} />} />
+              <Route index element={<Navigate to={'dogs/all'} replace={true} />} />
               {/* allows the mapped paths to be used to route the same element */}
               {['all', 'males', 'females', 'retired'].map((path, index) => {
                 return (
@@ -177,7 +177,7 @@ const App = () => {
               <Route path="chosen/:id" element={<DogDetails />} />
             </Route>
             {/* sets base path for contacts*/}
-            <Route path="/contacts">
+            <Route path="contacts">
               {/* sets Contacts element as base path using index. Uses AdminRoute to manage unautherised access*/}
               <Route index element={
                 <AdminRoute>
@@ -194,7 +194,7 @@ const App = () => {
               <Route path="form" element={<ContactForm />} />
             </Route>
             {/* sets default path for litters */}
-            <Route path="/litters" >
+            <Route path="litters" >
               {/* automatically routes path: "/litters" to "/litters/apply" */}
               <Route index element={<Navigate to={'/litters/manage'} />} />
               {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
@@ -246,8 +246,8 @@ const App = () => {
             </Route>
 
             {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
-            <Route path="/signIn" element={<SignInForm />}></Route>
-            <Route path="/signUp" >
+            <Route path="signIn" element={<SignInForm />}></Route>
+            <Route path="signUp" >
               <Route index element={<SignUpForm />} />
               <Route path="confirmation" element={<SignUpRedirect />} />
             </Route>
