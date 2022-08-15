@@ -1,10 +1,10 @@
 import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useGlobalState, Application } from "../../../utils/componentIndex";
+import { useGlobalState, LitterApplication } from "../../../utils/componentIndex";
 import { Link } from "react-router-dom";
 import { getLitterApps } from "../../../services/litterServices";
 
-const DisplayLitterApps = () => {
+const LitterApplicationsManage = () => {
   const { store, dispatch } = useGlobalState();
   const { userList, litterList } = store;
 
@@ -56,7 +56,7 @@ const DisplayLitterApps = () => {
                   const user = userList.find(user => user.id === app.user_id);
                   const litter = litterList.find(litter => litter.id === app.litter_id);
                   return (
-                    <Application key={app.id} app={app} user={user} litter={litter} />
+                    <LitterApplication key={app.id} app={app} user={user} litter={litter} />
                   );
                 })}
               </TableBody>
@@ -75,4 +75,4 @@ const DisplayLitterApps = () => {
   );
 };
 
-export default DisplayLitterApps;
+export default LitterApplicationsManage;

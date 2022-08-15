@@ -19,18 +19,21 @@ import {
   ContactDetails,
   Dogs,
   DogDetails,
-  LitterApplication,
+  // LitterApplicationsManage,
+  LitterApplicationForm,
+  LitterApplicationDetails,
+  LitterManage,
   LitterCreationForm,
   LitterUpdateForm,
-  LitterManage,
   LitterDetails,
+  LitterApplications,
   SignInForm,
   SignUpForm,
   SignUpRedirect,
   NotFound,
   // state
   useGlobalState,
-  DisplayLitterApps,
+
 } from '../utils/componentIndex';
 // A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
 import { StyledContainer } from '../Shared/styles/index.styled';
@@ -95,9 +98,6 @@ const App = () => {
   }, [userList, litterList, dogList]);
 
   const updateLitters = () => {
-    console.log(litterList);
-    console.log(userList);
-    console.log(dogList);
     dispatch({
       type: "mergeLitterWithBreederSireAndBitch",
       data: Object.values(litterList).map((litter) => {
@@ -196,16 +196,6 @@ const App = () => {
           <Route path="/litters" >
             {/* automatically routes path: "/litters" to "/litters/apply" */}
             <Route index element={<Navigate to={'/litters/manage'} />} />
-            {/* sets path for litter application page */}
-            <Route path="apply" element={
-              <SecuredRoute>
-                <LitterApplication />
-              </SecuredRoute>} />
-            <Route path="applications" element={
-              <AdminRoute>
-                <DisplayLitterApps />
-              </AdminRoute>
-            } />
             {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
             <Route path="manage" element={
               <AdminRoute>
@@ -217,18 +207,43 @@ const App = () => {
                 <LitterCreationForm />
               </AdminRoute>
             } />
+            {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
+            <Route path=":id" element={
+              <AdminRoute>
+                <LitterDetails />
+              </AdminRoute>} />
             {/* sets path for litter update page and uses AdminRoute to manage autherisation*/}
             <Route path=":id/edit" element={
               <AdminRoute>
                 <LitterUpdateForm />
               </AdminRoute>
             } />
-            {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
-            <Route path=":id" element={
-              <AdminRoute>
-                <LitterDetails />
-              </AdminRoute>} />
+            {/* sets default path for the litter applications */}
+            <Route path=":id/applications">
+              {/* sets path for litter applications manafement page and uses AdminRoute to manage autherisation */}
+              {/* <Route path="manage" element={
+                <AdminRoute>
+                  <LitterApplicationsManage />
+                </AdminRoute>
+              } /> */}
+              <Route index element={
+                <AdminRoute>
+                  <LitterApplications />
+                </AdminRoute>
+              } />
+              {/* sets path for litter application page */}
+              <Route path="apply" element={
+                <SecuredRoute>
+                  <LitterApplicationForm />
+                </SecuredRoute>} />
+              <Route path=":id" element={
+                <AdminRoute>
+                  <LitterApplicationDetails />
+                </AdminRoute>
+              } />
+            </Route>
           </Route>
+
           {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
           <Route path="/signIn" element={<SignInForm />}></Route>
           <Route path="/signUp" >

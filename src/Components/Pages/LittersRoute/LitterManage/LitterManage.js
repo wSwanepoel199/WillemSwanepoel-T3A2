@@ -1,16 +1,29 @@
 import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useGlobalState, Litter } from "../../../utils/componentIndex";
+import { getLitterApps } from "../../../services/litterServices";
 import { Link } from "react-router-dom";
 
 const LitterManage = () => {
-  const { store } = useGlobalState();
-  const { mergedLitterList } = store;
+  const { store, dispatch } = useGlobalState();
+  const { mergedLitterList, applicationForms } = store;
+
+  useEffect(() => {
+    getLitterApps()
+      .then(apps => {
+        dispatch({
+          type: 'setApplicationForms',
+          data: apps
+        });
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <>
       <Paper sx={{ display: 'flex' }}>
         {console.log(mergedLitterList)}
+        {console.log(applicationForms)}
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
           <Typography variant="h5" component="h1">Manage Litters</Typography>
           <TableContainer component={Paper}>

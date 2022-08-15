@@ -40,15 +40,7 @@ const LitterDetails = () => {
   });
 
 
-  useEffect(() => {
-    getLitter(params.id)
-      .then(litter => {
-        console.log(litter);
-        setLitterDetail(litter);
-      })
-      .catch(e => console.log(e));
 
-  }, []);
 
   return (
     <ThemeProvider theme={customTheme}>

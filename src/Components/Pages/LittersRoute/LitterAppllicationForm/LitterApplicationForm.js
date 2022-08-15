@@ -15,7 +15,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 //  anything they feel might let me see that they would be a good pick for one of my pups,   I believe in the happiness of the pup first,
 // probably needs their name and contact info too >.>
 
-const LitterApplication = () => {
+const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();
   const { litterList, loggedInUser } = store;
   const navigate = useNavigate();
@@ -388,4 +388,4 @@ const LitterApplication = () => {
   );
 };
 
-export default LitterApplication;
+export default LitterApplicationForm;

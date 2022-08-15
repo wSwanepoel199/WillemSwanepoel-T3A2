@@ -12,8 +12,8 @@ export async function postLitter(data) {
   return response.data;
 }
 
-export async function getLitter(data) {
-  const response = await backEndAPI.get(`/litters/${data}`);
+export async function getLitter(id) {
+  const response = await backEndAPI.get(`/litters/${id}`);
   return response.data;
 }
 
@@ -35,5 +35,10 @@ export async function postApplication(data) {
 
 export async function getLitterApps() {
   const response = await backEndAPI.get('/litter_applications');
+  return response.data;
+}
+
+export async function getLitterApp(id) {
+  const response = await backEndAPI.get(`/litter_applications/${id}`);
   return response.data;
 }

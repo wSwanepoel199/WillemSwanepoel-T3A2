@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useMediaQuery, useTheme, InputBase, OutlinedInput, Collapse, Alert, AlertTitle } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -345,7 +345,7 @@ const LitterUpdateForm = () => {
               <>
                 {/* provides dropdown functionality by clicking on manage puppies title */}
                 <Grid xs={12} sx={{ display: "flex", justifyContent: 'center' }}>
-                  <Typography onClick={() => setPuppiesOpen(!puppiesOpen)} variant="h6">Manage Puppies {puppiesOpen ? <KeyboardArrowDown /> : <KeyboardArrowLeft />} </Typography>
+                  <Typography onClick={() => setPuppiesOpen(!puppiesOpen)} variant="h6">{puppiesOpen ? <KeyboardArrowDown /> : <KeyboardArrowRight />}Manage Puppies</Typography>
                 </Grid>
                 <Collapse
                   in={puppiesOpen}

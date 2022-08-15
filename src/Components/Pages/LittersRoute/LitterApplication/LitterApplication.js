@@ -8,14 +8,10 @@ import { Link } from "react-router-dom";
 // Add detailed View for each application
 // impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
-const Application = (props) => {
+const LitterApplication = (props) => {
   const { app, user, litter } = props;
 
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-
-  }, [app]);
 
 
 
@@ -31,19 +27,19 @@ const Application = (props) => {
             {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
           <Typography>{user.username}</Typography>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
           <Typography>{litter.lname}</Typography>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
           <Typography>{app.yardarea} m²</Typography>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
           <Typography>{app.yardfenceheight} m</Typography>
         </TableCell>
-        <TableCell>
+        <TableCell align="center">
           <Typography>{app.priority}</Typography>
         </TableCell>
       </TableRow>
@@ -55,7 +51,7 @@ const Application = (props) => {
                 <TableBody>
                   <TableRow sx={{ display: 'flex' }}>
                     <TableCell align="left" size="small" >
-                      <Link to={`/litters/applications/${app.id}`}>
+                      <Link to={`./${app.id}`}>
                         <Button variant="contained" color="success">
                           View
                         </Button>
@@ -84,4 +80,4 @@ const Application = (props) => {
   );
 };
 
-export default Application;
+export default LitterApplication;

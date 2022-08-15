@@ -13,7 +13,7 @@ const Litter = (props) => {
   return (
     <>
       <TableRow>
-        {console.log(litter)}
+        {/* {console.log(litter)} */}
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -23,30 +23,30 @@ const Litter = (props) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell>
-          <Typography>{litter.lname}</Typography>
+        <TableCell align='center'>
+          <Typography sx={{ textAlign: 'center' }}>{litter.lname}</Typography>
         </TableCell>
-        <TableCell>
-          <Typography>{breeder.username}</Typography>
+        <TableCell align='center'>
+          <Typography sx={{ textAlign: 'center' }}>{breeder.username}</Typography>
         </TableCell>
-        <TableCell>
-          <Typography>{sire.realname}</Typography>
+        <TableCell align='center'>
+          <Typography sx={{ textAlign: 'center' }}>{sire.realname}</Typography>
         </TableCell>
-        <TableCell>
-          <Typography>{bitch.realname}</Typography>
+        <TableCell align='center'>
+          <Typography sx={{ textAlign: 'center' }}>{bitch.realname}</Typography>
         </TableCell>
         <TableCell>
           {litter.edate ?
-            <Typography>{moment(litter.edate).format('DD-MM-YYYY')}</Typography>
+            <Typography sx={{ textAlign: 'center' }}>{moment(litter.edate).format('DD/MM/YYYY')}</Typography>
             :
-            <Typography>Not Provided</Typography>
+            <Typography sx={{ textAlign: 'center' }}>Not Provided</Typography>
           }
         </TableCell>
         <TableCell>
           {litter.adate ?
-            <Typography>{moment(litter.adate).format('DD-MM-YYYY')}</Typography>
+            <Typography sx={{ textAlign: 'center' }}>{moment(litter.adate).format('DD/MM/YYYY')}</Typography>
             :
-            <Typography>Not Provided</Typography>
+            <Typography sx={{ textAlign: 'center' }}>Not Provided</Typography>
           }
         </TableCell>
       </TableRow>
@@ -75,6 +75,13 @@ const Litter = (props) => {
                       <Button variant="contained" color="error">
                         Delete
                       </Button>
+                    </TableCell>
+                    <TableCell align="left" size="small">
+                      <Link to={`/litters/${litter.id}/applications`}>
+                        <Button variant="contained">
+                          View/Manage Applications
+                        </Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 </TableBody>
