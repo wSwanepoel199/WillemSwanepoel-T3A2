@@ -7,6 +7,8 @@ import { customTheme } from "../../../utils/customPalette";
 import { getLitter } from "../../../services/litterServices";
 import { useGlobalState, LitterApplication } from "../../../utils/componentIndex";
 
+// Add app id field for identifyier, and include fufill state
+// management for unproccseed, approved and rejected
 
 const LitterApplications = () => {
   const params = useParams();

@@ -37,7 +37,7 @@ const NavBar = () => {
           <NavDropdown
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/litters/applications/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-schedule">Litter Schedule</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
@@ -46,7 +46,6 @@ const NavBar = () => {
             title="Our Company"
             id={`offcanvasNavbarDropdown-expand-md`}>
             <NavDropdown.Item eventKey="/about">About Us</NavDropdown.Item>
-            <NavDropdown.Item eventKey="litter-schedule">Legalities (Temp)</NavDropdown.Item>
             <NavDropdown.Item eventKey="/contacts/form">Contact Us</NavDropdown.Item>
           </NavDropdown>
           {store.loggedInUser.admin ?
@@ -54,7 +53,7 @@ const NavBar = () => {
               <NavDropdown
                 title="Admin Panel"
                 id={`offcanvasNavbarDropdown-expand-md`}>
-                <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/contacts/form" id="view-contacts">View Contact Requests</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="female-dogs" href="/dogs/females" id="female-dogs">Female Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>

@@ -25,7 +25,7 @@ const AlertComponent = (props) => {
   }, []);
 
   return (
-    <Box sx={{ width: '100%', position: 'absolute', zIndex: '2' }}>
+    <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
       <Collapse
         in={open}
         onExited={() => { handleEnd(); }}

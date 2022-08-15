@@ -10,6 +10,8 @@ import { AlertComponent, useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppies } from "../../../services/litterServices";
 import { getDogs } from "../../../services/dogsServices";
 
+// TODO, include link to full dogs edit page
+
 const LitterUpdateForm = () => {
   const params = useParams();
   const { store, dispatch } = useGlobalState();
@@ -123,6 +125,7 @@ const LitterUpdateForm = () => {
       };
 
       // makes a post request to backend, creates new puppies
+      // TODO - post rremaining to update dogs to update any edits
       postNewPuppies(updatedPuppies)
         .then(reply => {
           if (reply.success === "Success") {
@@ -144,6 +147,7 @@ const LitterUpdateForm = () => {
   // closes dialog and deletes any new puppies
   const handleCancel = () => {
     setPuppyData([...formData.puppies]);
+    setDialogOpen(!dialogOpen);
   };
 
   // handles general input for rest of form, consider breaking down into seperate more specific functions

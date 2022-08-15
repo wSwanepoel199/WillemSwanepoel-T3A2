@@ -8,6 +8,8 @@ import { postLitter } from "../../../services/litterServices";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
+// TO-DO include notional checkbox for notional litters
+
 const LitterCreationForm = () => {
   const { store, dispatch } = useGlobalState();
   const { breeders, sires, bitches } = store;
