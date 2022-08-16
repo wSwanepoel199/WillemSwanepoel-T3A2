@@ -100,6 +100,13 @@ export const reducer = (state, action) => {
         litterList: listLitters
       };
     }
+    case "updateSpecificLitter": {
+      const litterList = [...state.litterList].map(litter => [action.data].find(target => target.id === litter.id) || litter);
+      return {
+        ...state,
+        litterList: litterList
+      };
+    }
     case "mergeLitterWithBreederSireAndBitch": {
       // merges litter with referanances breeder, sire and bitch ids
       return {

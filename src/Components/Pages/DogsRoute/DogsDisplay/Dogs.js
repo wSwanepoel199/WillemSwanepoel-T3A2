@@ -1,6 +1,5 @@
-import { useGlobalState } from "../utils/componentIndex";
-import { Dog } from "../utils/componentIndex";
-import { SortableItem } from './SortableItem';
+import { useGlobalState, DogCard } from "../../../utils/componentIndex";
+import { SortableItem } from '../../SortableItem';
 import { Container, Grid, Typography } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -19,7 +18,7 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
-import { getDogs, pushNewPositions } from "../services/dogsServices";
+import { getDogs, pushNewPositions } from "../../../services/dogsServices";
 import { useLocation } from "react-router";
 
 // known issues; patching to often, patching with to much data(not sure if avoidable)
@@ -57,10 +56,10 @@ const Dogs = (params) => {
       // runs the rest on every update
     } else {
     }
-    return () => {
-      console.log("final call for mounting");
-      mounted.current = false;
-    };
+    // return () => {
+    //   console.log("final call for mounting");
+    //   mounted.current = false;
+    // };
   });
 
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
@@ -69,7 +68,6 @@ const Dogs = (params) => {
       console.log(dogList);
       console.log("populating dogs");
       setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
-      sessionStorage.removeItem("dogList");
     }
     return () => {
       console.log("final call setting dogs");
@@ -118,14 +116,14 @@ const Dogs = (params) => {
 
   }, [updatedPositions]);
 
-  useEffect(() => {
-    if (location) {
+  // useEffect(() => {
+  //   if (location) {
 
-    }
-    return () => {
-      window.location.reload();
-    };
-  }, [location]);
+  //   }
+  //   return () => {
+  //     window.location.reload();
+  //   };
+  // }, [location]);
 
   // filters dogs based on passed params
   const handleSex = (params, dogs) => {
@@ -216,7 +214,7 @@ const Dogs = (params) => {
           </SortableContext>
           <DragOverlay>{activeId ?
             <>
-              <Dog id={activeId} dog={dogs.find(dog => dog.id === activeId)} />
+              <DogCard id={activeId} dog={dogs.find(dog => dog.id === activeId)} />
             </>
             :
             null

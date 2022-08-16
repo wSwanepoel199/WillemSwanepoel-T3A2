@@ -2,6 +2,7 @@ import { backEndAPI } from "../utils/componentIndex";
 
 export async function getLitters() {
   const response = await backEndAPI.get('/litters');
+  console.log(response.data);
   return response.data;
 }
 
@@ -19,12 +20,13 @@ export async function getLitter(id) {
 
 export async function postNewPuppies(data) {
   const response = await backEndAPI.post('/add_puppies', data);
-  return response.data;
+  return response;
 }
 
 export async function patchLitter(id, data) {
   const response = await backEndAPI.patch(`/litters/${id}`, data);
-  return response.data;
+  console.log(response);
+  return response;
 }
 
 export async function postApplication(data) {

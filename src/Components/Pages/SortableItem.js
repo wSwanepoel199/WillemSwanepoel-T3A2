@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Grid } from "@mui/material";
-import { Dog } from "../utils/componentIndex";
+import { DogCard } from "../utils/componentIndex";
 
 export const SortableItem = (props) => {
   // makes the listed attributes available from useSortable, making sure to affect specificied id
@@ -28,7 +28,7 @@ export const SortableItem = (props) => {
       {...attributes}
       {...listeners}
     >
-      <Dog dog={props.dog} />
+      <DogCard dog={props.dog} />
     </Grid>
 
   );

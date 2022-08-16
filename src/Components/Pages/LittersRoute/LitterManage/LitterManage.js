@@ -1,12 +1,17 @@
-import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
+import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button, TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useGlobalState, Litter } from "../../../utils/componentIndex";
+import { useGlobalState, Litter, CustomTable } from "../../../utils/componentIndex";
 import { getLitterApps } from "../../../services/litterServices";
 import { Link } from "react-router-dom";
 
 const LitterManage = () => {
   const { store, dispatch } = useGlobalState();
   const { mergedLitterList, applicationForms } = store;
+
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('id');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     getLitterApps()
@@ -19,6 +24,46 @@ const LitterManage = () => {
       .catch((e) => console.log(e));
   }, []);
 
+  function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator(order, orderBy) {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) {
+        return order;
+      }
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  }
+
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - mergedLitterList.length) : 0;
+
   return (
     <>
       <Paper sx={{ display: 'flex' }}>
@@ -26,38 +71,62 @@ const LitterManage = () => {
         {console.log(applicationForms)}
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
           <Typography variant="h5" component="h1">Manage Litters</Typography>
-          <TableContainer component={Paper}>
-            <Table >
-              <TableHead>
-                <TableRow>
-                  <TableCell />
-                  <TableCell align='center'>
-                    <Typography>Litter Name</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Breeder</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Sire</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Bitch</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Expected Date</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Delivered Date</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Object.values(mergedLitterList).map((litter) =>
-                  <Litter key={litter.id} litter={litter} />
+          <CustomTable
+            head={
+              <>
+                <TableCell />
+                <TableCell align='center'>
+                  <Typography>Litter Name</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Breeder</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Sire</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Bitch</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Expected Date</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Delivered Date</Typography>
+                </TableCell>
+              </>
+            }
+            body={
+              <>
+                {stableSort(mergedLitterList, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((litter, index) => {
+                    return (
+                      <Litter key={litter.id} litter={litter} />
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 47 * emptyRows }}>
+                  </TableRow>
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </>
+            }
+            footer={
+              <>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    colSpan={7}
+                    count={mergedLitterList.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    sx={{ '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': { m: 0 } }}
+                  />
+                </TableRow>
+              </>
+            }
+          />
           <Container sx={{ display: "flex", alignContent: "flex-start", p: 2 }}>
             <Link to="/litters/create">
               <Button variant="contained">

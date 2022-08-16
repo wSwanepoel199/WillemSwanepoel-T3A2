@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mui/material";
 
-const Dog = forwardRef(({ id, ...props }, ref) => {
+const DogCard = forwardRef(({ id, ...props }, ref) => {
   // makes dog available from props
   const { dog } = props;
 
@@ -37,7 +37,7 @@ const Dog = forwardRef(({ id, ...props }, ref) => {
             "Female"}
         </Typography>
         {dog.context}
-        <Link to={`/dogs/chosen/${dog.id}`}>
+        <Link to={`/dogs/display/${dog.id}`}>
           <Button variant="outlined" >View Dog</Button>
         </Link>
       </CardContent>
@@ -45,4 +45,4 @@ const Dog = forwardRef(({ id, ...props }, ref) => {
   );
 });
 
-export default Dog;
+export default DogCard;

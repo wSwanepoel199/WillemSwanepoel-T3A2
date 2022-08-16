@@ -8,7 +8,7 @@ const AlertComponent = (props) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const handleEnd = () => {
-    navigate(location); // <-- redirect to current path w/o state
+    navigate(location, { replace: true }); // <-- redirect to current path w/o state
   };
 
   useEffect(() => {

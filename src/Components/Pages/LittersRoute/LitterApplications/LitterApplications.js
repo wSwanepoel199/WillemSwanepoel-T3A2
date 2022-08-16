@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { customTheme } from "../../../utils/customPalette";
 import { getLitter } from "../../../services/litterServices";
-import { useGlobalState, LitterApplication } from "../../../utils/componentIndex";
+import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected
@@ -63,29 +63,29 @@ const LitterApplications = () => {
         </Container>
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
           <Typography variant="h5" component="h1">Manage Litters Applications</Typography>
-          <TableContainer component={Paper}>
-            <Table >
-              <TableHead>
-                <TableRow>
-                  <TableCell />
-                  <TableCell align='center'>
-                    <Typography>User</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Litter</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Yard Area</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Fence Height</Typography>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <Typography>Priority</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+          <CustomTable
+            head={
+              <>
+                <TableCell />
+                <TableCell align='center'>
+                  <Typography>User</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Litter</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Yard Area</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Fence Height</Typography>
+                </TableCell>
+                <TableCell align='center'>
+                  <Typography>Priority</Typography>
+                </TableCell>
+              </>
+            }
+            body={
+              <>
                 {litterApplications.map((app) => {
                   const user = userList.find(user => user.id === app.user_id);
                   const litter = litterList.find(litter => litter.id === app.litter_id);
@@ -93,9 +93,9 @@ const LitterApplications = () => {
                     <LitterApplication key={app.id} app={app} user={user} litter={litter} />
                   );
                 })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </>
+            }
+          />
         </Container>
         <Container>
           <Link to="/litters/manage">

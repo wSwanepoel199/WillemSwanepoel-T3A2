@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useMediaQuery, useTheme, InputBase, OutlinedInput, Collapse, Alert, AlertTitle } from "@mui/material";
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useMediaQuery, useTheme, InputBase, OutlinedInput, Collapse, Switch, FormControlLabel } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -6,7 +6,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { AlertComponent, useGlobalState } from "../../../utils/componentIndex";
+import { useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppies } from "../../../services/litterServices";
 import { getDogs, patchDogs } from "../../../services/dogsServices";
 
@@ -33,6 +33,7 @@ const LitterUpdateForm = () => {
     pdate: '',
     esize: '',
     asize: '',
+    status: '',
     puppies: '',
   };
   // initial state of puppies, acts as default
@@ -44,11 +45,15 @@ const LitterUpdateForm = () => {
   // defines the state for the form and puppies
   const [formData, setFormData] = useState(initialFormData);
   const [puppyData, setPuppyData] = useState([]);
+  // definess the state for any of the newly made/edited puppies
+  const [newPuppyData, setNewPuppyData] = useState([]);
 
   // controls the dialog and puppy controls
   const [dialogOpen, setDialogOpen] = useState(false);
   const [puppiesOpen, setPuppiesOpen] = useState(false);
+  const [notional, setNotional] = useState(false);
 
+  // used to manage whether component is mounted or not
   const mounted = useRef();
 
   // on page mount makes get request for specified litter
@@ -73,6 +78,9 @@ const LitterUpdateForm = () => {
           if (litter.puppies) {
             setPuppyData([...litter.puppies]);
           }
+          if (litter.status === 3) {
+            setNotional(!notional);
+          }
         })
         .catch(e => {
           console.log(e.toJSON());
@@ -81,7 +89,31 @@ const LitterUpdateForm = () => {
       mounted.current = true;
     }
 
-  }, [!mounted.current]);
+  }, [!mounted.current, navigate, notional, params.id]);
+
+  // triggers when the newpuppy state is changed
+  useEffect(() => {
+    // checks if there is new data in the puppy state, is yes runs
+    if (newPuppyData.length > 0) {
+      // itters over the newpuppy state
+      newPuppyData.forEach(puppy => {
+        // finds the original iteration of the newpuppy
+        const originalPup = puppyData.find(pup => pup.id === puppy.id);
+        // spreads the puppy state into a new mutable variable
+        let newPuppies = [...puppyData];
+        // splices in the new puppy inplace of its old itteration
+        newPuppies.splice(newPuppies.indexOf(originalPup), 1, puppy);
+        // sets the new puppy list to the puppy and form state
+        setPuppyData(newPuppies);
+        setFormData({
+          ...formData,
+          puppies: newPuppies
+        });
+        // cleans the newpuppy state for any future calls
+        setNewPuppyData([]);
+      });
+    };
+  }, [newPuppyData, puppyData, formData]);
 
   // formats recieved date
   const handleDate = (e, name) => {
@@ -138,16 +170,18 @@ const LitterUpdateForm = () => {
         ]
       };
       // makes a post request to backend, creates new puppies
-      // TO-DO dynamically update state with new puppies
       postNewPuppies(updatedPuppies)
         .then(puppies => {
-          console.log(puppies);
-          setFormData({
-            ...formData,
-            puppies: puppies.dogs
-          });
+          // if returnes with statuss 201, will add newly created puppies to the newpuppy state
+          if (puppies.status === 201) {
+            setNewPuppyData([
+              ...newPuppyData,
+              ...puppies.data.dogs
+            ]);
+          }
         })
         .catch((e) => {
+          // catches any errors and triggers an alert
           console.log(e.response);
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
         });
@@ -162,16 +196,23 @@ const LitterUpdateForm = () => {
         if (JSON.stringify(puppy) !== JSON.stringify(originalPup)) {
           patchDogs(puppy.id, puppy)
             .then(dog => {
-              console.log(dog);
+              // if returned with status 200 adds any updated puppies to the newpuppy state
+              if (dog.status === 200) {
+                console.log(dog);
+                setNewPuppyData([
+                  ...newPuppyData,
+                  dog.data
+                ]);
+              }
             })
             .catch(e => {
               console.log(e.response);
+              // catches any errors and triggers an alert
               navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
             });
         }
       });
     }
-
     // closes dialog
     setDialogOpen(!dialogOpen);
   };
@@ -207,22 +248,42 @@ const LitterUpdateForm = () => {
     }
   };
 
+  // controls if litter is notionall or not
+  const handleChangeNotional = (e) => {
+    setNotional(!notional);
+    if (e.target.checked) {
+      setFormData({
+        ...formData,
+        status: 3
+      });
+    } else {
+      setFormData({
+        ...formData,
+        status: 1
+      });
+    }
+  };
+
   // handles form submit, making a patch request to backend to update litter then makes get to fetch new doglist
   const handleSubmit = (e) => {
     e.preventDefault();
     patchLitter(formData.id, formData)
       .then(reply => {
-        if (reply.status === 201) {
+        if (reply.status === 200) {
           getDogs()
             .then(dogs => {
               dispatch({
                 type: "updateDogList",
                 data: dogs
               });
-              navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "success", title: "Success", body: `Litter successfully updated` } });
-            });
-        } else {
 
+            })
+            .catch(e => console.log(e));
+          dispatch({
+            type: "updateSpecificLitter",
+            data: reply.data.litter
+          });
+          navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "success", title: "Success", body: `Litter successfully updated` } });
         }
       })
       .catch((e) => {
@@ -243,7 +304,13 @@ const LitterUpdateForm = () => {
         mr: 'auto',
       }}>
         {console.log(formData)}
+        {console.log(puppyData)}
+        {console.log(newPuppyData)}
         <Paper sx={{ padding: 4 }}>
+          <FormControlLabel
+            control={<Switch checked={notional} onChange={handleChangeNotional} />}
+            label="Set Litter to Notional"
+          />
           <Grid container spacing={2} sx={{ justifyContent: 'space-around' }}>
             <Grid xs={12} sx={{ mb: 3 }}>
               <Typography variant="h4" component="h1" sx={{ textAlign: "center" }}>Update {formData.lname}</Typography>
@@ -251,7 +318,7 @@ const LitterUpdateForm = () => {
             <Grid xs={12}>
               {/* input for litter name */}
               <FormControl fullWidth >
-                <TextField name="lname" required id="lname-input" label="Litter Name" onChange={handleInput} value={formData.lname} />
+                <TextField name="lname" required={!notional} id="lname-input" label="Litter Name" onChange={handleInput} value={formData.lname} />
               </FormControl>
             </Grid>
             <Grid xs={12}>

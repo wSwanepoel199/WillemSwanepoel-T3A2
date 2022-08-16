@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
 import { getLitters } from '../services/litterServices';
@@ -17,6 +17,9 @@ import {
   ContactForm,
   Contacts,
   ContactDetails,
+  DogsManage,
+  DogCreationForm,
+  DogUpdateForm,
   Dogs,
   DogDetails,
   // LitterApplicationsManage,
@@ -33,10 +36,7 @@ import {
   NotFound,
   // state
   useGlobalState,
-
 } from '../utils/componentIndex';
-// A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px
-import { StyledContainer } from '../Shared/styles/index.styled';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
 import { Box, Container } from '@mui/material';
@@ -89,7 +89,7 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     updateLitters();
@@ -137,8 +137,8 @@ const App = () => {
   return (
     <>
       {console.log("store:", store)}
-      {console.log("list of dogs:", Object.values(store.dogList))}
-      {console.log("list of litters:", Object.entries(store.litterList))}
+      {console.log("list of dogs:", store.dogList)}
+      {console.log("list of litters:", store.litterList)}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
@@ -153,7 +153,7 @@ const App = () => {
         <Header data-testid="header" />
         {/* renders navbar, which is the main form of navigation */}
         <NavBar />
-
+        {/* A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px */}
         <Container sx={{ mt: { xs: '5%', md: '25px' }, pb: '2.5rem' }}>
           {/* specifies the routes, the path and its associated element, the router has access to */}
           <Routes>
@@ -163,18 +163,31 @@ const App = () => {
             <Route path="about" element={<About />} />
             {/* sets the main path for dogs */}
             <Route path="dogs" >
-              {/* automatically routes path: "/dogs" to "/dogs/all" */}
-              <Route index element={<Navigate to={'dogs/all'} replace={true} />} />
+              {/* automatically routes path: "/dogs" to "/dogs/manage" */}
+              <Route index element={<Navigate to={'manage'} replace={true} />} />
+              <Route path="manage" element={
+                <AdminRoute>
+                  <DogsManage />
+                </AdminRoute>
+              } />
+              <Route path="create" element={
+                <AdminRoute>
+                  <DogCreationForm />
+                </AdminRoute>} />
+              <Route path=":id/edit" element={
+                <AdminRoute>
+                  <DogUpdateForm />
+                </AdminRoute>} />
               {/* allows the mapped paths to be used to route the same element */}
               {['all', 'males', 'females', 'retired'].map((path, index) => {
                 return (
-                  <Route path={`${path}`} element={
+                  <Route path={`display/${path}`} element={
                     <Dogs id={path} />
                   } key={index} />
                 );
               })}
               {/* sets the path for a selected dog using a non absolute path. in this case the router will accept any into as :id */}
-              <Route path="chosen/:id" element={<DogDetails />} />
+              <Route path="display/:id" element={<DogDetails />} />
             </Route>
             {/* sets base path for contacts*/}
             <Route path="contacts">
@@ -196,7 +209,7 @@ const App = () => {
             {/* sets default path for litters */}
             <Route path="litters" >
               {/* automatically routes path: "/litters" to "/litters/apply" */}
-              <Route index element={<Navigate to={'/litters/manage'} />} />
+              <Route index element={<Navigate to={'/litters/manage'} replace={true} />} />
               {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
               <Route path="manage" element={
                 <AdminRoute>

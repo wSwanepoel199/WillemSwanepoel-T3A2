@@ -1,4 +1,4 @@
-import { Grid, FormControl, Input, InputLabel, FormHelperText, Container, Paper, FormGroup, Typography, TextField, Select, MenuItem, Button, Slider } from "@mui/material";
+import { Grid, FormControl, Input, InputLabel, FormHelperText, Container, Paper, FormGroup, Typography, TextField, Select, MenuItem, Button, Slider, FormControlLabel, Switch } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
@@ -27,10 +27,12 @@ const LitterCreationForm = () => {
     adate: '',
     pdate: '',
     esize: 1,
+    status: 1,
   };
 
 
   const [formData, setFormData] = useState(initialFormData);
+  const [notional, setNotional] = useState(false);
 
 
   const handleDate = (e, name) => {
@@ -48,6 +50,21 @@ const LitterCreationForm = () => {
 
   const sliderValue = (value) => {
     return `${value} puppies`;
+  };
+
+  const handleChangeNotional = (e) => {
+    setNotional(e.target.checked);
+    if (e.target.checked) {
+      setFormData({
+        ...formData,
+        status: 3
+      });
+    } else {
+      setFormData({
+        ...formData,
+        status: 1
+      });
+    }
   };
 
   const handleInput = (e) => {
@@ -88,7 +105,7 @@ const LitterCreationForm = () => {
             data: litter.data
           });
           setFormData(initialFormData);
-          navigate('/litters/manage', { state: { alert: true, location: "/litters/manage", severity: "success", title: "Litter Created", body: `Litter ${litter.data.lname} was successfully created` } });
+          navigate('/litters/manage', { state: { alert: true, location: "/litters/manage", severity: "success", title: "Litter Created", body: `Litter "${litter.data.lname}" was successfully created` } });
         }
       })
       .catch(e => {
@@ -103,8 +120,11 @@ const LitterCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {console.log(store)}
       <Paper sx={{ padding: 4 }}>
+        <FormControlLabel
+          control={<Switch checked={notional} onChange={handleChangeNotional} />}
+          label="Set Litter to Notional"
+        />
         <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
           <Grid item xs={12} sx={{ mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Create Litter Entry</Typography>

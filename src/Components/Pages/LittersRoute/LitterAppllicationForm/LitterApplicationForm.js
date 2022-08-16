@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
-import { useGlobalState } from "../../../utils/componentIndex";
+import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
 
 
 // Criteria form must account for
@@ -170,6 +170,7 @@ const LitterApplicationForm = () => {
       mr: 'auto',
       maxWidth: "sm",
     }}>
+      {console.log(petsData)}
       {console.log(formData)}
       <Paper sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4 }}>
         <Grid container spacing={2} >
@@ -256,18 +257,18 @@ const LitterApplicationForm = () => {
               </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
                 <Grid item xs={12} md={8}>
-                  <TableContainer component={Paper}>
-                    <Table size='small' >
-                      <TableHead >
-                        <TableRow>
-                          <TableCell align="right" sx={{ p: 0 }}>
-                            Number
-                          </TableCell>
-                          <TableCell align="center">Age</TableCell>
-                          <TableCell />
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
+                  <CustomTable
+                    head={
+                      <>
+                        <TableCell align="right" sx={{ p: 0 }}>
+                          Number
+                        </TableCell>
+                        <TableCell align="center">Age</TableCell>
+                        <TableCell />
+                      </>
+                    }
+                    body={
+                      <>
                         {childrenData.map((child, index) => (
                           <TableRow key={index}>
                             <TableCell align="right">
@@ -287,9 +288,9 @@ const LitterApplicationForm = () => {
                             </TableCell>
                           </TableRow>
                         ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                      </>
+                    }
+                  />
                 </Grid>
               </Grid>
             </>
@@ -335,48 +336,46 @@ const LitterApplicationForm = () => {
               </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
                 <Grid item xs={12}>
-                  <TableContainer component={Paper}>
-                    <Table size='small' >
-                      <TableHead >
-                        <TableRow>
-                          <TableCell align="right" sx={{ p: 0 }}>
-                            Number
+                  <CustomTable
+                    head={
+                      <>
+                        <TableCell align="right" sx={{ p: 0 }}>
+                          Number
+                        </TableCell>
+                        <TableCell align="center">Age</TableCell>
+                        <TableCell align="center">Type</TableCell>
+                        <TableCell align="center">Breed</TableCell>
+                        <TableCell />
+                      </>
+                    }
+                    body={<>
+                      {petsData.map((pet, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="right">
+                            {index + 1}
                           </TableCell>
-                          <TableCell align="center">Age</TableCell>
-                          <TableCell align="center">Type</TableCell>
-                          <TableCell align="center">Breed</TableCell>
-                          <TableCell />
+                          <TableCell align="center">
+                            {pet.age}
+                          </TableCell>
+                          <TableCell align="center">
+                            {pet.pettype}
+                          </TableCell>
+                          <TableCell align="center">
+                            {pet.petbreed}
+                          </TableCell>
+                          <TableCell align="left" sx={{ p: 0 }}>
+                            <IconButton
+                              aria-label="delete"
+                              size="small"
+                              onClick={(e) => { handleDeletePet(e, index); }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
                         </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {petsData.map((pet, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="right">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell align="center">
-                              {pet.age}
-                            </TableCell>
-                            <TableCell align="center">
-                              {pet.pettype}
-                            </TableCell>
-                            <TableCell align="center">
-                              {pet.petbreed}
-                            </TableCell>
-                            <TableCell align="left" sx={{ p: 0 }}>
-                              <IconButton
-                                aria-label="delete"
-                                size="small"
-                                onClick={(e) => { handleDeletePet(e, index); }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                      ))}
+                    </>}
+                  />
                 </Grid>
               </Grid>
             </>
