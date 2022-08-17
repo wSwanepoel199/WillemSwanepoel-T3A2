@@ -25,10 +25,10 @@ export async function addPuppy(data) {
   return response.data;
 }
 
-export async function patchDogs(id, data) {
-  const response = await backEndAPI.patch(`/dogs/${id}`, data);
-  return response;
-}
+// export async function patchDogs(id, data) {
+//   const response = await backEndAPI.patch(`/dogs/${id}`, data);
+//   return response;
+// }=-
 
 export async function pushNewPositions(data) {
   console.log(data);

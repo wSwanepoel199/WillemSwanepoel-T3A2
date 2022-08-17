@@ -8,7 +8,7 @@ import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppies } from "../../../services/litterServices";
-import { getDogs, patchDogs } from "../../../services/dogsServices";
+import { getDogs, patchDog } from "../../../services/dogsServices";
 
 // TODO, include link to full dogs edit page
 
@@ -216,7 +216,7 @@ const LitterUpdateForm = () => {
         const originalPup = formData.puppies.find(pup => pup.id === puppy.id);
         // compares if there are any differences, if true, makes post to update puppy on back
         if (JSON.stringify(puppy) !== JSON.stringify(originalPup)) {
-          patchDogs(puppy.id, puppy)
+          patchDog(puppy.id, puppy)
             .then(dog => {
               // if returned with status 200 adds any updated puppies to the newpuppy state
               if (dog.status === 200) {

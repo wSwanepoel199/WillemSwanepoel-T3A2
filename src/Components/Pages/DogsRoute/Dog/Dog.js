@@ -21,6 +21,8 @@ const Dog = (props) => {
       ...dog,
       retired: !dog.retired
     };
+    const { main_image, ...newestDog } = newDog;
+    console.log(newestDog);
     // locates original dog from dogList
     const originalDog = dogList.find(pup => pup.id === dog.id);
     // spreads dogList into new array inorder to mutate values
@@ -28,7 +30,7 @@ const Dog = (props) => {
     // splices new dog object into mutable dogList using index of its position found in original dogList
     newDogList.splice(dogList.indexOf(originalDog), 1, newDog);
     // makes patch request to update dog on back end
-    patchDog(dog.id, newDog)
+    patchDog(dog.id, newestDog)
       .then(dog => {
         // on status 200 updates local dogList with newDogList containing changed dog
         if (dog.status === 200) {

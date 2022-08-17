@@ -230,6 +230,36 @@ const LitterApplicationForm = () => {
               />
             </FormControl>
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <TextField
+                name="sexPref"
+                id="yardarea-id"
+                label="Area of Yard"
+                onChange={handleInput}
+                value={formData.yardarea}
+                type="number"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">m²</InputAdornment>,
+                }}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <TextField
+                name="colourPref"
+                id="yardarea-id"
+                label="Area of Yard"
+                onChange={handleInput}
+                value={formData.yardarea}
+                type="number"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">m²</InputAdornment>,
+                }}
+              />
+            </FormControl>
+          </Grid>
           <Grid item xs={12}>
             <FormControl sx={{ display: "flex", alignItems: 'center' }}>
               <FormLabel id="add-children-label">Do you have any children?</FormLabel>

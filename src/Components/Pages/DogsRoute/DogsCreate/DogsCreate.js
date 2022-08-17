@@ -75,6 +75,16 @@ const DogCreationForm = () => {
     });
   };
 
+  // handles image uploads
+  const handleImageUpload = (e) => {
+    const { name, value, type, files } = e.target;
+    console.log(files[0]);
+    // setFormData({
+    //   ...formData,
+    //   main_image: files[0]
+    // });
+  };
+
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -213,11 +223,12 @@ const DogCreationForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          <Grid xs={12}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="image-upload" shrink>Select Image To Upload</InputLabel>
-              <Input id="image-upload" label="Select Image To Upload" type="file" />
-            </FormControl>
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant="contained" component="label">
+              Upload Main Image
+              <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
+            </Button>
+            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
           <Grid xs={12}>
             <Container>

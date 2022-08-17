@@ -105,9 +105,20 @@ const DogUpdateForm = () => {
     });
   };
 
+  // handles image uploads
+  const handleImageUpload = (e) => {
+    const { name, value, type, files } = e.target;
+    console.log(files[0]);
+    // setFormData({
+    //   ...formData,
+    //   main_image: files[0]
+    // });
+  };
+
   // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     patchDog(params.id, formData)
       .then(dog => {
         console.log(dog);
@@ -128,7 +139,7 @@ const DogUpdateForm = () => {
         }
       })
       .catch(e => {
-        console.log(e.response);
+        console.log(e);
         // navigates to current page and alters user of any errors
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} Error`, body: `${e.response.statusText}` } });
       });
@@ -227,11 +238,12 @@ const DogUpdateForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          <Grid xs={12}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="image-upload" shrink>Select Image To Upload</InputLabel>
-              <Input id="image-upload" label="Select Image To Upload" type="file" />
-            </FormControl>
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant="contained" component="label">
+              Upload Main Image
+              <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
+            </Button>
+            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
           <Grid xs={12}>
             <Container>

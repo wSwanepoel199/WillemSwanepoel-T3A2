@@ -67,16 +67,18 @@ const LitterApplicationManage = () => {
         <Typography variant="h4" textAlign="center" sx={{ pb: 2 }}>Edit/Manage Litter Application</Typography>
         <Button onClick={() => handleLitterAppOpen(1, appClosed)}>Reveal Application {openApp ? <KeyboardArrowDown /> : <KeyboardArrowLeft />}</Button>
         <Box component={Paper} sx={{ py: 4, my: 2 }}>
-          <Fade
+          <Collapse
             in={!openApp}
-            onExited={() => handleLitterAppOpen(2)}
+            onExiting={() => handleLitterAppOpen(2)}
+            mountOnEnter
             unmountOnExit
           >
             <Typography variant="h5" textAlign="center">Litter Application for {applicationDetails.litter && applicationDetails.litter.lname}</Typography>
-          </Fade>
+          </Collapse>
           <Collapse
             in={!appClosed}
-            onExited={() => handleLitterAppOpen(2, openApp)}
+            onExiting={() => handleLitterAppOpen(2, openApp)}
+            mountOnEnter
             unmountOnExit>
             <LitterApplicationDetails />
           </Collapse>
