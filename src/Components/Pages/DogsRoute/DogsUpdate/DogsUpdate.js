@@ -6,13 +6,16 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getDog, patchDog, getDogs } from "../../../services/dogsServices";
 
+// can't update litter of dog due to to lack of support from back
+
 const DogUpdateForm = () => {
   const { store, dispatch } = useGlobalState();
-  const { litterList, dogList } = store;
+  const { litterList } = store;
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
+  // sets the initial data of the component
   const initialFormData = {
     callname: "",
     realname: "",
@@ -28,18 +31,20 @@ const DogUpdateForm = () => {
     ams: '',
     bss: ''
   };
+  // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
   const [dog, setDog] = useState({});
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
 
+  // on component mount, makes get request for a dog and assigns specific values to the form state, also saves the whole dog to the dog state
   useEffect(() => {
     getDog(params.id)
       .then(dog => {
         console.log(dog);
         if (dog.status === 200) {
           const { data } = dog;
-          setDog(data.dog);
+          setDog(dog);
           setFormData({
             id: data.dog.id,
             realname: data.dog.realname,
@@ -51,11 +56,13 @@ const DogUpdateForm = () => {
         }
       })
       .catch(e => console.log(e));
+    // finds litters with a status of 3, meaning they are nomial
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
     );
   }, [litterList, params.id]);
 
+  // handlles the forms general input
   const handleInput = (e) => {
     const { name, value } = e.target;
     console.log(name, ":", value);
@@ -88,6 +95,7 @@ const DogUpdateForm = () => {
     }
   };
 
+  // handles input for health tests, not yet implimented in edit
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
 
@@ -97,6 +105,7 @@ const DogUpdateForm = () => {
     });
   };
 
+  // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
     patchDog(params.id, formData)
@@ -111,13 +120,16 @@ const DogUpdateForm = () => {
               });
             })
             .catch(e => console.log(e));
+          // resets form values
           setFormData(initialFormData);
           setHealthTestData(initialHealthTestData);
+          // navigates back to dogs manage and alerts user of successful creation
           navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.callname} Updated` } });
         }
       })
       .catch(e => {
         console.log(e.response);
+        // navigates to current page and alters user of any errors
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} Error`, body: `${e.response.statusText}` } });
       });
   };
@@ -129,6 +141,7 @@ const DogUpdateForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
+      {console.log(dog)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>

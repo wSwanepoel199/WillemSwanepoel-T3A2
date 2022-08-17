@@ -1,5 +1,6 @@
-import { Box, Paper, Typography, Container, TableRow, TableCell, Button, TablePagination, TableSortLabel } from "@mui/material";
+import { Box, Paper, Typography, Container, TableRow, TableCell, Button, TablePagination, TableSortLabel, IconButton } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import { useEffect, useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
 import { Link } from "react-router-dom";
@@ -8,14 +9,13 @@ const DogsManage = () => {
   const { store } = useGlobalState();
   const { dogList, userList } = store;
 
+  // sets page initial state
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  useEffect(() => {
-  }, []);
-
+  // order values based on provided id
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -26,12 +26,14 @@ const DogsManage = () => {
     return 0;
   }
 
+  // inverts return if order of return is 'asc'
   function getComparator(order, orderBy) {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
   }
 
+  // main sort function coded coded to suppoty IE11
   function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -44,60 +46,76 @@ const DogsManage = () => {
     return stabilizedThis.map((el) => el[0]);
   }
 
+  // sets page value for pagination
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
 
+  // controls the number of rows that appear per page
   const handleChangeRowsPerPage = (e) => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
 
+  // calculates if isAsc is true to control if setOrder is asc or desc then sets new order id
   const createSortHandler = (property) => (e) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
+  const handleFilterReset = () => {
+    setOrderBy("id");
+    setOrder('asc');
+  };
+
+  // calculates missing entries to keep table the same size
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dogList.length) : 0;
 
+  // array of values to become header to redice repeated code
   const headCells = [
     {
       id: 'realname',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: "Dog's Name"
     },
     {
       id: 'callname',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: "Call Name"
     },
     {
       id: 'ownername',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: 'Owner'
     },
     {
       id: 'breedername',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: 'Breeder'
     },
     {
       id: 'dob',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: 'Date of Birth'
     },
     {
       id: 'retired',
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: 'Retired Status'
+    },
+    {
+      id: 'position',
+      numeric: false,
+      disablePadding: false,
+      label: 'Display Order'
     }
   ];
 
@@ -109,7 +127,15 @@ const DogsManage = () => {
           <CustomTable
             head={
               <>
-                <TableCell />
+                <TableCell
+                  align="center"
+                >
+                  <IconButton
+                    onClick={handleFilterReset}
+                  >
+                    <FilterAltOffIcon />
+                  </IconButton>
+                </TableCell>
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
@@ -154,7 +180,7 @@ const DogsManage = () => {
                 <TableRow>
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
-                    colSpan={7}
+                    colSpan={8}
                     count={dogList.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
@@ -166,13 +192,18 @@ const DogsManage = () => {
               </>
             }
           />
-          <Container sx={{ display: "flex", alignContent: "flex-start", p: 2 }}>
+          <Box sx={{ display: "flex", alignContent: "flex-start" }}>
             <Link to="/dogs/create">
-              <Button variant="contained">
+              <Button variant="contained" sx={{ m: 1 }}>
                 New Dog
               </Button>
             </Link>
-          </Container>
+            <Link to="/dogs/re_order">
+              <Button variant="contained" sx={{ m: 1 }}>
+                Manage Dogs Positions
+              </Button>
+            </Link>
+          </Box>
         </Container>
       </Paper>
     </>

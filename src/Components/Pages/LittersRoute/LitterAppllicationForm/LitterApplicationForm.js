@@ -17,6 +17,10 @@ import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
 
 // TODO - if user has baught dogs, auto fill
 // if user enters dog do stuff
+// impliment sex and colour preferance
+// remove ability to select litter instead apps are assigned to a waitlist to be processed
+
+// moving apps from waitlist to other litters and vice versa, handle apps in waitlist by altering reject val, 
 
 const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();
@@ -47,7 +51,7 @@ const LitterApplicationForm = () => {
       ...formData,
       user_id: loggedInUser.id,
       litterList: litterList.filter(litter => {
-        return litter.breeder_id !== loggedInUser.id && litter.national !== true;
+        return litter.breeder_id !== loggedInUser.id && litter.national !== 1;
       })
     });
 
@@ -177,7 +181,7 @@ const LitterApplicationForm = () => {
           <Grid item xs={12} sx={{ mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Litter Application</Typography>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="litter_select_label">Selected Litter</InputLabel>
               <Select
@@ -195,7 +199,7 @@ const LitterApplicationForm = () => {
                 })}
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField

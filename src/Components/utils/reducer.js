@@ -93,11 +93,10 @@ export const reducer = (state, action) => {
       };
     }
     case "updateLitterList": {
-      const listLitters = [...state.litterList, action.data];
-      sessionStorage.setItem("litterList", JSON.stringify(listLitters));
+      sessionStorage.setItem("litterList", JSON.stringify(action.data));
       return {
         ...state,
-        litterList: listLitters
+        litterList: action.data
       };
     }
     case "updateSpecificLitter": {

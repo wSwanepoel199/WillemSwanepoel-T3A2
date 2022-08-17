@@ -58,9 +58,9 @@ const LitterApplication = (props) => {
                       </Link>
                     </TableCell>
                     <TableCell align="left" size="small">
-                      <Link to={`/litters/applications/${app.id}/edit`}>
+                      <Link to={`/litters/${litter.id}/applications/${app.id}/manage`}>
                         <Button variant="contained" color="warning">
-                          Edit
+                          Manage
                         </Button>
                       </Link>
                     </TableCell>

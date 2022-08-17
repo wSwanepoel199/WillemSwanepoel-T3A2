@@ -25,12 +25,6 @@ const DogCard = forwardRef(({ id, ...props }, ref) => {
           Full Name: {dog.realname}
         </Typography>
         <Typography>
-          Owner: {dog.ownername}
-        </Typography>
-        <Typography>
-          Breeder: {dog.breedername}
-        </Typography>
-        <Typography>
           Sex: {dog.sex === 1 ?
             "Male"
             :

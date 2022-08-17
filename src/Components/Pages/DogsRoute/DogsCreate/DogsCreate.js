@@ -18,7 +18,7 @@ const DogCreationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
+  // sets form and heath test initial data
   const initialFormData = {
     callname: "",
     realname: "",
@@ -35,35 +35,23 @@ const DogCreationForm = () => {
     ams: '',
     bss: ''
   };
+  // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
 
+  // on mount finds nomial litters, status of 3, and makes the choosable
   useEffect(() => {
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
     );
   }, [litterList]);
 
+  // handles form general input
   const handleInput = (e) => {
     const { name, value } = e.target;
     console.log(name, ":", value);
-    if (name === "esize") {
-      let fixedValue = 1;
-      if (Boolean(parseInt(e.target.value))) {
-        fixedValue = parseInt(e.target.value);
-      } else {
-        fixedValue = 1;
-      }
-      console.log(fixedValue);
-      if (fixedValue > 24) fixedValue = 24;
-      if (fixedValue < 1) fixedValue = 1;
-
-      setFormData({
-        ...formData,
-        [name]: fixedValue,
-      });
-    } else if (name === 'sex') {
+    if (name === 'sex') {
       setFormData({
         ...formData,
         [name]: parseInt(value)
@@ -77,6 +65,7 @@ const DogCreationForm = () => {
     }
   };
 
+  // handles health test input
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
 
@@ -86,6 +75,7 @@ const DogCreationForm = () => {
     });
   };
 
+  // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
@@ -110,16 +100,20 @@ const DogCreationForm = () => {
       .then(dog => {
         console.log(dog);
         if (dog.status === 201) {
+          // on success adds dog to dogList
           dispatch({
             type: 'updateDogList',
             data: [...dogList, dog.data.dog]
           });
+          // clears form and health test data
           setFormData(initialFormData);
           setHealthTestData(initialHealthTestData);
+          // routes user back to dogs manage and alerts them to successful creation
           navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.dog.callname} Created` } });
         }
       })
       .catch(e => {
+        // navigates to current page and alerts user of any errors
         console.log(e.response);
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} Error`, body: `${e.response.statusText}` } });
       });

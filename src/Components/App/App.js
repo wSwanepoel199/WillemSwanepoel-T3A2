@@ -20,10 +20,11 @@ import {
   DogsManage,
   DogCreationForm,
   DogUpdateForm,
-  Dogs,
+  DogsReorder,
   DogDetails,
   // LitterApplicationsManage,
   LitterApplicationForm,
+  LitterApplicationManage,
   LitterApplicationDetails,
   LitterManage,
   LitterCreationForm,
@@ -89,50 +90,22 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-  }, [dispatch]);
+  }, []);
 
-  useEffect(() => {
-    updateLitters();
-    updateValidBreeders();
-    updateValidSires();
-    updateValidBitches();
-  }, [userList, litterList, dogList]);
-
-  const updateLitters = () => {
-    dispatch({
-      type: "mergeLitterWithBreederSireAndBitch",
-      data: Object.values(litterList).map((litter) => {
-        const breeder = Object.values(userList).find(breeder => breeder.id === litter.breeder_id);
-        const sire = Object.values(dogList).find(sire => sire.id === litter.sire_id);
-        const bitch = Object.values(dogList).find(bitch => bitch.id === litter.bitch_id);
-        return {
-          ...litter,
-          breeder,
-          sire,
-          bitch
-        };
-      })
-    });
-  };
-
-  const updateValidBreeders = () => {
-    dispatch({
-      type: "updateValidBreeders",
-      data: Object.values(userList).filter(user => user),
-    });
-  };
-  const updateValidSires = () => {
-    dispatch({
-      type: "updateValidSires",
-      data: Object.values(dogList).filter(dog => dog.sex === 1),
-    });
-  };
-  const updateValidBitches = () => {
-    dispatch({
-      type: "updateValidBitches",
-      data: Object.values(dogList).filter(dog => dog.sex === 2),
-    });
-  };
+  // useEffect(() => {
+  //   dispatch({
+  //     type: "updateValidBreeders",
+  //     data: Object.values(userList).filter(user => user),
+  //   });
+  //   dispatch({
+  //     type: "updateValidSires",
+  //     data: dogList.filter(dog => dog.sex === 1 && dog.retired === false),
+  //   });
+  //   dispatch({
+  //     type: "updateValidBitches",
+  //     data: dogList.filter(dog => dog.sex === 2 && dog.retired === false),
+  //   });
+  // }, [userList, dogList]);
 
   return (
     <>
@@ -182,7 +155,7 @@ const App = () => {
               {['all', 'males', 'females', 'retired'].map((path, index) => {
                 return (
                   <Route path={`display/${path}`} element={
-                    <Dogs id={path} />
+                    <DogsReorder id={path} />
                   } key={index} />
                 );
               })}
@@ -253,6 +226,11 @@ const App = () => {
                 <Route path=":id" element={
                   <AdminRoute>
                     <LitterApplicationDetails />
+                  </AdminRoute>
+                } />
+                <Route path=":id/manage" element={
+                  <AdminRoute>
+                    <LitterApplicationManage />
                   </AdminRoute>
                 } />
               </Route>

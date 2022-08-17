@@ -27,7 +27,9 @@ const LitterApplications = () => {
           sire: dogList.find((sire) => sire.id === litter.sire_id),
           bitch: dogList.find((bitch) => bitch.id === litter.bitch_id),
         });
-        setLitterApplications(litter.litterApplications);
+        if (litter.litterApplications) {
+          setLitterApplications(litter.litterApplications);
+        }
       })
       .catch(e => console.log(e));
   }, []);

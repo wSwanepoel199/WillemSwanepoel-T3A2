@@ -42,5 +42,5 @@ export async function getLitterApps() {
 
 export async function getLitterApp(id) {
   const response = await backEndAPI.get(`/litter_applications/${id}`);
-  return response.data;
+  return response;
 }

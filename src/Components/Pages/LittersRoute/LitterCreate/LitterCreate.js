@@ -9,15 +9,15 @@ import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 
-// TO-DO include notional checkbox for notional litters
+// TO-DO
 
 const LitterCreationForm = () => {
   const { store, dispatch } = useGlobalState();
-  const { breeders, sires, bitches } = store;
+  const { userList, dogList, litterList } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
-
+  // sets form initial data
   const initialFormData = {
     lname: "",
     breeder_id: '',
@@ -30,11 +30,21 @@ const LitterCreationForm = () => {
     status: 1,
   };
 
-
+  // sets form initial state
   const [formData, setFormData] = useState(initialFormData);
   const [notional, setNotional] = useState(false);
+  const [breeders, setBreeders] = useState([]);
+  const [sires, setSires] = useState([]);
+  const [bitches, setBitches] = useState([]);
 
+  // assigns states of breeder, sires, and bitches to filtered lists where dogs are not retired and users are breeders
+  useEffect(() => {
+    setBreeders(userList.filter(user => user));
+    setSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
+    setBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
+  }, []);
 
+  // formats date input to use moment and passes it to handle input
   const handleDate = (e, name) => {
     console.log(e);
     console.log(moment(e).format('YYYY-MM-DD'));
@@ -48,10 +58,12 @@ const LitterCreationForm = () => {
     handleInput(newDate);
   };
 
+  // sets aria value text
   const sliderValue = (value) => {
     return `${value} puppies`;
   };
 
+  // controls notional switch by setting form status to 1 or 3 depending on false or true
   const handleChangeNotional = (e) => {
     setNotional(e.target.checked);
     if (e.target.checked) {
@@ -67,6 +79,7 @@ const LitterCreationForm = () => {
     }
   };
 
+  // general input handler
   const handleInput = (e) => {
     const { name, value } = e.target;
     console.log(name, ":", value);
@@ -94,21 +107,26 @@ const LitterCreationForm = () => {
     console.log("form:", formData);
   };
 
+  // on form submit makes post request form formData
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
     postLitter(formData)
       .then((litter) => {
+        // on success makes dispatch to update local litterList
         if (litter.status === 201) {
           dispatch({
             type: 'updateLitterList',
-            data: litter.data
+            data: [...litterList, litter.data]
           });
+          // clears form data
           setFormData(initialFormData);
+          // navigates back to litter manage and alerts user of successful creation
           navigate('/litters/manage', { state: { alert: true, location: "/litters/manage", severity: "success", title: "Litter Created", body: `Litter "${litter.data.lname}" was successfully created` } });
         }
       })
       .catch(e => {
+        // navigates to current page and alerts user of any errors
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: e.response.statusText } });
       });
   };

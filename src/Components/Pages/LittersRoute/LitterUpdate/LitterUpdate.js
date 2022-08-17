@@ -15,7 +15,7 @@ import { getDogs, patchDogs } from "../../../services/dogsServices";
 const LitterUpdateForm = () => {
   const params = useParams();
   const { store, dispatch } = useGlobalState();
-  const { breeders, sires, bitches } = store;
+  const { userList, dogList } = store;
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -45,6 +45,9 @@ const LitterUpdateForm = () => {
   // defines the state for the form and puppies
   const [formData, setFormData] = useState(initialFormData);
   const [puppyData, setPuppyData] = useState([]);
+  const [validBreeders, setValidBreeders] = useState([]);
+  const [validSires, setValidSires] = useState([]);
+  const [validBitches, setValidBitches] = useState([]);
   // definess the state for any of the newly made/edited puppies
   const [newPuppyData, setNewPuppyData] = useState([]);
 
@@ -63,7 +66,12 @@ const LitterUpdateForm = () => {
         .then(litter => {
           console.log("litter", litter);
           // spreads litter into a new object to make it mutable
-          let updatingLitter = { ...litter };
+          let updatingLitter = {
+            ...litter,
+            breeder: userList.find(user => user.id === litter.breeder_id),
+            sire: dogList.find(dog => dog.id === litter.sire_id),
+            bitch: dogList.find(dog => dog.id === litter.bitch_id)
+          };
           // clears out null values and replaces them with an empty string
           Object.keys(updatingLitter).forEach((key) => {
             if (updatingLitter[key] === null) {
@@ -72,7 +80,7 @@ const LitterUpdateForm = () => {
           });
           // assigns newly mutated object to formData
           setFormData({
-            ...updatingLitter
+            ...updatingLitter,
           });
           // checks if puppies where attached, if so assigns them to puppyData
           if (litter.puppies) {
@@ -81,15 +89,29 @@ const LitterUpdateForm = () => {
           if (litter.status === 3) {
             setNotional(!notional);
           }
+
+          // write if to check if litter breeder is no longer valid and add them back in
+          setValidBreeders([...userList.filter(user => user)]);
+          // if to check if litter sire is retired, if true add back in
+          if (updatingLitter.sire.retired === true) {
+            setValidSires([...dogList.filter(dog => dog.sex === 1 && dog.retired === false), updatingLitter.sire]);
+          } else {
+            setValidSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
+          }
+          if (updatingLitter.bitch.retired === true) {
+            setValidBitches([...dogList.filter(dog => dog.sex === 2 && dog.retired === false), updatingLitter.bitch]);
+          } else {
+            setValidBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
+          }
         })
         .catch(e => {
-          console.log(e.toJSON());
+          console.log(e);
           navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
         });
       mounted.current = true;
     }
 
-  }, [!mounted.current, navigate, notional, params.id]);
+  }, [mounted]);
 
   // triggers when the newpuppy state is changed
   useEffect(() => {
@@ -333,9 +355,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.breeder_id}
                 >
-                  {Object.values(breeders).map(breeder => {
+                  {validBreeders.length > 0 && validBreeders.map(breeder => {
                     return (
-                      <MenuItem key={breeder.id} value={breeder.id}>{breeder.username}</MenuItem>
+                      <MenuItem key={breeder.id} value={breeder.id}>{breeder.username} {!breeder.breeder && "(No Longer Breeding)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -354,9 +376,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.bitch_id}
                 >
-                  {Object.values(bitches).map(dog => {
+                  {validBitches.length > 0 && validBitches.map(dog => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
+                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -375,9 +397,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.sire_id}
                 >
-                  {Object.values(sires).map(dog => {
+                  {validSires.length && validSires.map(dog => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
+                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>

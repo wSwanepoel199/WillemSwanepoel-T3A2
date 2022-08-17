@@ -77,7 +77,7 @@ const ContactForm = () => {
         <Paper sx={{ padding: 4 }}>
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid item xs={12} sx={{ mb: 3 }}>
-              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Create Litter Entry</Typography>
+              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Contact Form</Typography>
             </Grid>
             <Grid item xs={12}>
               <TextField name="email" required fullWidth id="emai_id" label="Email" type="email" autoFocus onChange={handleInput} value={formData.name} />

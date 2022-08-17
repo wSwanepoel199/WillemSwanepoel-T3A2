@@ -25,7 +25,7 @@ import { useLocation } from "react-router";
 // honestly whole page needs rework
 // https://overreacted.io/how-are-function-components-different-from-classes/ worth using either class or implimented another use of useRef for dogs
 
-const Dogs = (params) => {
+const DogsReorder = (params) => {
   // initalises store from global state
   const { store, dispatch } = useGlobalState();
   // makes doglist available
@@ -226,4 +226,4 @@ const Dogs = (params) => {
 
 };
 
-export default Dogs;
+export default DogsReorder;

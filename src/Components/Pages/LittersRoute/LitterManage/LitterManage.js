@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const LitterManage = () => {
   const { store, dispatch } = useGlobalState();
-  const { mergedLitterList, applicationForms } = store;
+  const { litterList, applicationForms, userList, dogList } = store;
 
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
@@ -62,12 +62,12 @@ const LitterManage = () => {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - mergedLitterList.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - litterList.length) : 0;
 
   return (
     <>
       <Paper sx={{ display: 'flex' }}>
-        {console.log(mergedLitterList)}
+        {console.log(litterList)}
         {console.log(applicationForms)}
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
           <Typography variant="h5" component="h1">Manage Litters</Typography>
@@ -75,6 +75,9 @@ const LitterManage = () => {
             head={
               <>
                 <TableCell />
+                <TableCell align='center'>
+                  <Typography>Litter Status</Typography>
+                </TableCell>
                 <TableCell align='center'>
                   <Typography>Litter Name</Typography>
                 </TableCell>
@@ -97,11 +100,14 @@ const LitterManage = () => {
             }
             body={
               <>
-                {stableSort(mergedLitterList, getComparator(order, orderBy))
+                {stableSort(litterList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((litter, index) => {
+                    const breeder = Object.values(userList).find(breeder => breeder.id === litter.breeder_id);
+                    const sire = Object.values(dogList).find(sire => sire.id === litter.sire_id);
+                    const bitch = Object.values(dogList).find(bitch => bitch.id === litter.bitch_id);
                     return (
-                      <Litter key={litter.id} litter={litter} />
+                      <Litter key={index} litter={litter} breeder={breeder} sire={sire} bitch={bitch} />
                     );
                   })}
                 {emptyRows > 0 && (
@@ -115,8 +121,8 @@ const LitterManage = () => {
                 <TableRow>
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
-                    colSpan={7}
-                    count={mergedLitterList.length}
+                    colSpan={8}
+                    count={litterList.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
