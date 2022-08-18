@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { customTheme } from "../../../utils/customPalette";
 import { getLitter } from "../../../services/litterServices";
-import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
+import { useGlobalState, LitterApplication, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected
@@ -21,6 +21,7 @@ const LitterApplications = () => {
   useEffect(() => {
     getLitter(params.id)
       .then(litter => {
+        console.log(litter);
         setLitterDetail({
           ...litter,
           breeder: userList.find((user) => user.id === litter.breeder_id),
@@ -36,78 +37,43 @@ const LitterApplications = () => {
 
   return (
     <>
-      <ThemeProvider theme={customTheme}>
-        <Box>
-          {console.log(litterDetail)}
-          <Container maxWidth="sm">
-            <Typography variant="h3" align="center">
-              {litterDetail.lname} Applications
+      <Box>
+        {console.log(litterDetail)}
+        <Container maxWidth="sm">
+          <Typography variant="h3" align="center">
+            {litterDetail.lname} Applications
+          </Typography>
+        </Container>
+      </Box>
+      <Container sx={{ py: 8 }} maxWidth="md">
+        <Grid container spacing={4}>
+          <Grid xs={12} sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+          }}>
+            <Typography>
+              Breeder: {litterDetail.breeder && litterDetail.breeder.username}
             </Typography>
-          </Container>
-        </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          <Grid container spacing={4}>
-            <Grid xs={12} sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-evenly',
-            }}>
-              <Typography>
-                Breeder: {litterDetail.breeder && litterDetail.breeder.username}
-              </Typography>
-              <Typography>
-                Sire: {litterDetail.sire && litterDetail.sire.realname}
-              </Typography>
-              <Typography>
-                Bitch: {litterDetail.bitch && litterDetail.bitch.realname}
-              </Typography>
-            </Grid>
+            <Typography>
+              Sire: {litterDetail.sire && litterDetail.sire.realname}
+            </Typography>
+            <Typography>
+              Bitch: {litterDetail.bitch && litterDetail.bitch.realname}
+            </Typography>
           </Grid>
-        </Container>
-        <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
-          <Typography variant="h5" component="h1">Manage Litters Applications</Typography>
-          <CustomTable
-            head={
-              <>
-                <TableCell />
-                <TableCell align='center'>
-                  <Typography>User</Typography>
-                </TableCell>
-                <TableCell align='center'>
-                  <Typography>Litter</Typography>
-                </TableCell>
-                <TableCell align='center'>
-                  <Typography>Yard Area</Typography>
-                </TableCell>
-                <TableCell align='center'>
-                  <Typography>Fence Height</Typography>
-                </TableCell>
-                <TableCell align='center'>
-                  <Typography>Priority</Typography>
-                </TableCell>
-              </>
-            }
-            body={
-              <>
-                {litterApplications.map((app) => {
-                  const user = userList.find(user => user.id === app.user_id);
-                  const litter = litterList.find(litter => litter.id === app.litter_id);
-                  return (
-                    <LitterApplication key={app.id} app={app} user={user} litter={litter} />
-                  );
-                })}
-              </>
-            }
-          />
-        </Container>
-        <Container>
-          <Link to="/litters/manage">
-            <Button variant="contained">
-              Return to Manage Litters
-            </Button>
-          </Link>
-        </Container>
-      </ThemeProvider>
+        </Grid>
+      </Container>
+      <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
+        <LitterApplicationManage litterApps={litterApplications} />
+      </Container>
+      <Container>
+        <Link to="/litters/manage">
+          <Button variant="contained">
+            Return to Manage Litters
+          </Button>
+        </Link>
+      </Container>
     </>
   );
 };

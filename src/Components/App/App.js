@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
-import { getLitters } from '../services/litterServices';
+import { getLitterApps, getLitters } from '../services/litterServices';
 import { getUsers } from '../services/authServices';
 // centralises imports of reducer, global state, the shared components and pages to a single file.
 import {
@@ -54,7 +54,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { dogList, litterList, userList } = store;
+  const { dogList, litterList, userList, loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -90,7 +90,17 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-  }, []);
+    // if (sessionStorage.getItem("litterAppForms") === null && loggedInUser.admin === true) {
+    //   getLitterApps()
+    //     .then(apps => {
+    //       dispatch({
+    //         type: 'setApplicationForms',
+    //         data: apps
+    //       });
+    //     })
+    //     .catch((e) => console.log(e));
+    // }
+  }, [dispatch, loggedInUser]);
 
   // useEffect(() => {
   //   dispatch({
@@ -199,6 +209,11 @@ const App = () => {
                 <SecuredRoute>
                   <LitterApplicationForm />
                 </SecuredRoute>} />
+              <Route path="applications" element={
+                <AdminRoute>
+                  <LitterApplicationManage />
+                </AdminRoute>
+              } />
               {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
               <Route path=":id" element={
                 <AdminRoute>

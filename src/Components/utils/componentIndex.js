@@ -1,13 +1,12 @@
 // Import Utils
 import { reducer, init } from './reducer';
 import { StateProvider, useGlobalState } from './stateContext';
-
 // Import Shared Components
 import Header from '../Shared/Header';
 import NavBar from '../Shared/Navbar';
 import Footer from '../Shared/Footer';
 import AlertComponent from '../Shared/Alert/GeneralAlert';
-import CustomTable from './CustomTable/CustomTable';
+import CustomTable from '../Shared/CustomTable/CustomTable';
 // Import Pages Components
 import Home from '../Pages/Home';
 import About from '../Pages/About';
@@ -47,12 +46,12 @@ export {
   init,
   StateProvider,
   useGlobalState,
-  CustomTable,
   // Shared Components
   Header,
   NavBar,
   Footer,
   AlertComponent,
+  CustomTable,
   // Pages
   Home,
   About,

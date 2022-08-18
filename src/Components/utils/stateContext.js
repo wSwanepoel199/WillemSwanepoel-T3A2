@@ -19,7 +19,7 @@ export const StateProvider = ({ children }) => {
     breeders: {},
     sires: {},
     bitches: {},
-    applicationForms: {},
+    applicationForms: JSON.parse(sessionStorage.getItem("litterAppForms")) || {},
   };
 
   // uses reducer to globalise state.

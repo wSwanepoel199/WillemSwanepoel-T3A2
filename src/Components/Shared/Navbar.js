@@ -56,7 +56,7 @@ const NavBar = () => {
                 <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/dogs/manage" id="manage-dogs">Manage Dogs</NavDropdown.Item>
-                <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/litters/applications">Manage Litter Applications</NavDropdown.Item>
               </NavDropdown>
             </>
             :
