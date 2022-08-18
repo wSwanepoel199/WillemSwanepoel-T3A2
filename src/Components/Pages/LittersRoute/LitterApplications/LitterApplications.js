@@ -38,6 +38,7 @@ const LitterApplications = () => {
     <>
       <ThemeProvider theme={customTheme}>
         <Box>
+          {console.log(litterDetail)}
           <Container maxWidth="sm">
             <Typography variant="h3" align="center">
               {litterDetail.lname} Applications

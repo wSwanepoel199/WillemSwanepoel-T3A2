@@ -4,6 +4,8 @@ import { useGlobalState, Litter, CustomTable } from "../../../utils/componentInd
 import { getLitterApps } from "../../../services/litterServices";
 import { Link } from "react-router-dom";
 
+// seperate 'waitlist'
+
 const LitterManage = () => {
   const { store, dispatch } = useGlobalState();
   const { litterList, applicationForms, userList, dogList } = store;

@@ -37,6 +37,7 @@ const DogCreationForm = () => {
   };
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
+  const [imageData, setImageData] = useState([]);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
 
@@ -77,34 +78,46 @@ const DogCreationForm = () => {
 
   // handles image uploads
   const handleImageUpload = (e) => {
-    const { name, value, type, files } = e.target;
-    console.log(files[0]);
-    // setFormData({
-    //   ...formData,
-    //   main_image: files[0]
-    // });
+    const { files } = e.target;
+    console.log(files);
+    console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
+    setImageData({
+      main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
+    });
   };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
+    // const postForm = new FormData();
     let postForm = {
-      healthtest: {
-        ...healthTestData
-      }
+      ...formData,
+      healthtest: healthTestData
     };
+    // postForm.append(
+    //   'healthtest', [...healthTestData]
+    // );
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
         return;
       } else {
+        // postForm.append(
+        //   item[0], item[1]
+        // );
         postForm = {
           ...postForm,
           [item[0]]: item[1]
         };
       }
     });
+    // Object.entries(healthTestData).forEach((item) => {
+    //   console.log(item);
+    //   postForm.append(
+    //     `healthtest[${item[0]}]`, item[1]
+    //   );
+    // });
     console.log(postForm);
     postDog(postForm)
       .then(dog => {
@@ -226,7 +239,7 @@ const DogCreationForm = () => {
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
-              <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
+              <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
             <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>

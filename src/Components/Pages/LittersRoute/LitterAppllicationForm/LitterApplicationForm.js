@@ -51,7 +51,7 @@ const LitterApplicationForm = () => {
       ...formData,
       user_id: loggedInUser.id,
       litterList: litterList.filter(litter => {
-        return litter.breeder_id !== loggedInUser.id && litter.national !== 1;
+        return litter.breeder_id !== loggedInUser.id && litter.status === 1;
       })
     });
 
@@ -156,6 +156,7 @@ const LitterApplicationForm = () => {
         //   type: "setApplicationForms",
         //   data: application
         // });
+        // clear app form
         navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
       })
       .catch((e) => {
@@ -181,7 +182,7 @@ const LitterApplicationForm = () => {
           <Grid item xs={12} sx={{ mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Litter Application</Typography>
           </Grid>
-          {/* <Grid item xs={12}>
+          <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel id="litter_select_label">Selected Litter</InputLabel>
               <Select
@@ -199,7 +200,7 @@ const LitterApplicationForm = () => {
                 })}
               </Select>
             </FormControl>
-          </Grid> */}
+          </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
@@ -230,7 +231,7 @@ const LitterApplicationForm = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
                 name="sexPref"
@@ -259,7 +260,7 @@ const LitterApplicationForm = () => {
                 }}
               />
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <FormControl sx={{ display: "flex", alignItems: 'center' }}>
               <FormLabel id="add-children-label">Do you have any children?</FormLabel>

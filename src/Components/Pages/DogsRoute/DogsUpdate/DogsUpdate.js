@@ -107,19 +107,37 @@ const DogUpdateForm = () => {
 
   // handles image uploads
   const handleImageUpload = (e) => {
-    const { name, value, type, files } = e.target;
-    console.log(files[0]);
-    // setFormData({
-    //   ...formData,
-    //   main_image: files[0]
-    // });
+    const { files } = e.target;
+    setFormData({
+      ...formData,
+      main_image: files[0]
+    });
   };
 
   // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    patchDog(params.id, formData)
+    const postForm = new FormData();
+    // postForm.append(
+    //   'healthtest', healthTestData
+    // );
+    Object.entries(formData).forEach((item) => {
+      console.log(item);
+      if (item[1] === '') {
+        return;
+      } else {
+        postForm.append(
+          item[0], item[1]
+        );
+      }
+    });
+    let dogData = {};
+    postForm.forEach((value, key) => {
+      dogData[key] = value;
+    });
+    console.log(postForm);
+    patchDog(params.id, dogData)
       .then(dog => {
         console.log(dog);
         if (dog.status === 200) {
