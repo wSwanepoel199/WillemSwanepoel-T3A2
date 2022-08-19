@@ -5,17 +5,17 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import { useEffect, useState } from "react";
 import { getLitterApps } from "../../../services/litterServices";
 import { useParams } from "react-router";
-import { useGlobalState, LitterApplication, LitterApplicationDetails, CustomTable } from "../../../utils/componentIndex";
+import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
 
 const LitterApplicationManage = (props) => {
-  const { handleOpenDialog, openDialog, litterApps } = props;
+  const { litterApps } = props;
   const params = useParams();
   const { store, dispatch } = useGlobalState();
   const { litterList, userList, applicationForms } = store;
 
   const [openApp, setOpenApp] = useState(false);
   const [appClosed, setAppClosed] = useState(true);
-  const [applicationDetails, setApplicationDetais] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [availablePups, setAvailablePups] = useState([]);
   const waitlistLitter = litterList.find(litter => litter.id === 1);
   const [waitList, setWaitList] = useState([]);
@@ -42,27 +42,36 @@ const LitterApplicationManage = (props) => {
   //     })
   //     .catch(e => console.log(e));
   // }, []);
-  useEffect(() => {
-    getLitterApps()
-      .then(apps => {
-        dispatch({
-          type: "setApplicationForms",
-          data: apps
-        });
-      })
-      .catch(e => console.log(e));
-  }, []);
 
   useEffect(() => {
-    if (litterApps && waitList.length < 1) {
-      setWaitList(litterApps);
+    if (litterApps) {
+      setApplications(litterApps);
+    } else if (applicationForms !== applications) {
+      getLitterApps()
+        .then(apps => {
+          dispatch({
+            type: "setApplicationForms",
+            data: apps
+          });
+          setApplications(apps);
+        })
+        .catch(e => console.log(e));
     }
+  }, [litterApps, applicationForms]);
+
+  useEffect(() => {
+    if (applications.length > 0 && waitList.length < 1) {
+      setWaitList(applications);
+    }
+  }, [applications]);
+
+  useEffect(() => {
     if (filter !== 'none') {
-      setWaitList(litterApps.filter(form => form.fulfillstate === filter));
+      setWaitList(applications.filter(form => form.fulfillstate === filter));
     } else {
-      setWaitList(litterApps);
+      setWaitList(applications);
     }
-  }, [litterApps, filter]);
+  }, [filter]);
 
   const handleLitterAppOpen = (stage, alt) => {
     switch (stage) {
@@ -111,11 +120,11 @@ const LitterApplicationManage = (props) => {
         textAlign: "center",
         p: 2
       }}>
-        {console.log(litterApps)}
         <Typography variant="h4" component="h1">Manage Litters Applications</Typography>
         <Box sx={{
           py: 2
         }}>
+          {console.log(litterApps)}
           <Box sx={{ py: 2 }}>
             <Typography>Filter Application Status</Typography>
             <Box>
@@ -150,12 +159,12 @@ const LitterApplicationManage = (props) => {
             }
             body={
               <>
-                {waitList.sort((a, b) => (a.priority - b.priority || a.orderBy - b.orderBy))
+                {waitList.length > 0 && waitList.sort((a, b) => (a.priority - b.priority || a.orderBy - b.orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((form, index) => {
                     const user = Object.values(userList).find(user => user.id === form.user_id);
                     return (
-                      <LitterApplication key={index} id={form.id} app={form} user={user} handleOpenDialog={handleOpenDialog} openDialog={openDialog} />
+                      <LitterApplication key={index} id={form.id} app={form} user={user} {...props} />
                     );
                   })}
                 {page > 0 && (

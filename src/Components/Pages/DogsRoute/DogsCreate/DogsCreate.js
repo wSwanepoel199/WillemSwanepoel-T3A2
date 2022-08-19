@@ -79,22 +79,37 @@ const DogCreationForm = () => {
   // handles image uploads
   const handleImageUpload = (e) => {
     const { files } = e.target;
-    console.log(files);
-    console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
-    setImageData({
-      main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
-    });
+    // let file = e.target.files[0];
+    // console.log(file);
+
+    // let reader = new FileReader();
+    // reader.readAsDataURL(files[0]);
+
+    // reader.onload = () => {
+    //   setFormData({
+    //     ...formData,
+    //     main_image: reader.result
+    //   });
+    // };
+    setImageData(files[0]);
+    // console.log(files);
+    // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
+    // setImageData({
+    //   main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
+    // });
   };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
+    // const FormData = require('form-data');
     // const postForm = new FormData();
-    let postForm = {
-      ...formData,
-      healthtest: healthTestData
-    };
+    let postForm;
+    //  = {
+    //   ...formData,
+    //   healthtest: healthTestData
+    // };
     // postForm.append(
     //   'healthtest', [...healthTestData]
     // );
@@ -114,10 +129,22 @@ const DogCreationForm = () => {
     });
     // Object.entries(healthTestData).forEach((item) => {
     //   console.log(item);
-    //   postForm.append(
-    //     `healthtest[${item[0]}]`, item[1]
-    //   );
+    //   // postForm.append(
+    //   //   `healthtest[${item[0]}]`, item[1]
+    //   // );
+    //   postForm = {
+    //     ...postForm
+    //   }
     // });
+    //if (imageData !== []) {
+    // postForm.append(
+    //   'main_image', imageData, imageData.name
+    // );
+    // tempForm = {
+    //   ...tempForm,
+    //   main_image: imageData.main_image
+    // };
+    //}
     console.log(postForm);
     postDog(postForm)
       .then(dog => {
@@ -126,18 +153,18 @@ const DogCreationForm = () => {
           // on success adds dog to dogList
           dispatch({
             type: 'updateDogList',
-            data: [...dogList, dog.data.dog]
+            data: [...dogList, dog.data]
           });
           // clears form and health test data
           setFormData(initialFormData);
           setHealthTestData(initialHealthTestData);
           // routes user back to dogs manage and alerts them to successful creation
-          navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.dog.callname} Created` } });
+          navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.callname} Created` } });
         }
       })
       .catch(e => {
         // navigates to current page and alerts user of any errors
-        console.log(e.response);
+        console.log(e);
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} Error`, body: `${e.response.statusText}` } });
       });
   };
@@ -151,6 +178,7 @@ const DogCreationForm = () => {
     }}>
       {console.log(formData)}
       {console.log(validLitterList)}
+      {console.log(imageData)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -236,13 +264,13 @@ const DogCreationForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
-            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
-          </Grid>
+            <Typography sx={{ pl: 1 }}>{imageData.main_image && imageData.main_image.name}</Typography>
+          </Grid> */}
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

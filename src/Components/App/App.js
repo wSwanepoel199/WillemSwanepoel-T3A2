@@ -102,21 +102,6 @@ const App = () => {
     // }
   }, [dispatch, loggedInUser]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: "updateValidBreeders",
-  //     data: Object.values(userList).filter(user => user),
-  //   });
-  //   dispatch({
-  //     type: "updateValidSires",
-  //     data: dogList.filter(dog => dog.sex === 1 && dog.retired === false),
-  //   });
-  //   dispatch({
-  //     type: "updateValidBitches",
-  //     data: dogList.filter(dog => dog.sex === 2 && dog.retired === false),
-  //   });
-  // }, [userList, dogList]);
-
   return (
     <>
       {console.log("store:", store)}
@@ -129,7 +114,9 @@ const App = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* renders an alert with customisable fields depending on requirement */}
         {state && state.alert ?
-          <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+          <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
+            <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+          </Box>
           :
           null}
         {/* renders the header which contains the Myshalair logo*/}

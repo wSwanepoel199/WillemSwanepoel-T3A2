@@ -5,7 +5,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useRef, useState } from "react";
 import { useGlobalState, Litter, CustomTable, LitterApplication, LitterApplicationManage } from "../../../utils/componentIndex";
 import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 
 // impliment application filtering out from waitlist to open litters
@@ -16,6 +16,8 @@ const LitterManage = () => {
   const { litterList, applicationForms, userList, dogList, updatingApp } = store;
   const mounted = useRef();
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [litters, setLitters] = useState([]);
   const waitlistLitter = litterList.find(litter => litter.id === 1);
@@ -36,14 +38,16 @@ const LitterManage = () => {
 
   useEffect(() => {
     if (!mounted.current) {
-      getLitterApps()
-        .then(apps => {
-          dispatch({
-            type: "setApplicationForms",
-            data: apps
-          });
-        })
-        .catch(e => console.log(e));
+      if (!sessionStorage.getItem('litterAppForms')) {
+        getLitterApps()
+          .then(apps => {
+            dispatch({
+              type: "setApplicationForms",
+              data: apps
+            });
+          })
+          .catch(e => console.log(e));
+      }
       mounted.current = true;
     }
   }, [mounted]);
@@ -97,6 +101,7 @@ const LitterManage = () => {
 
   const handleSelect = (e) => {
     const { name, value } = e.target;
+    console.log(e);
     setSelectedLitter({
       [name]: parseInt(value)
     });
@@ -104,6 +109,7 @@ const LitterManage = () => {
 
   const handleOpenDialog = (open) => {
     setOpenDialog(open);
+    const chosenLitter = litters.find(litter => litter.id === selectedLitter.select_litter);
     if (updatingApp && selectedLitter.select_litter) {
       patchLitterApp(updatingApp.id, { ...updatingApp, litter_id: selectedLitter.select_litter, fulfillstate: 1 })
         .then(app => {
@@ -113,11 +119,15 @@ const LitterManage = () => {
               type: 'updateLitterApplications',
               data: updateItemInArray(app.data, applicationForms)
             });
+            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} assigned to ${chosenLitter.lname}` } });
             setSelectedLitter({ select_litter: '' });
           }
         })
         .catch(e => console.log(e));
     }
+  };
+  const handleCancel = () => {
+    setOpenDialog(!openDialog);
   };
 
   // const emptyRows =
@@ -134,32 +144,37 @@ const LitterManage = () => {
       }}>
         {/* {console.log(litterList)}
         {console.log(litters)}
-        {console.log(applicationForms)}
-        {console.log(waitlistLitter)} */}
+        {console.log(applicationForms)} */}
+        {console.log(waitList)}
         {/* {console.log(selectedLitter)} */}
         <Typography variant="h4" component="h1">Manage Litters</Typography>
-        <Box component={Paper} sx={{
-          m: 2,
-          p: 2
-        }}>
-          <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Application Wait List</Typography>
-          <Collapse
-            in={openApp}
-            unmountOnExit>
-            <LitterApplicationManage handleOpenDialog={handleOpenDialog} openDialog={openDialog} litterApps={waitList} />
-          </Collapse>
-        </Box>
+        {waitList.length > 0
+          && <>
+            <Box component={Paper} sx={{
+              m: 2,
+              p: 2
+            }}>
+
+              <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Application Wait List</Typography>
+              <Collapse
+                in={openApp}
+                unmountOnExit>
+                <LitterApplicationManage handleOpenDialog={handleOpenDialog} openDialog={openDialog} litterApps={waitList} />
+              </Collapse>
+
+            </Box>
+          </>}
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(!openDialog)}
           fullScreen={fullscreen}
         >
-          <DialogTitle>Manage Puppies</DialogTitle>
+          <DialogTitle>Assign Application</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
               <Grid xs={12}>
                 <DialogContentText>
-                  Add or remove puppies from litter.
+                  Assign application {updatingApp && updatingApp.id} to an open litters
                 </DialogContentText>
               </Grid>
               <Grid xs={12}>
@@ -186,8 +201,8 @@ const LitterManage = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleOpenDialog(!openDialog)}>Update Pupppies</Button>
-            {/* <Button onClick={() => handleCancel()}>Cancel Edits</Button> */}
+            <Button onClick={() => handleOpenDialog(!openDialog)}>Approve Application</Button>
+            <Button onClick={() => handleCancel()}>Cancel</Button>
           </DialogActions>
         </Dialog>
         <Typography variant="h6" component="span" sx={{ py: 2 }}>Litters</Typography>

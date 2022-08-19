@@ -2,7 +2,7 @@ import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { patchLitterApp } from "../../../services/litterServices";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 import { useGlobalState } from "../../../utils/stateContext";
@@ -13,9 +13,11 @@ import LitterApplicationDetails from "../LitterApplicationDetails/LitterApplicat
 // impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
 const LitterApplication = (props) => {
-  const { app, user, litter, handleOpenDialog, openDialog } = props;
+  const { app, user, litter } = props;
   const { store, dispatch } = useGlobalState();
   const { applicationForms } = store;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const initialAppLitter = {
     id: 1,
@@ -38,6 +40,9 @@ const LitterApplication = (props) => {
       case 2: {
         return "Rejected";
       }
+      case 3: {
+        return "Completed";
+      }
       default: {
         return "Unprocessed";
       }
@@ -45,15 +50,16 @@ const LitterApplication = (props) => {
   };
 
   const handleAcceptOrReject = (state) => {
-    if (state === 1) {
-      handleOpenDialog(!openDialog, app);
+    if (state === 1 && props.handleOpenDialog) {
+      const { handleOpenDialog, openDialog } = props;
+      handleOpenDialog(!openDialog);
       dispatch({
         type: 'setUpdatingApp',
         data: app
       });
       setOpen(!open);
     } else if (state === 2) {
-      patchLitterApp(app.id, { ...app, fulfillstate: state })
+      patchLitterApp(app.id, { ...app, fulfillstate: state, litter_id: 1 })
         .then(app => {
           console.log(app);
           if (app.status === 200) {
@@ -62,9 +68,13 @@ const LitterApplication = (props) => {
               data: updateItemInArray(app.data, applicationForms)
             });
             setOpen(!open);
+            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been rejected` } });
           }
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+          console.log(e);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}; ${e.response.statusTxt}` } });
+        });
     }
   };
 
@@ -103,7 +113,7 @@ const LitterApplication = (props) => {
       </TableRow>
       <TableRow>
         <TableCell sx={{ pb: 0, pt: 0 }} colSpan={7}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto">
             <Box sx={{ m: 1 }}>
               <Table size="small">
                 <TableBody>
@@ -155,7 +165,7 @@ const LitterApplication = (props) => {
               </Table>
             </Box>
             <Box sx={{ p: 2 }}>
-              <LitterApplicationDetails id={props.id} />
+              <LitterApplicationDetails id={app.id} />
             </Box>
             <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Box>

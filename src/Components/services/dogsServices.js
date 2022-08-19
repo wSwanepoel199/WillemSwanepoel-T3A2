@@ -6,7 +6,8 @@ export async function getDogs() {
 }
 
 export async function postDog(data) {
-  const response = await backEndAPI.post('/lazy_dog_create', data);
+
+  const response = await backEndAPI.post('/dogs', data);
   return response;
 }
 

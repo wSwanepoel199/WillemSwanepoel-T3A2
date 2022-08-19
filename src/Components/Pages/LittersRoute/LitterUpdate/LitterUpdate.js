@@ -61,7 +61,9 @@ const LitterUpdateForm = () => {
 
   // on page mount makes get request for specified litter
   useEffect(() => {
-    if (!mounted.current) {
+    if (params.id === '1') {
+      navigate('..', { state: { alert: true, location: '.', severity: "warning", title: "Inaccessable", body: `This litter is not accessable` } });
+    } else if (!mounted.current) {
       getLitter(params.id)
         .then(litter => {
           console.log("litter", litter);
@@ -111,7 +113,7 @@ const LitterUpdateForm = () => {
       mounted.current = true;
     }
 
-  }, [mounted]);
+  }, [mounted, params]);
 
   // triggers when the newpuppy state is changed
   useEffect(() => {

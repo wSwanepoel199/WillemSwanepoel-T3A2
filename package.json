@@ -16,7 +16,7 @@
     "@mui/x-date-pickers": "^5.0.0-beta.3",
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
-    "dotenv": "^16.0.1",
+    "form-data": "^4.0.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
@@ -26,9 +26,9 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --max_old_space_size=4096 start",
     "test": "react-scripts test",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

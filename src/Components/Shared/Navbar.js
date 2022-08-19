@@ -1,22 +1,20 @@
 import { Navbar, NavDropdown, Container, Nav } from "react-bootstrap";
 import { useGlobalState } from "../utils/componentIndex";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-  const { store, dispatch, init } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const navigate = useNavigate();
-
-  const handleSignOut = () => {
-    dispatch({
-      type: "signOutUser",
-      data: {}
-    });
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem('user');
-  };
+  const location = useLocation();
 
   const handleSelect = (e) => {
     navigate(e);
+  };
+
+  const handleSignOut = () => {
+    dispatch({
+      type: "signOutUser"
+    });
   };
 
   const NavBody = () => {

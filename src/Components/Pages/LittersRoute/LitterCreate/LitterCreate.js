@@ -3,9 +3,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
-import { AlertComponent, useGlobalState } from "../../../utils/componentIndex";
+import { useGlobalState } from "../../../utils/componentIndex";
 import { postLitter } from "../../../services/litterServices";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 
 
@@ -39,10 +39,10 @@ const LitterCreationForm = () => {
 
   // assigns states of breeder, sires, and bitches to filtered lists where dogs are not retired and users are breeders
   useEffect(() => {
-    setBreeders(userList.filter(user => user));
+    setBreeders(userList.filter(user => user.breeder === true));
     setSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
     setBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
-  }, []);
+  }, [userList, dogList]);
 
   // formats date input to use moment and passes it to handle input
   const handleDate = (e, name) => {

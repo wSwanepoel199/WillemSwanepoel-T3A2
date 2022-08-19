@@ -14,3 +14,8 @@ export async function getUsers() {
   const response = await backEndAPI.get('/userlist');
   return response.data;
 }
+
+// export function signOut() {
+//   sessionStorage.clear();
+//   window.location.reload();
+// }

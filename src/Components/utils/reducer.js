@@ -49,10 +49,12 @@ export const reducer = (state, action) => {
       };
     }
     case "signOutUser": {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('litterAppForms');
       return {
         ...state,
-        loggedInUser: action.data,
-        token: action.data
+        loggedInUser: {}
       };
     }
     case "setToken": {
