@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { postDog } from "../../../services/dogsServices";
+import { postDog, uploadImage } from "../../../services/dogsServices";
 
 
 // TO-DO 
@@ -37,7 +37,7 @@ const DogCreationForm = () => {
   };
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
-  // const [imageData, setImageData] = useState([]);
+  const [imageData, setImageData] = useState([]);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
 
@@ -77,35 +77,43 @@ const DogCreationForm = () => {
   };
 
   // handles image uploads
-  // const handleImageUpload = (e) => {
-  //   const { files } = e.target;
-  // let file = e.target.files[0];
-  // console.log(file);
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+    const { files } = e.target;
 
-  // let reader = new FileReader();
-  // reader.readAsDataURL(files[0]);
+    // https://stackoverflow.com/questions/52566331/formdata-append-nested-object
 
-  // reader.onload = () => {
-  //   setFormData({
-  //     ...formData,
-  //     main_image: reader.result
-  //   });
-  // };
-  // setImageData(files[0]);
-  // console.log(files);
-  // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
-  // setImageData({
-  //   main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
-  // });
-  // };
+    // const form = new FormData();
+    // form.append('main_image', files[0]);
+    // uploadImage(form)
+    //   .then(res => {
+    //     console.log(res);
+    //   })
+    //   .catch(e => console.log(e));
+    // let file = new File(files, files[0].name);
+    // console.log(file);
+
+    // let reader = new FileReader();
+    // reader.readAsDataURL(files[0]);
+
+    // reader.onload = () => {
+    //   console.log(reader.result);
+    //   setImageData(reader.result);
+    // };
+    setImageData(files[0]);
+    // console.log(files);
+    // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
+    // file = new Blob([JSON.stringify(files[0])], { type: files[0].type });
+    // setImageData(file);
+  };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
-    // const FormData = require('form-data');
-    // const postForm = new FormData();
-    let postForm;
+    const FormData = require('form-data');
+    const postForm = new FormData();
+    // let postForm;
     //  = {
     //   ...formData,
     //   healthtest: healthTestData
@@ -118,13 +126,13 @@ const DogCreationForm = () => {
       if (item[1] === '') {
         return;
       } else {
-        // postForm.append(
-        //   item[0], item[1]
-        // );
-        postForm = {
-          ...postForm,
-          [item[0]]: item[1]
-        };
+        postForm.append(
+          item[0], item[1]
+        );
+        // postForm = {
+        //   ...postForm,
+        //   [item[0]]: item[1]
+        // };
       }
     });
     // Object.entries(healthTestData).forEach((item) => {
@@ -136,15 +144,15 @@ const DogCreationForm = () => {
     //     ...postForm
     //   }
     // });
-    //if (imageData !== []) {
-    // postForm.append(
-    //   'main_image', imageData, imageData.name
-    // );
-    // tempForm = {
-    //   ...tempForm,
-    //   main_image: imageData.main_image
-    // };
-    //}
+    if (imageData !== []) {
+      postForm.append(
+        'main_image', imageData
+      );
+      // postForm = {
+      //   ...postForm,
+      //   'main_image': imageData
+      // };
+    }
     console.log(postForm);
     postDog(postForm)
       .then(dog => {
@@ -264,13 +272,13 @@ const DogCreationForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          {/* <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
             <Typography sx={{ pl: 1 }}>{imageData.main_image && imageData.main_image.name}</Typography>
-          </Grid> */}
+          </Grid>
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

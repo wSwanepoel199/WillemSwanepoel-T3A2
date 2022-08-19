@@ -16,7 +16,7 @@ const DogDetails = () => {
     axios.get(`http://127.0.0.1:3001/dogs/${params.id}`)
       .then(response => {
         console.log(response.data);
-        setDogDetails(response.data);
+        setDogDetails(response.data.dog);
       })
       .catch(e => console.log(e));
   }, [params]);

@@ -6,8 +6,7 @@ export async function getDogs() {
 }
 
 export async function postDog(data) {
-
-  const response = await backEndAPI.post('/dogs', data);
+  const response = await backEndAPI.post('/lazy_dog_create', data);
   return response;
 }
 
@@ -34,5 +33,10 @@ export async function addPuppy(data) {
 export async function pushNewPositions(data) {
   console.log(data);
   const response = await backEndAPI.patch('/reorder_dogs', data);
+  return response;
+}
+
+export async function uploadImage(data) {
+  const response = await backEndAPI.post('/main_image_upload', data);
   return response;
 }
