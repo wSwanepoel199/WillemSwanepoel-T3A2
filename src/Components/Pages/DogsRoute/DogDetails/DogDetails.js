@@ -19,7 +19,7 @@ const DogDetails = () => {
         setDogDetails(response.data);
       })
       .catch(e => console.log(e));
-  }, []);
+  }, [params]);
 
   return (
     <div>

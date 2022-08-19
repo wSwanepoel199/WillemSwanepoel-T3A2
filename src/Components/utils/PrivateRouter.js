@@ -1,6 +1,5 @@
-import { Alert, AlertTitle } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useGlobalState } from "./stateContext";
 
 const AdminRoute = ({ children }) => {
@@ -14,7 +13,7 @@ const AdminRoute = ({ children }) => {
     if (!admin) {
       navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You are not autherised to access that page" } });
     }
-  }, []);
+  }, [admin, navigate]);
 
   return (
     <>
@@ -40,7 +39,7 @@ const SecuredRoute = ({ children }) => {
     if (!user) {
       navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You must be signed in to access this page" } });
     }
-  }, []);
+  }, [user, navigate]);
 
   return (
     <>

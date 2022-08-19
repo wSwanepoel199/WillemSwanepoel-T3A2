@@ -1,7 +1,4 @@
-import { Box, Button, Collapse, Fade, Paper, TableCell, TableRow, Typography, TablePagination } from "@mui/material";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import { Box, Button, Paper, TableCell, TableRow, Typography, TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getLitterApps } from "../../../services/litterServices";
 import { useParams } from "react-router";
@@ -9,19 +6,18 @@ import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/c
 
 const LitterApplicationManage = (props) => {
   const { litterApps } = props;
-  const params = useParams();
   const { store, dispatch } = useGlobalState();
-  const { litterList, userList, applicationForms } = store;
+  const { userList, applicationForms } = store;
 
   const [openApp, setOpenApp] = useState(false);
   const [appClosed, setAppClosed] = useState(true);
   const [applications, setApplications] = useState([]);
-  const [availablePups, setAvailablePups] = useState([]);
-  const waitlistLitter = litterList.find(litter => litter.id === 1);
+  // const [availablePups, setAvailablePups] = useState([]);
+  // const waitlistLitter = litterList.find(litter => litter.id === 1);
   const [waitList, setWaitList] = useState([]);
 
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('id');
+  // const [order, setOrder] = useState('asc');
+  // const [orderBy, setOrderBy] = useState('id');
   const [filter, setFilter] = useState('none');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -57,40 +53,38 @@ const LitterApplicationManage = (props) => {
         })
         .catch(e => console.log(e));
     }
-  }, [litterApps, applicationForms]);
+  }, [litterApps, applicationForms, dispatch]);
 
   useEffect(() => {
-    if (applications.length > 0 && waitList.length < 1) {
+    if (applications.length > 0 && waitList.length < 1 && filter === 'none') {
       setWaitList(applications);
     }
-  }, [applications]);
+  }, [applications, waitList, filter]);
 
   useEffect(() => {
     if (filter !== 'none') {
       setWaitList(applications.filter(form => form.fulfillstate === filter));
-    } else {
-      setWaitList(applications);
     }
   }, [filter]);
 
-  const handleLitterAppOpen = (stage, alt) => {
-    switch (stage) {
-      case 1: {
-        if (alt) {
-          setOpenApp(!openApp); //sets to false triggering face
-        } else {
-          setAppClosed(!appClosed); //triggered when appClosed is false, sets to true
-        }
-      }
-      case 2: {
-        if (alt) {
-          setOpenApp(!openApp); // triggers when openApp is false, sets to true
-        } else {
-          setAppClosed(!appClosed); //triggered when fade completes set to false
-        }
-      }
-    }
-  };
+  // const handleLitterAppOpen = (stage, alt) => {
+  //   switch (stage) {
+  //     case 1: {
+  //       if (alt) {
+  //         setOpenApp(!openApp); //sets to false triggering face
+  //       } else {
+  //         setAppClosed(!appClosed); //triggered when appClosed is false, sets to true
+  //       }
+  //     }
+  //     case 2: {
+  //       if (alt) {
+  //         setOpenApp(!openApp); // triggers when openApp is false, sets to true
+  //       } else {
+  //         setAppClosed(!appClosed); //triggered when fade completes set to false
+  //       }
+  //     }
+  //   }
+  // };
 
 
   const handleChangePage = (e, newPage) => {

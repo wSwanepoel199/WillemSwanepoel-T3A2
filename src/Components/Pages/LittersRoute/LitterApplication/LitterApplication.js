@@ -30,7 +30,7 @@ const LitterApplication = (props) => {
     if (litter) {
       setAppLitter(litter);
     }
-  }, []);
+  }, [litter]);
 
   const fulFillState = (state) => {
     switch (state) {

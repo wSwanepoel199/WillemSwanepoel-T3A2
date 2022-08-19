@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // imports required services
 import { getDogs } from '../services/dogsServices';
-import { getLitterApps, getLitters } from '../services/litterServices';
+import { getLitters } from '../services/litterServices';
 import { getUsers } from '../services/authServices';
 // centralises imports of reducer, global state, the shared components and pages to a single file.
 import {
@@ -14,9 +14,6 @@ import {
   // pages
   Home,
   About,
-  ContactForm,
-  Contacts,
-  ContactDetails,
   DogsManage,
   DogCreationForm,
   DogUpdateForm,
@@ -54,7 +51,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { dogList, litterList, userList, loggedInUser } = store;
+  const { loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -158,23 +155,6 @@ const App = () => {
               })}
               {/* sets the path for a selected dog using a non absolute path. in this case the router will accept any into as :id */}
               <Route path="display/:id" element={<DogDetails />} />
-            </Route>
-            {/* sets base path for contacts*/}
-            <Route path="contacts">
-              {/* sets Contacts element as base path using index. Uses AdminRoute to manage unautherised access*/}
-              <Route index element={
-                <AdminRoute>
-                  <Contacts />
-                </AdminRoute>
-              } />
-              {/* sets path for ContactDetails using a non absolute path, will only be routed to if path hasn't been assinged to another element. element uses AdminRoute to manage unautherised access*/}
-              <Route path=":id" element={
-                <AdminRoute>
-                  <ContactDetails />
-                </AdminRoute>
-              } />
-              {/* sets path for contact form element */}
-              <Route path="form" element={<ContactForm />} />
             </Route>
             {/* sets default path for litters */}
             <Route path="litters" >

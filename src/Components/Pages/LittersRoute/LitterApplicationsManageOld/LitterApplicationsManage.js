@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button } from "@mui/material";
+import { Paper, Typography, Container, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useGlobalState, LitterApplication } from "../../../utils/componentIndex";
 import { Link } from "react-router-dom";

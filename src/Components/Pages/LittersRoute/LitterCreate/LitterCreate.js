@@ -1,11 +1,11 @@
-import { Grid, FormControl, Input, InputLabel, FormHelperText, Container, Paper, FormGroup, Typography, TextField, Select, MenuItem, Button, Slider, FormControlLabel, Switch } from "@mui/material";
+import { Grid, FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Slider, FormControlLabel, Switch } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Box } from "@mui/system";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
 import { postLitter } from "../../../services/litterServices";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, } from "react-router";
 import { Link } from "react-router-dom";
 
 

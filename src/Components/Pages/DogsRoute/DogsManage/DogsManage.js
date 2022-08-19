@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, Container, TableRow, TableCell, Button, TablePagination, TableSortLabel, IconButton } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
 import { Link } from "react-router-dom";
 

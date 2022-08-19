@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel, Input } from "@mui/material";
+import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
@@ -37,7 +37,7 @@ const DogCreationForm = () => {
   };
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
-  const [imageData, setImageData] = useState([]);
+  // const [imageData, setImageData] = useState([]);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
 
@@ -77,27 +77,27 @@ const DogCreationForm = () => {
   };
 
   // handles image uploads
-  const handleImageUpload = (e) => {
-    const { files } = e.target;
-    // let file = e.target.files[0];
-    // console.log(file);
+  // const handleImageUpload = (e) => {
+  //   const { files } = e.target;
+  // let file = e.target.files[0];
+  // console.log(file);
 
-    // let reader = new FileReader();
-    // reader.readAsDataURL(files[0]);
+  // let reader = new FileReader();
+  // reader.readAsDataURL(files[0]);
 
-    // reader.onload = () => {
-    //   setFormData({
-    //     ...formData,
-    //     main_image: reader.result
-    //   });
-    // };
-    setImageData(files[0]);
-    // console.log(files);
-    // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
-    // setImageData({
-    //   main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
-    // });
-  };
+  // reader.onload = () => {
+  //   setFormData({
+  //     ...formData,
+  //     main_image: reader.result
+  //   });
+  // };
+  // setImageData(files[0]);
+  // console.log(files);
+  // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
+  // setImageData({
+  //   main_image: new Blob([JSON.stringify(files[0])], { type: files[0].type })
+  // });
+  // };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
@@ -176,9 +176,9 @@ const DogCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {console.log(formData)}
+      {/* {console.log(formData)}
       {console.log(validLitterList)}
-      {console.log(imageData)}
+      {console.log(imageData)} */}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>

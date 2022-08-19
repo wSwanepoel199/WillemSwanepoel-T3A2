@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Collapse, Alert, AlertTitle, IconButton } from '@mui/material';
+import { Collapse, Alert, AlertTitle, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router';
 

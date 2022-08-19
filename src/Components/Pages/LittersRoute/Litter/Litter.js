@@ -3,7 +3,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { patchLitter } from "../../../services/litterServices";
 import { useGlobalState } from "../../../utils/stateContext";
 

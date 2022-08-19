@@ -10,10 +10,6 @@ import CustomTable from '../Shared/CustomTable/CustomTable';
 // Import Pages Components
 import Home from '../Pages/Home';
 import About from '../Pages/About';
-import ContactForm from '../Pages/ContactForm';
-import Contacts from '../Pages/Contacts';
-import Contact from '../Pages/Contact';
-import ContactDetails from '../Pages/ContactDetails';
 import DogsReorder from '../Pages/DogsRoute/DogsReorder/DogsReorder';
 import DogCard from '../Pages/DogsRoute/Dogcard/DogCard';
 import Dog from '../Pages/DogsRoute/Dog/Dog';
@@ -55,10 +51,6 @@ export {
   // Pages
   Home,
   About,
-  ContactForm,
-  Contacts,
-  Contact,
-  ContactDetails,
   DogsReorder,
   DogCard,
   Dog,

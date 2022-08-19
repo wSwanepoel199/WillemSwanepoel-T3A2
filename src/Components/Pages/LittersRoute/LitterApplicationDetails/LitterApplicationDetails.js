@@ -1,21 +1,17 @@
-import { ThemeProvider, Box, Container, Typography, Paper, FormControl, Select, InputLabel, MenuItem, TextField, InputAdornment, FormLabel, RadioGroup, Radio, FormControlLabel, Button, TableCell, TableRow, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { customTheme } from "../../../utils/customPalette";
+import { Box, Typography, Paper, TableCell, TableRow } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getLitterApp } from "../../../services/litterServices";
-import { useParams } from "react-router";
 import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
 
 // include assigned puppy
 
 const LitterApplicationDetails = (props) => {
-  const params = useParams();
-  const { store, dispatch } = useGlobalState();
+  const { store } = useGlobalState();
   const { litterList, userList } = store;
 
   const [applicationDetails, setApplicationDetais] = useState([]);
-  const [availablePups, setAvailablePups] = useState([]);
+  // const [availablePups, setAvailablePups] = useState([]);
   const [children, setChildren] = useState([]);
   const [pets, setPets] = useState([]);
 
@@ -42,7 +38,7 @@ const LitterApplicationDetails = (props) => {
         .catch(e => console.log(e));
     }
 
-  }, [props]);
+  }, [props, applicationDetails]);
 
   return (
     <>

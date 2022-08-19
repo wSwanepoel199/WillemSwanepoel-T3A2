@@ -1,9 +1,9 @@
-import { Box, Paper, Typography, Container, Stack, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Collapse, Button, TablePagination, Dialog, useMediaQuery, useTheme, DialogTitle, DialogContent, DialogContentText, DialogActions, TableSortLabel, InputBase, Select, MenuItem, OutlinedInput, FormControl, InputLabel } from "@mui/material";
+import { Box, Paper, Typography, Container, TableRow, TableCell, Collapse, Button, TablePagination, Dialog, useMediaQuery, useTheme, DialogTitle, DialogContent, DialogContentText, DialogActions, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useRef, useState } from "react";
-import { useGlobalState, Litter, CustomTable, LitterApplication, LitterApplicationManage } from "../../../utils/componentIndex";
+import { useGlobalState, Litter, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
 import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
@@ -20,7 +20,7 @@ const LitterManage = () => {
   const location = useLocation();
 
   const [litters, setLitters] = useState([]);
-  const waitlistLitter = litterList.find(litter => litter.id === 1);
+  // const waitlistLitter = litterList.find(litter => litter.id === 1);
   const [waitList, setWaitList] = useState([]);
   const [selectedLitter, setSelectedLitter] = useState({ select_litter: '' });
 
@@ -30,7 +30,7 @@ const LitterManage = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('id');
+  // const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -45,12 +45,13 @@ const LitterManage = () => {
               type: "setApplicationForms",
               data: apps
             });
+            setOrder('asc');
           })
           .catch(e => console.log(e));
       }
       mounted.current = true;
     }
-  }, [mounted]);
+  }, [mounted, dispatch]);
 
   useEffect(() => {
     setLitters(litterList.filter(litter => litter.id !== 1));
@@ -61,34 +62,6 @@ const LitterManage = () => {
       setWaitList(applicationForms.filter(form => form.litter_id === 1));
     }
   }, [applicationForms]);
-
-  function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-
-  function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
 
   const handleChangePage = (e, newPage) => {
     setPage(newPage);

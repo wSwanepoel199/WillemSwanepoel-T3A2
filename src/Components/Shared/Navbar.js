@@ -1,11 +1,10 @@
 import { Navbar, NavDropdown, Container, Nav } from "react-bootstrap";
 import { useGlobalState } from "../utils/componentIndex";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const { store, dispatch } = useGlobalState();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSelect = (e) => {
     navigate(e);
@@ -44,7 +43,6 @@ const NavBar = () => {
             title="Our Company"
             id={`offcanvasNavbarDropdown-expand-md`}>
             <NavDropdown.Item eventKey="/about">About Us</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/contacts/form">Contact Us</NavDropdown.Item>
           </NavDropdown>
           {store.loggedInUser.admin ?
             <>

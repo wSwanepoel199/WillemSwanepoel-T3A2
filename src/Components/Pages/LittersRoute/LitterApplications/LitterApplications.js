@@ -1,11 +1,10 @@
-import { ThemeProvider, Box, Container, Typography, Paper, TableContainer, Table, TableRow, TableHead, TableBody, TableCell, Button } from "@mui/material";
+import { Box, Container, Typography, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { customTheme } from "../../../utils/customPalette";
 import { getLitter } from "../../../services/litterServices";
-import { useGlobalState, LitterApplication, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
+import { useGlobalState, LitterApplicationManage } from "../../../utils/componentIndex";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected
@@ -13,7 +12,7 @@ import { useGlobalState, LitterApplication, CustomTable, LitterApplicationManage
 const LitterApplications = () => {
   const params = useParams();
   const { store } = useGlobalState();
-  const { userList, litterList, dogList } = store;
+  const { userList, dogList } = store;
 
   const [litterDetail, setLitterDetail] = useState([]);
   const [litterApplications, setLitterApplications] = useState([]);
@@ -33,7 +32,7 @@ const LitterApplications = () => {
         }
       })
       .catch(e => console.log(e));
-  }, []);
+  }, [dogList, userList, params]);
 
   return (
     <>

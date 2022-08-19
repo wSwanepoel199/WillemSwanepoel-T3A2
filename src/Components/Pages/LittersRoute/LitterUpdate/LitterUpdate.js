@@ -113,7 +113,7 @@ const LitterUpdateForm = () => {
       mounted.current = true;
     }
 
-  }, [mounted, params]);
+  }, [mounted, params, dogList, navigate, notional, userList]);
 
   // triggers when the newpuppy state is changed
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel, Input, } from "@mui/material";
+import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
@@ -106,19 +106,20 @@ const DogUpdateForm = () => {
   };
 
   // handles image uploads
-  const handleImageUpload = (e) => {
-    const { files } = e.target;
-    setFormData({
-      ...formData,
-      main_image: files[0]
-    });
-  };
+  // const handleImageUpload = (e) => {
+  //   const { files } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     main_image: files[0]
+  //   });
+  // };
 
   // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    const postForm = new FormData();
+    // const postForm = new FormData();
+    let postForm;
     // postForm.append(
     //   'healthtest', healthTestData
     // );
@@ -127,17 +128,21 @@ const DogUpdateForm = () => {
       if (item[1] === '') {
         return;
       } else {
-        postForm.append(
-          item[0], item[1]
-        );
+        postForm = {
+          ...postForm,
+          [item[0]]: item[1]
+        };
+        // postForm.append(
+        //   item[0], item[1]
+        // );
       }
     });
-    let dogData = {};
-    postForm.forEach((value, key) => {
-      dogData[key] = value;
-    });
-    console.log(postForm);
-    patchDog(params.id, dogData)
+    // let dogData = {};
+    // postForm.forEach((value, key) => {
+    //   dogData[key] = value;
+    // });
+    // console.log(postForm);
+    patchDog(params.id, postForm)
       .then(dog => {
         console.log(dog);
         if (dog.status === 200) {
@@ -256,13 +261,13 @@ const DogUpdateForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
             </Button>
             <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
-          </Grid>
+          </Grid> */}
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

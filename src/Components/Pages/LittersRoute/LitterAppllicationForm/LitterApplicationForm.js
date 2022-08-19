@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogContentText, IconButton, TableContainer } from "@mui/material";
+import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, TableRow, TableCell, IconButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
@@ -24,8 +24,8 @@ import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
 // moving apps from waitlist to other litters and vice versa, handle apps in waitlist by altering reject val, 
 
 const LitterApplicationForm = () => {
-  const { store, dispatch } = useGlobalState();
-  const { loggedInUser, applicationForms } = store;
+  const { store } = useGlobalState();
+  const { loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,7 +56,7 @@ const LitterApplicationForm = () => {
       user_id: loggedInUser.id,
     });
 
-  }, []);
+  }, [formData, loggedInUser]);
 
   // handles all form input
   const handleInput = (e) => {
