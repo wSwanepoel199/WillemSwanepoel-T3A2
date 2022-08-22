@@ -257,7 +257,7 @@ const LitterUpdateForm = () => {
       } else {
         fixedValue = 0;
       }
-      if (fixedValue > 24) fixedValue = 24;
+      if (fixedValue > 13) fixedValue = 13;
       if (fixedValue < 0) fixedValue = 0;
 
       setFormData({
@@ -286,6 +286,7 @@ const LitterUpdateForm = () => {
         status: 1
       });
     }
+    navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "warning", title: `Changing Litter Notionality to ${notional}`, body: `Updating existing litter's notionality can result in unforseen complications` } });
   };
 
   // handles form submit, making a patch request to backend to update litter then makes get to fetch new doglist
@@ -491,7 +492,7 @@ const LitterUpdateForm = () => {
                   <Grid xs={12}>
                     {/* button to open up manage puppies dialog */}
                     <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-                      <Button variant="outlined" name="add_pet" onClick={() => setDialogOpen(!dialogOpen)}>
+                      <Button variant="outlined" name="open_puppy_dialog" onClick={() => setDialogOpen(!dialogOpen)}>
                         Manage Puppies
                       </Button>
                     </Box>
@@ -512,7 +513,7 @@ const LitterUpdateForm = () => {
                         </Grid>
                         <Grid xs={12}>
                           <Box>
-                            <Button variant="outlined" name="add_pet" onClick={handleAddPuppy}>
+                            <Button variant="outlined" name="add_puppy" onClick={handleAddPuppy}>
                               Add Puppy
                             </Button>
                           </Box>
@@ -538,10 +539,11 @@ const LitterUpdateForm = () => {
                                       <InputBase name="realname" id="dog_realname_id" required onChange={(e) => handlePuppyInput(e, index)} placeholder="enter realname" value={puppyData[index].realname}
                                       />
                                     </TableCell>
-                                    <TableCell align="center">
+                                    {/* <TableCell align="center">
                                       <InputBase name="callname" id="calllname_id" required onChange={(e) => handlePuppyInput(e, index)} placeholder="enter callname" value={puppyData[index].callname}
                                       />
-                                    </TableCell>
+                                    </TableCell> */}
+                                    {/* here we want to add the puppies colour once its ready */}
                                     <TableCell>
                                       <Select
                                         name="sex"

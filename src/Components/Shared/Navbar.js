@@ -34,8 +34,7 @@ const NavBar = () => {
           <NavDropdown
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
-            <NavDropdown.Item eventKey="litter-schedule">Litter Schedule</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Litter Application</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>

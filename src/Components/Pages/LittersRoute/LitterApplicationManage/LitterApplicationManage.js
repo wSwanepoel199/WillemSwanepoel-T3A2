@@ -56,7 +56,8 @@ const LitterApplicationManage = (props) => {
   }, [litterApps, applicationForms, dispatch]);
 
   useEffect(() => {
-    if (applications.length > 0 && waitList.length < 1 && filter === 'none') {
+    console.log("updatin waitlist");
+    if (applications !== waitList && filter === 'none') {
       setWaitList(applications);
     }
   }, [applications, waitList, filter]);
@@ -64,6 +65,8 @@ const LitterApplicationManage = (props) => {
   useEffect(() => {
     if (filter !== 'none') {
       setWaitList(applications.filter(form => form.fulfillstate === filter));
+    } else {
+      setWaitList(applications);
     }
   }, [filter]);
 
@@ -114,6 +117,7 @@ const LitterApplicationManage = (props) => {
         textAlign: "center",
         p: 2
       }}>
+        {console.log(filter)}
         <Typography variant="h4" component="h1">Manage Litters Applications</Typography>
         <Box sx={{
           py: 2
@@ -153,7 +157,7 @@ const LitterApplicationManage = (props) => {
             }
             body={
               <>
-                {waitList.length > 0 && waitList.sort((a, b) => (a.priority - b.priority || a.orderBy - b.orderBy))
+                {waitList.sort((a, b) => (a.priority - b.priority || a.orderBy - b.orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((form, index) => {
                     const user = Object.values(userList).find(user => user.id === form.user_id);

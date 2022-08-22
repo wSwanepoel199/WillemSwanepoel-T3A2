@@ -10,6 +10,11 @@ export async function postDog(data) {
   return response;
 }
 
+// export async function postDog(data) {
+//   const response = await backEndAPI.post('/dogs', data);
+//   return response;
+// }
+
 export async function getDog(id) {
   const response = await backEndAPI.get(`/dogs/${id}`);
   return response;

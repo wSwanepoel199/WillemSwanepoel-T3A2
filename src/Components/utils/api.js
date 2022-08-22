@@ -4,7 +4,7 @@ const dev = 'http://localhost:3001';
 const prod = 'https://myshalair-back.herokuapp.com/';
 
 const backEndAPI = axios.create({
-  baseURL: prod
+  baseURL: dev
 });
 
 backEndAPI.interceptors.request.use(req => {

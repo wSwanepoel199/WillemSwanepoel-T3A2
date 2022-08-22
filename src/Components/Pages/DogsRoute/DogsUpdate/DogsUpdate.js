@@ -14,6 +14,7 @@ const DogUpdateForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
+  const fd = require('form-data-extended');
 
   // sets the initial data of the component
   const initialFormData = {
@@ -44,14 +45,15 @@ const DogUpdateForm = () => {
         console.log(dog);
         if (dog.status === 200) {
           const { data } = dog;
-          setDog(dog);
+          setDog(data);
           setFormData({
             id: data.dog.id,
             realname: data.dog.realname,
             callname: data.dog.callname,
             sex: data.dog.sex,
             description: data.dog.description,
-            litter_id: ''
+            litter_id: '',
+            main_image: data.dog.main_image
           });
         }
       })
@@ -106,20 +108,20 @@ const DogUpdateForm = () => {
   };
 
   // handles image uploads
-  // const handleImageUpload = (e) => {
-  //   const { files } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     main_image: files[0]
-  //   });
-  // };
+  const handleImageUpload = (e) => {
+    const { files } = e.target;
+    setFormData({
+      ...formData,
+      main_image: files[0]
+    });
+  };
 
   // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
     // const postForm = new FormData();
-    let postForm;
+    let dog;
     // postForm.append(
     //   'healthtest', healthTestData
     // );
@@ -128,8 +130,8 @@ const DogUpdateForm = () => {
       if (item[1] === '') {
         return;
       } else {
-        postForm = {
-          ...postForm,
+        dog = {
+          ...dog,
           [item[0]]: item[1]
         };
         // postForm.append(
@@ -142,6 +144,7 @@ const DogUpdateForm = () => {
     //   dogData[key] = value;
     // });
     // console.log(postForm);
+    const postForm = fd({ dog });
     patchDog(params.id, postForm)
       .then(dog => {
         console.log(dog);
@@ -176,10 +179,11 @@ const DogUpdateForm = () => {
       alignItems: 'center',
     }}>
       {console.log(dog)}
+      {console.log(formData)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
-            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>Create New Dog</Typography>
+            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>{dog.dog && `Updated ${dog.dog.callname}`}</Typography>
           </Grid>
           <Grid xs={12} sm={6}>
             <TextField name="realname" required fullWidth id="realname" label="Dog's Real Name" autoFocus onChange={handleInput} value={formData.realname} />
@@ -261,13 +265,13 @@ const DogUpdateForm = () => {
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
           </Grid>
-          {/* <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
             </Button>
             <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
-          </Grid> */}
+          </Grid>
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

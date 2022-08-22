@@ -51,7 +51,6 @@ export const reducer = (state, action) => {
     case "signOutUser": {
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('user');
-      sessionStorage.removeItem('litterAppForms');
       return {
         ...state,
         loggedInUser: {}
@@ -64,15 +63,7 @@ export const reducer = (state, action) => {
         token: action.data
       };
     }
-    case "setContactForm": {
-      console.log(action.data);
-      return {
-        ...state,
-        contactForm: action.data
-      };
-    }
     case "setApplicationForms": {
-      sessionStorage.setItem("litterAppForms", JSON.stringify(action.data));
       return {
         ...state,
         applicationForms: action.data
@@ -108,7 +99,6 @@ export const reducer = (state, action) => {
       };
     }
     case "updateLitterApplications": {
-      sessionStorage.setItem("litterAppForms", JSON.stringify(action.data));
       return {
         ...state,
         applicationForms: action.data

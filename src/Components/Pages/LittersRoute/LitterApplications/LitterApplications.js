@@ -64,7 +64,7 @@ const LitterApplications = () => {
         </Grid>
       </Container>
       <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
-        <LitterApplicationManage litterApps={litterApplications} />
+        <LitterApplicationManage litterApps={litterApplications} litter={litterDetail} />
       </Container>
       <Container>
         <Link to="/litters/manage">

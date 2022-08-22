@@ -1,7 +1,7 @@
 import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button, Container } from "@mui/material";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { patchLitterApp } from "../../../services/litterServices";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
@@ -23,8 +23,9 @@ const LitterApplication = (props) => {
     id: 1,
     lname: ''
   };
+
   const [open, setOpen] = useState(false);
-  const [appLitter, setAppLitter] = useState([initialAppLitter]);
+  const [appLitter, setAppLitter] = useState(initialAppLitter);
 
   useEffect(() => {
     if (litter) {
@@ -113,7 +114,7 @@ const LitterApplication = (props) => {
       </TableRow>
       <TableRow>
         <TableCell sx={{ pb: 0, pt: 0 }} colSpan={7}>
-          <Collapse in={open} timeout="auto">
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ m: 1 }}>
               <Table size="small">
                 <TableBody>
@@ -125,13 +126,13 @@ const LitterApplication = (props) => {
                         </Button>
                       </Link>
                     </TableCell>
-                    <TableCell align="left" size="small">
+                    {/* <TableCell align="left" size="small">
                       <Link to={`/litters/${appLitter.id}/applications/${app.id}/manage`}>
                         <Button variant="contained" color="warning">
                           Manage
                         </Button>
                       </Link>
-                    </TableCell>
+                    </TableCell> */}
                     {app.fulfillstate !== null ?
                       <>
                         <TableCell align="left" size="small">

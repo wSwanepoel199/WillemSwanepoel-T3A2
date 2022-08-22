@@ -38,7 +38,7 @@ const LitterManage = () => {
 
   useEffect(() => {
     if (!mounted.current) {
-      if (!sessionStorage.getItem('litterAppForms')) {
+      if (applicationForms.length === 0) {
         getLitterApps()
           .then(apps => {
             dispatch({
@@ -51,7 +51,7 @@ const LitterManage = () => {
       }
       mounted.current = true;
     }
-  }, [mounted, dispatch]);
+  }, [mounted, dispatch, applicationForms]);
 
   useEffect(() => {
     setLitters(litterList.filter(litter => litter.id !== 1));
@@ -99,6 +99,7 @@ const LitterManage = () => {
         .catch(e => console.log(e));
     }
   };
+
   const handleCancel = () => {
     setOpenDialog(!openDialog);
   };

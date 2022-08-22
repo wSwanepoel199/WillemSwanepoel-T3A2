@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, TableRow, TableCell, IconButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
@@ -24,10 +24,11 @@ import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
 // moving apps from waitlist to other litters and vice versa, handle apps in waitlist by altering reject val, 
 
 const LitterApplicationForm = () => {
-  const { store } = useGlobalState();
-  const { loggedInUser } = store;
+  const { store, dispatch } = useGlobalState();
+  const { loggedInUser, applicationForms } = store;
   const navigate = useNavigate();
   const location = useLocation();
+  const mounted = useRef();
 
   const initialformData = {
     litter_id: 1,
@@ -51,12 +52,15 @@ const LitterApplicationForm = () => {
 
   // adds the user's id to the contact form automaticallly
   useEffect(() => {
-    setFormData({
-      ...formData,
-      user_id: loggedInUser.id,
-    });
+    if (!mounted.current) {
+      setFormData({
+        ...formData,
+        user_id: loggedInUser.id,
+      });
+      mounted.current = true;
+    }
 
-  }, [formData, loggedInUser]);
+  }, [mounted, formData, loggedInUser]);
 
   // handles all form input
   const handleInput = (e) => {
@@ -155,11 +159,11 @@ const LitterApplicationForm = () => {
     };
     postApplication(appForm)
       .then(application => {
-        // console.log(application);
-        // dispatch({
-        //   type: "setApplicationForms",
-        //   data: [...applicationForms, application]
-        // });
+        console.log(application);
+        dispatch({
+          type: "updateLitterApplications",
+          data: [...applicationForms, application]
+        });
         setFormData(initialformData);
         navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
       })
@@ -349,24 +353,22 @@ const LitterApplicationForm = () => {
               <Grid xs={12} sm={6}>
                 <TextField name="pets_breed" fullWidth id="pets_breed_id" label="Breed of Pet" onChange={handleInput} value={formData.pets_breed} />
               </Grid>
-              {formData.pets_type.toLocaleLowerCase() === "dog"
-                &&
-                <Grid xs={12} sm={6} sx={{ display: "flex", justifyContent: "center" }}>
-                  <FormControl>
-                    <FormLabel htmlFor="pet_desexed_label" >Is Your Dog Desexed?</FormLabel>
-                    <RadioGroup
-                      row
-                      name="desexed"
-                      id="desexed"
-                      aria-labelledby="pet_desexed_label"
-                      onChange={handleInput}
-                      value={formData.desexed}
-                    >
-                      <FormControlLabel value='yes' control={<Radio />} label="Yes" />
-                      <FormControlLabel value='' control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>}
+              <Grid xs={12} sm={6} sx={{ display: "flex", justifyContent: "center" }}>
+                <FormControl>
+                  <FormLabel htmlFor="pet_desexed_label" >Is Your Dog Desexed?</FormLabel>
+                  <RadioGroup
+                    row
+                    name="desexed"
+                    id="desexed"
+                    aria-labelledby="pet_desexed_label"
+                    onChange={handleInput}
+                    value={formData.desexed}
+                  >
+                    <FormControlLabel value='yes' control={<Radio />} label="Yes" />
+                    <FormControlLabel value='' control={<Radio />} label="No" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
               <Grid xs={12}>
                 <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
                   <Button variant="outlined" name="add_pet" onClick={handleInput}>
@@ -385,8 +387,7 @@ const LitterApplicationForm = () => {
                         <TableCell align="center">Age</TableCell>
                         <TableCell align="center">Type</TableCell>
                         <TableCell align="center">Breed</TableCell>
-                        {petsData.find(pet => pet.desexed)
-                          && <TableCell align="center">Desexed</TableCell>}
+                        <TableCell align="center">Desexed</TableCell>
                         <TableCell />
                       </>
                     }

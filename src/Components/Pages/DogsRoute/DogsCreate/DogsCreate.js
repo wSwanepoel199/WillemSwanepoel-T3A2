@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import { postDog, uploadImage } from "../../../services/dogsServices";
+import { postDog } from "../../../services/dogsServices";
 
 
 // TO-DO 
@@ -17,6 +17,7 @@ const DogCreationForm = () => {
   const { litterList, dogList } = store;
   const navigate = useNavigate();
   const location = useLocation();
+  const fd = require('form-data-extended');
 
   // sets form and heath test initial data
   const initialFormData = {
@@ -26,7 +27,7 @@ const DogCreationForm = () => {
     sex: '',
     litter_id: '',
     description: '',
-
+    colour: '',
   };
   const initialHealthTestData = {
     pra: '',
@@ -79,60 +80,36 @@ const DogCreationForm = () => {
   // handles image uploads
   const handleImageUpload = (e) => {
     e.preventDefault();
-    const { files } = e.target;
+    const { name, files } = e.target;
+    console.log(name, files);
 
     // https://stackoverflow.com/questions/52566331/formdata-append-nested-object
 
-    // const form = new FormData();
-    // form.append('main_image', files[0]);
-    // uploadImage(form)
-    //   .then(res => {
-    //     console.log(res);
-    //   })
-    //   .catch(e => console.log(e));
-    // let file = new File(files, files[0].name);
-    // console.log(file);
-
-    // let reader = new FileReader();
-    // reader.readAsDataURL(files[0]);
-
-    // reader.onload = () => {
-    //   console.log(reader.result);
-    //   setImageData(reader.result);
-    // };
-    setImageData(files[0]);
-    // console.log(files);
-    // console.log(new Blob([JSON.stringify(files[0])], { type: files[0].type }));
-    // file = new Blob([JSON.stringify(files[0])], { type: files[0].type });
-    // setImageData(file);
+    setFormData({
+      ...formData,
+      main_image: files[0]
+    });
   };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
-    const FormData = require('form-data');
-    const postForm = new FormData();
-    // let postForm;
-    //  = {
-    //   ...formData,
-    //   healthtest: healthTestData
-    // };
-    // postForm.append(
-    //   'healthtest', [...healthTestData]
-    // );
+    // const FormData = require('form-data');
+    // const postForm = new FormData();
+    let dog;
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
         return;
       } else {
-        postForm.append(
-          item[0], item[1]
-        );
-        // postForm = {
-        //   ...postForm,
-        //   [item[0]]: item[1]
-        // };
+        // postForm.append(
+        //   item[0], item[1]
+        // );
+        dog = {
+          ...dog,
+          [item[0]]: item[1]
+        };
       }
     });
     // Object.entries(healthTestData).forEach((item) => {
@@ -144,30 +121,31 @@ const DogCreationForm = () => {
     //     ...postForm
     //   }
     // });
-    if (imageData !== []) {
-      postForm.append(
-        'main_image', imageData
-      );
-      // postForm = {
-      //   ...postForm,
-      //   'main_image': imageData
-      // };
-    }
-    console.log(postForm);
-    postDog(postForm)
+    // if (imageData !== []) {
+    // postForm.append(
+    //   'main_image', imageData
+    // );
+    //   postForm = {
+    //     ...postForm,
+    //     'main_image': imageData
+    //   };
+    // }
+    console.log(dog);
+    const pF = fd({ dog });
+    postDog(pF)
       .then(dog => {
         console.log(dog);
         if (dog.status === 201) {
           // on success adds dog to dogList
           dispatch({
             type: 'updateDogList',
-            data: [...dogList, dog.data]
+            data: [...dogList, dog.data.dog]
           });
           // clears form and health test data
           setFormData(initialFormData);
           setHealthTestData(initialHealthTestData);
           // routes user back to dogs manage and alerts them to successful creation
-          navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.callname} Created` } });
+          navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.dog.callname} Created` } });
         }
       })
       .catch(e => {
@@ -198,7 +176,7 @@ const DogCreationForm = () => {
           <Grid xs={12} sm={6}>
             <TextField name="callname" required fullWidth id="callname" label="Dog's Call Name" onChange={handleInput} value={formData.callname} />
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
             <FormControl>
               <FormLabel id="dog-sex-label" >Select Sex</FormLabel>
               <RadioGroup
@@ -212,6 +190,26 @@ const DogCreationForm = () => {
                 <FormControlLabel value={1} control={<Radio />} label="Male" />
                 <FormControlLabel value={2} control={<Radio />} label="Female" />
               </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="colour_label">Select Colour Preferance</InputLabel>
+              <Select
+                name="colour"
+                fullWidth
+                id="colour"
+                labelId="colour_label"
+                label="Select Colour Preferance"
+                onChange={handleInput}
+                value={formData.colour}
+              >
+                {/* {Object.values(sires).map(dog => {
+                  return (
+                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
+                  );
+                })} */}
+              </Select>
             </FormControl>
           </Grid>
           {/* <Grid xs={12} sm={6}>
@@ -277,7 +275,7 @@ const DogCreationForm = () => {
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
-            <Typography sx={{ pl: 1 }}>{imageData.main_image && imageData.main_image.name}</Typography>
+            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
           <Grid xs={12}>
             <Container>

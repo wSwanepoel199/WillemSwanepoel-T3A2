@@ -91,8 +91,8 @@ const LitterCreationForm = () => {
         fixedValue = 1;
       }
       console.log(fixedValue);
-      if (fixedValue > 24) fixedValue = 24;
-      if (fixedValue < 1) fixedValue = 1;
+      if (fixedValue > 13) fixedValue = 13;
+      if (fixedValue < 0) fixedValue = 0;
 
       setFormData({
         ...formData,
@@ -268,7 +268,7 @@ const LitterCreationForm = () => {
                 id="esize-slider"
                 label="esize-label"
                 min={1}
-                max={24}
+                max={13}
                 getAriaValueText={sliderValue}
                 valueLabelDisplay="auto"
                 onChange={handleInput}

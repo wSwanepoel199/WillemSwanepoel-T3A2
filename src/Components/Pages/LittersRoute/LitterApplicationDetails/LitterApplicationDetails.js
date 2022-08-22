@@ -53,7 +53,6 @@ const LitterApplicationDetails = (props) => {
         mr: 'auto',
         maxWidth: "sm",
       }}>
-        {/* {console.log(props)} */}
         <Paper sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4 }}>
           <Grid container spacing={2} >
             <Grid xs={12} sx={{ mb: 3 }}>
