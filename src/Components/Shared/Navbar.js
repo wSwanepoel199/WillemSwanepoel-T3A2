@@ -22,7 +22,6 @@ const NavBar = () => {
         <Nav
           className="justify-content-start flex-grow-1 pe-3"
         >
-          <Nav.Link className="nav-link" eventKey="/">Home</Nav.Link>
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
