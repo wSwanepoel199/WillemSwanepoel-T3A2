@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel, Input, } from "@mui/material";
+import { FormControl, InputLabel, Container, Paper, Typography, TextField, Select, MenuItem, Button, Box, RadioGroup, FormControlLabel, Radio, FormLabel } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/componentIndex";
@@ -14,6 +14,7 @@ const DogUpdateForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
+  const fd = require('form-data-extended');
 
   // sets the initial data of the component
   const initialFormData = {
@@ -44,14 +45,15 @@ const DogUpdateForm = () => {
         console.log(dog);
         if (dog.status === 200) {
           const { data } = dog;
-          setDog(dog);
+          setDog(data);
           setFormData({
             id: data.dog.id,
             realname: data.dog.realname,
             callname: data.dog.callname,
             sex: data.dog.sex,
             description: data.dog.description,
-            litter_id: ''
+            litter_id: '',
+            main_image: data.dog.main_image
           });
         }
       })
@@ -118,7 +120,8 @@ const DogUpdateForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    const postForm = new FormData();
+    // const postForm = new FormData();
+    let dog;
     // postForm.append(
     //   'healthtest', healthTestData
     // );
@@ -127,17 +130,22 @@ const DogUpdateForm = () => {
       if (item[1] === '') {
         return;
       } else {
-        postForm.append(
-          item[0], item[1]
-        );
+        dog = {
+          ...dog,
+          [item[0]]: item[1]
+        };
+        // postForm.append(
+        //   item[0], item[1]
+        // );
       }
     });
-    let dogData = {};
-    postForm.forEach((value, key) => {
-      dogData[key] = value;
-    });
-    console.log(postForm);
-    patchDog(params.id, dogData)
+    // let dogData = {};
+    // postForm.forEach((value, key) => {
+    //   dogData[key] = value;
+    // });
+    // console.log(postForm);
+    const postForm = fd({ dog });
+    patchDog(params.id, postForm)
       .then(dog => {
         console.log(dog);
         if (dog.status === 200) {
@@ -171,10 +179,11 @@ const DogUpdateForm = () => {
       alignItems: 'center',
     }}>
       {console.log(dog)}
+      {console.log(formData)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
-            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>Create New Dog</Typography>
+            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>{dog.dog && `Updated ${dog.dog.callname}`}</Typography>
           </Grid>
           <Grid xs={12} sm={6}>
             <TextField name="realname" required fullWidth id="realname" label="Dog's Real Name" autoFocus onChange={handleInput} value={formData.realname} />

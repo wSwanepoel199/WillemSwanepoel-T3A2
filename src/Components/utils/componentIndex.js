@@ -1,20 +1,14 @@
 // Import Utils
 import { reducer, init } from './reducer';
 import { StateProvider, useGlobalState } from './stateContext';
-
 // Import Shared Components
 import Header from '../Shared/Header';
 import NavBar from '../Shared/Navbar';
-import Footer from '../Shared/Footer';
 import AlertComponent from '../Shared/Alert/GeneralAlert';
-import CustomTable from './CustomTable/CustomTable';
+import CustomTable from '../Shared/CustomTable/CustomTable';
 // Import Pages Components
 import Home from '../Pages/Home';
 import About from '../Pages/About';
-import ContactForm from '../Pages/ContactForm';
-import Contacts from '../Pages/Contacts';
-import Contact from '../Pages/Contact';
-import ContactDetails from '../Pages/ContactDetails';
 import DogsReorder from '../Pages/DogsRoute/DogsReorder/DogsReorder';
 import DogCard from '../Pages/DogsRoute/Dogcard/DogCard';
 import Dog from '../Pages/DogsRoute/Dog/Dog';
@@ -47,19 +41,14 @@ export {
   init,
   StateProvider,
   useGlobalState,
-  CustomTable,
   // Shared Components
   Header,
   NavBar,
-  Footer,
   AlertComponent,
+  CustomTable,
   // Pages
   Home,
   About,
-  ContactForm,
-  Contacts,
-  Contact,
-  ContactDetails,
   DogsReorder,
   DogCard,
   Dog,

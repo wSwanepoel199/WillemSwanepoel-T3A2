@@ -3,7 +3,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { patchLitter } from "../../../services/litterServices";
 import { useGlobalState } from "../../../utils/stateContext";
 
@@ -68,8 +68,8 @@ const Litter = (props) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align='center'>
-          <Typography sx={{ textAlign: 'center' }}>{(() => {
+        <TableCell align='center' padding="none">
+          <Typography>{(() => {
             switch (litter.status) {
               case 3: return "Notional";
               case 1: return "Open";
@@ -78,30 +78,30 @@ const Litter = (props) => {
             }
           })()}</Typography>
         </TableCell>
-        <TableCell align='center'>
-          <Typography sx={{ textAlign: 'center' }}>{litter.lname}</Typography>
+        <TableCell align='center' padding="none">
+          <Typography>{litter.lname}</Typography>
+        </TableCell>
+        <TableCell align='center' padding="none">
+          <Typography >{breeder.username}</Typography>
         </TableCell>
         <TableCell align='center'>
-          <Typography sx={{ textAlign: 'center' }}>{breeder.username}</Typography>
+          <Typography>{sire.callname}</Typography>
         </TableCell>
-        <TableCell align='center'>
-          <Typography sx={{ textAlign: 'center' }}>{sire.realname}</Typography>
+        <TableCell align='center' padding="none">
+          <Typography >{bitch.callname}</Typography>
         </TableCell>
-        <TableCell align='center'>
-          <Typography sx={{ textAlign: 'center' }}>{bitch.realname}</Typography>
-        </TableCell>
-        <TableCell>
+        <TableCell align='right' padding="none">
           {litter.edate ?
-            <Typography sx={{ textAlign: 'center' }}>{moment(litter.edate).format('DD/MM/YYYY')}</Typography>
+            <Typography>{moment(litter.edate).format('DD/MM/YYYY')}</Typography>
             :
-            <Typography sx={{ textAlign: 'center' }}>Not Provided</Typography>
+            <Typography>Not Provided</Typography>
           }
         </TableCell>
-        <TableCell>
+        <TableCell align='right' >
           {litter.adate ?
-            <Typography sx={{ textAlign: 'center' }}>{moment(litter.adate).format('DD/MM/YYYY')}</Typography>
+            <Typography>{moment(litter.adate).format('DD/MM/YYYY')}</Typography>
             :
-            <Typography sx={{ textAlign: 'center' }}>Not Provided</Typography>
+            <Typography>Not Provided</Typography>
           }
         </TableCell>
       </TableRow>

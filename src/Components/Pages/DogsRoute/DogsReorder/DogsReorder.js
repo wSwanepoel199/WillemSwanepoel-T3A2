@@ -27,11 +27,9 @@ import { useLocation } from "react-router";
 
 const DogsReorder = (params) => {
   // initalises store from global state
-  const { store, dispatch } = useGlobalState();
+  const { store } = useGlobalState();
   // makes doglist available
   const { dogList } = store;
-
-  const location = useLocation();
 
   // sets initial states of page
   const mounted = useRef(); // <= is used to control when useEffects trigger
@@ -39,7 +37,7 @@ const DogsReorder = (params) => {
   const [dogs, setDogs] = useState([]); // <= stores the dogs that are being displayed
   const [positions, setPositions] = useState([]); // <= stores the existing positions of displayed dogs
   const [updatedPositions, setUpdatedPositions] = useState({}); // <= stores the ids and new positions of each dog to be patched to backend
-  const [patchResponseStatus, setPatchResponseStatus] = useState(""); //<= stores backend response to be used to trigger useEffect if needed
+  // const [patchResponseStatus, setPatchResponseStatus] = useState(""); //<= stores backend response to be used to trigger useEffect if needed
 
 
   // controls component mount via mounted constant variable
@@ -72,7 +70,7 @@ const DogsReorder = (params) => {
     return () => {
       console.log("final call setting dogs");
     };
-  }, [mounted.current === true, params]);
+  }, [params, dogList]);
 
   // once doglist is filled, triggers above function to filter available dogs
   // useEffect(() => {
@@ -98,7 +96,7 @@ const DogsReorder = (params) => {
     return () => {
       console.log("final call updating dogs position");
     };
-  }, [mounted.current === true, activeId]);
+  }, [dogs, activeId]);
 
   // triggers when updatedPositions has value set, makes patch request to update backend on dogs new positions
   useEffect(() => {
@@ -143,7 +141,9 @@ const DogsReorder = (params) => {
     }
   };
 
-
+  const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   // defines sensores drag and drop will use with their applicable constraints
   const sensors = useSensors(
@@ -197,7 +197,7 @@ const DogsReorder = (params) => {
   return (
     <Container >
       {console.log("local state dogs:", dogs)}
-      <Typography variant="h2">{params.id} Dogs</Typography>
+      <Typography variant="h2" >{capitalize(params.id)} Dogs</Typography>
       <Grid
         container
         spacing={2}
@@ -210,7 +210,7 @@ const DogsReorder = (params) => {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={dogs} strategy={rectSortingStrategy}>
-            {dogs.map(dog => <SortableItem key={dog.id} id={dog.id} dog={dog} />)}
+            {dogs.map((dog, index) => <SortableItem key={index} id={dog.id} dog={dog} />)}
           </SortableContext>
           <DragOverlay>{activeId ?
             <>

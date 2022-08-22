@@ -39,7 +39,7 @@ const LitterUpdateForm = () => {
   // initial state of puppies, acts as default
   const initialPuppyData = {
     realname: '',
-    callname: '',
+    colour: '',
     sex: '',
   };
   // defines the state for the form and puppies
@@ -61,7 +61,9 @@ const LitterUpdateForm = () => {
 
   // on page mount makes get request for specified litter
   useEffect(() => {
-    if (!mounted.current) {
+    if (params.id === '1') {
+      navigate('..', { state: { alert: true, location: '.', severity: "warning", title: "Inaccessable", body: `This litter is not accessable` } });
+    } else if (!mounted.current) {
       getLitter(params.id)
         .then(litter => {
           console.log("litter", litter);
@@ -111,7 +113,7 @@ const LitterUpdateForm = () => {
       mounted.current = true;
     }
 
-  }, [mounted]);
+  }, [mounted, params, dogList, navigate, notional, userList]);
 
   // triggers when the newpuppy state is changed
   useEffect(() => {
@@ -255,7 +257,7 @@ const LitterUpdateForm = () => {
       } else {
         fixedValue = 0;
       }
-      if (fixedValue > 24) fixedValue = 24;
+      if (fixedValue > 13) fixedValue = 13;
       if (fixedValue < 0) fixedValue = 0;
 
       setFormData({
@@ -284,6 +286,7 @@ const LitterUpdateForm = () => {
         status: 1
       });
     }
+    navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "warning", title: `Changing Litter Notionality to ${notional}`, body: `Updating existing litter's notionality can result in unforseen complications` } });
   };
 
   // handles form submit, making a patch request to backend to update litter then makes get to fetch new doglist
@@ -489,7 +492,7 @@ const LitterUpdateForm = () => {
                   <Grid xs={12}>
                     {/* button to open up manage puppies dialog */}
                     <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-                      <Button variant="outlined" name="add_pet" onClick={() => setDialogOpen(!dialogOpen)}>
+                      <Button variant="outlined" name="open_puppy_dialog" onClick={() => setDialogOpen(!dialogOpen)}>
                         Manage Puppies
                       </Button>
                     </Box>
@@ -505,12 +508,12 @@ const LitterUpdateForm = () => {
                       <Grid container spacing={2}>
                         <Grid xs={12}>
                           <DialogContentText>
-                            Add or remove puppies from litter.
+                            Add puppies to or remove from litter.
                           </DialogContentText>
                         </Grid>
                         <Grid xs={12}>
                           <Box>
-                            <Button variant="outlined" name="add_pet" onClick={handleAddPuppy}>
+                            <Button variant="outlined" name="add_puppy" onClick={handleAddPuppy}>
                               Add Puppy
                             </Button>
                           </Box>
@@ -524,7 +527,7 @@ const LitterUpdateForm = () => {
                                   <TableCell align="center">
                                     <TableSortLabel>Name</TableSortLabel>
                                   </TableCell>
-                                  <TableCell align="center">Intended Call name</TableCell>
+                                  <TableCell align="center">Colour</TableCell>
                                   <TableCell align="center">Sex</TableCell>
                                   <TableCell />
                                 </TableRow>
@@ -536,9 +539,35 @@ const LitterUpdateForm = () => {
                                       <InputBase name="realname" id="dog_realname_id" required onChange={(e) => handlePuppyInput(e, index)} placeholder="enter realname" value={puppyData[index].realname}
                                       />
                                     </TableCell>
-                                    <TableCell align="center">
+                                    {/* <TableCell align="center">
                                       <InputBase name="callname" id="calllname_id" required onChange={(e) => handlePuppyInput(e, index)} placeholder="enter callname" value={puppyData[index].callname}
                                       />
+                                    </TableCell> */}
+                                    {/* here we want to add the puppies colour once its ready */}
+                                    <TableCell>
+                                      <Select
+                                        name="colour"
+                                        displayEmpty
+                                        fullWidth
+                                        required
+                                        label='select colour'
+                                        id="dog_colour"
+                                        onChange={(e) => handlePuppyInput(e, index)}
+                                        value={puppyData[index].colour}
+                                        input={<OutlinedInput />}
+                                        renderValue={(selected) => {
+                                          if (selected === 1) {
+                                            return (<em>Male</em>);
+                                          } else if (selected === 2) {
+                                            return (<em>Female</em>);
+                                          } else {
+                                            return (<em>Select Colour</em>);
+                                          }
+                                        }}
+                                      >
+                                        {/* <MenuItem value={1}>Male</MenuItem>
+                                        <MenuItem value={2}>Female</MenuItem> */}
+                                      </Select>
                                     </TableCell>
                                     <TableCell>
                                       <Select
@@ -546,8 +575,8 @@ const LitterUpdateForm = () => {
                                         displayEmpty
                                         fullWidth
                                         required
-                                        label=''
-                                        id="dog_sex_id"
+                                        label='select sex'
+                                        id="dog_sex"
                                         onChange={(e) => handlePuppyInput(e, index)}
                                         value={puppyData[index].sex}
                                         input={<OutlinedInput />}
@@ -587,7 +616,7 @@ const LitterUpdateForm = () => {
                             <TableCell align="center">
                               <TableSortLabel>Name</TableSortLabel>
                             </TableCell>
-                            <TableCell align="center">Intended Call name</TableCell>
+                            <TableCell align="center">Colour</TableCell>
                             <TableCell align="center">Sex</TableCell>
                           </TableRow>
                         </TableHead>

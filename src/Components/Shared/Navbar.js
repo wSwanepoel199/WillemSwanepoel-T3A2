@@ -1,22 +1,19 @@
 import { Navbar, NavDropdown, Container, Nav } from "react-bootstrap";
 import { useGlobalState } from "../utils/componentIndex";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-  const { store, dispatch, init } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const navigate = useNavigate();
-
-  const handleSignOut = () => {
-    dispatch({
-      type: "signOutUser",
-      data: {}
-    });
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem('user');
-  };
 
   const handleSelect = (e) => {
     navigate(e);
+  };
+
+  const handleSignOut = () => {
+    dispatch({
+      type: "signOutUser"
+    });
   };
 
   const NavBody = () => {
@@ -25,11 +22,9 @@ const NavBar = () => {
         <Nav
           className="justify-content-start flex-grow-1 pe-3"
         >
-          <Nav.Link className="nav-link" eventKey="/">Home</Nav.Link>
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/dogs/display/all" id="all-dogs">All Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/males" id="male-dogs">Male Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/females" id="female-dogs">Female Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
@@ -37,26 +32,20 @@ const NavBar = () => {
           <NavDropdown
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Apply for Adoption</NavDropdown.Item>
-            <NavDropdown.Item eventKey="litter-schedule">Litter Schedule</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Litter Application</NavDropdown.Item>
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
-          <NavDropdown
-            title="Our Company"
-            id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/about">About Us</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/contacts/form">Contact Us</NavDropdown.Item>
-          </NavDropdown>
+          <Nav.Link className="nav-link" eventKey="/about">About Us</Nav.Link>
           {store.loggedInUser.admin ?
             <>
               <NavDropdown
                 title="Admin Panel"
                 id={`offcanvasNavbarDropdown-expand-md`}>
-                <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/dogs/display/all" id="all-dogs">View All Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/dogs/manage" id="manage-dogs">Manage Dogs</NavDropdown.Item>
-                <NavDropdown.Item eventKey="retired-dogs">Retired Dogs</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/litters/applications">Manage Litter Applications</NavDropdown.Item>
               </NavDropdown>
             </>
             :

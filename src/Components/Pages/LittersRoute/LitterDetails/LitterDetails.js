@@ -1,50 +1,48 @@
-import { Box, Container, Grid, Typography, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
+//import { Box, Container, Grid, Typography, } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 import { customTheme } from "../../../utils/customPalette";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { getLitter } from "../../../services/litterServices";
-import { useGlobalState } from "../../../utils/componentIndex";
+//import { useState } from "react";
+// import { useParams } from "react-router";
+// import { useGlobalState } from "../../../utils/componentIndex";
 
 const LitterDetails = () => {
-  const params = useParams();
-  const { store } = useGlobalState();
-  const { litterList, userList, dogList } = store;
-  const initialLitterDetails = {
+  // const { store } = useGlobalState();
+  // const { userList, dogList } = store;
+  // const initialLitterDetails = {
 
-  };
-  const [litterDetail, setLitterDetail] = useState(initialLitterDetails);
+  // };
+  // const [litterDetail, setLitterDetail] = useState(initialLitterDetails);
 
-  const females = Object.entries(dogList).filter(dog => dog[1].sex = 2);
-  const males = Object.entries(dogList).filter(dog => dog[1].sex = 1);
-  const breeder = Object.entries(userList).filter(user => user[1].breeder = true);
+  // const females = Object.entries(dogList).filter(dog => dog[1].sex = 2);
+  // const males = Object.entries(dogList).filter(dog => dog[1].sex = 1);
+  // const breeder = Object.entries(userList).filter(user => user[1].breeder = true);
 
-  let Breeder = {};
-  let Sire = {};
-  let Bitch = {};
+  // let Breeder = {};
+  // let Sire = {};
+  // let Bitch = {};
 
-  breeder.forEach(user => {
-    if (user[1].id === litterDetail.breeder_id) {
-      Breeder = user[1];
-    }
-  });
-  males.forEach(sire => {
-    if (sire[1].id === litterDetail.sire_id) {
-      Sire = sire[1];
-    }
-  });
-  females.forEach(bitch => {
-    if (bitch[1].id === litterDetail.bitch_id) {
-      Bitch = bitch[1];
-    }
-  });
+  // breeder.forEach(user => {
+  //   if (user[1].id === litterDetail.breeder_id) {
+  //     Breeder = user[1];
+  //   }
+  // });
+  // males.forEach(sire => {
+  //   if (sire[1].id === litterDetail.sire_id) {
+  //     Sire = sire[1];
+  //   }
+  // });
+  // females.forEach(bitch => {
+  //   if (bitch[1].id === litterDetail.bitch_id) {
+  //     Bitch = bitch[1];
+  //   }
+  // });
 
 
 
 
   return (
     <ThemeProvider theme={customTheme}>
-      <Box>
+      {/* <Box>
         <Container maxWidth="sm">
           <Typography variant="h3" align="center">
             {litterDetail.lname}
@@ -71,7 +69,7 @@ const LitterDetails = () => {
           <Grid item xs={4}>
           </Grid>
         </Grid>
-      </Container>
+      </Container> */}
     </ThemeProvider>
   );
 };

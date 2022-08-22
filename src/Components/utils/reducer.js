@@ -1,5 +1,3 @@
-import { ActionTypes } from "@mui/base";
-
 export const init = (initialState) => {
   return { ...initialState };
 };
@@ -51,10 +49,11 @@ export const reducer = (state, action) => {
       };
     }
     case "signOutUser": {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
       return {
         ...state,
-        loggedInUser: action.data,
-        token: action.data
+        loggedInUser: {}
       };
     }
     case "setToken": {
@@ -62,13 +61,6 @@ export const reducer = (state, action) => {
       return {
         ...state,
         token: action.data
-      };
-    }
-    case "setContactForm": {
-      console.log(action.data);
-      return {
-        ...state,
-        contactForm: action.data
       };
     }
     case "setApplicationForms": {
@@ -106,6 +98,12 @@ export const reducer = (state, action) => {
         litterList: litterList
       };
     }
+    case "updateLitterApplications": {
+      return {
+        ...state,
+        applicationForms: action.data
+      };
+    }
     case "mergeLitterWithBreederSireAndBitch": {
       // merges litter with referanances breeder, sire and bitch ids
       return {
@@ -133,6 +131,12 @@ export const reducer = (state, action) => {
       return {
         ...state,
         bitches: action.data
+      };
+    }
+    case "setUpdatingApp": {
+      return {
+        ...state,
+        updatingApp: action.data
       };
     }
     default: {

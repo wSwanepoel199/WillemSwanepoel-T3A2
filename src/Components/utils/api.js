@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const dev = 'http://localhost:3001';
+const prod = 'https://myshalair-back.herokuapp.com/';
+
 const backEndAPI = axios.create({
-  baseURL: 'http://localhost:3001'
+  baseURL: dev
 });
 
 backEndAPI.interceptors.request.use(req => {

@@ -1,6 +1,5 @@
-import { Alert, AlertTitle } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useGlobalState } from "./stateContext";
 
 const AdminRoute = ({ children }) => {
@@ -12,9 +11,9 @@ const AdminRoute = ({ children }) => {
 
   useEffect(() => {
     if (!admin) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You are not autherised to access that page" } });
+      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorized", body: "You are not autherised to access that page" } });
     }
-  }, []);
+  }, [admin, navigate]);
 
   return (
     <>
@@ -32,17 +31,15 @@ const AdminRoute = ({ children }) => {
 };
 
 const SecuredRoute = ({ children }) => {
-  const { store } = useGlobalState();
-  const { loggedInUser } = store;
   const navigate = useNavigate();
 
   const user = Boolean(sessionStorage.getItem("user"));
 
   useEffect(() => {
     if (!user) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You are not autherised to access that page" } });
+      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorized", body: "You must be signed in to access this page" } });
     }
-  }, []);
+  }, [user, navigate]);
 
   return (
     <>

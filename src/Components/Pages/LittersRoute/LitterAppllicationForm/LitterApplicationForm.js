@@ -1,6 +1,7 @@
-import { Box, Paper, Grid, Typography, FormControl, Container, Button, TextField, InputLabel, Select, MenuItem, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, DialogContentText, IconButton, TableContainer } from "@mui/material";
+import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, TableRow, TableCell, IconButton } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2/";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
@@ -24,19 +25,23 @@ import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
 
 const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();
-  const { litterList, loggedInUser } = store;
+  const { loggedInUser, applicationForms } = store;
   const navigate = useNavigate();
   const location = useLocation();
+  const mounted = useRef();
 
   const initialformData = {
-    litter_id: '',
+    litter_id: 1,
     yardarea: 0,
     yardfenceheight: 0,
     user_id: 0,
+    sex_preference: 0,
+    colour_preference: '',
     child_age: '',
     pets_age: '',
     pets_type: '',
-    pets_breed: ''
+    pets_breed: '',
+    desexed: '',
   };
 
   const [formData, setFormData] = useState(initialformData);
@@ -47,15 +52,15 @@ const LitterApplicationForm = () => {
 
   // adds the user's id to the contact form automaticallly
   useEffect(() => {
-    setFormData({
-      ...formData,
-      user_id: loggedInUser.id,
-      litterList: litterList.filter(litter => {
-        return litter.breeder_id !== loggedInUser.id && litter.status === 1;
-      })
-    });
+    if (!mounted.current) {
+      setFormData({
+        ...formData,
+        user_id: loggedInUser.id,
+      });
+      mounted.current = true;
+    }
 
-  }, []);
+  }, [mounted, formData, loggedInUser]);
 
   // handles all form input
   const handleInput = (e) => {
@@ -93,7 +98,8 @@ const LitterApplicationForm = () => {
           {
             age: formData.pets_age,
             pettype: formData.pets_type,
-            petbreed: formData.pets_breed
+            petbreed: formData.pets_breed,
+            desexed: Boolean(formData.desexed)
           }
           ]
         );
@@ -104,6 +110,7 @@ const LitterApplicationForm = () => {
         pets_age: '',
         pets_type: '',
         pets_breed: '',
+        desexed: '',
       });
     };
   };
@@ -152,11 +159,12 @@ const LitterApplicationForm = () => {
     };
     postApplication(appForm)
       .then(application => {
-        // dispatch({
-        //   type: "setApplicationForms",
-        //   data: application
-        // });
-        // clear app form
+        console.log(application);
+        dispatch({
+          type: "updateLitterApplications",
+          data: [...applicationForms, application]
+        });
+        setFormData(initialformData);
         navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
       })
       .catch((e) => {
@@ -171,37 +179,20 @@ const LitterApplicationForm = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
       ml: 'auto',
       mr: 'auto',
       maxWidth: "sm",
     }}>
       {console.log(petsData)}
       {console.log(formData)}
-      <Paper sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', p: 4 }}>
-        <Grid container spacing={2} >
-          <Grid item xs={12} sx={{ mb: 3 }}>
+      <Paper sx={{ p: 4 }}>
+        <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid xs={12} sx={{ mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Litter Application</Typography>
           </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="litter_select_label">Selected Litter</InputLabel>
-              <Select
-                name="litter_id"
-                id="litter_select_id"
-                required
-                label="litter_select_label"
-                onChange={handleInput}
-                value={formData.litter_id}
-              >
-                {formData.litterList && formData.litterList.map(litter => {
-                  return (
-                    <MenuItem key={litter.id} value={litter.id}>{litter.lname}</MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
                 name="yardarea"
@@ -216,7 +207,7 @@ const LitterApplicationForm = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
                 name="yardfenceheight"
@@ -231,37 +222,43 @@ const LitterApplicationForm = () => {
               />
             </FormControl>
           </Grid>
-          {/* <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <TextField
-                name="sexPref"
-                id="yardarea-id"
-                label="Area of Yard"
+          <Grid xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <FormControl>
+              <FormLabel htmlFor="sex_preference_label" >Select Prefered Sex</FormLabel>
+              <RadioGroup
+                row
+                name="sex_preference"
+                id="sex_preference"
+                aria-labelledby="sex_preference_label"
                 onChange={handleInput}
-                value={formData.yardarea}
-                type="number"
-                InputProps={{
-                  endAdornment: <InputAdornment position="end">m²</InputAdornment>,
-                }}
-              />
+                value={formData.sex}
+              >
+                <FormControlLabel value={1} control={<Radio />} label="Male" />
+                <FormControlLabel value={2} control={<Radio />} label="Female" />
+              </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <TextField
-                name="colourPref"
-                id="yardarea-id"
-                label="Area of Yard"
+              <InputLabel htmlFor="colour_preference_label">Select Colour Preferance</InputLabel>
+              <Select
+                name="colour_preference"
+                fullWidth
+                id="colour_preference"
+                label="colour_preference_label"
+                aria-labelledby="colour_preference_label"
                 onChange={handleInput}
-                value={formData.yardarea}
-                type="number"
-                InputProps={{
-                  endAdornment: <InputAdornment position="end">m²</InputAdornment>,
-                }}
-              />
+                value={formData.colour_preference}
+              >
+                {/* {Object.values(sires).map(dog => {
+                  return (
+                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
+                  );
+                })} */}
+              </Select>
             </FormControl>
-          </Grid> */}
-          <Grid item xs={12}>
+          </Grid>
+          <Grid xs={12}>
             <FormControl sx={{ display: "flex", alignItems: 'center' }}>
               <FormLabel id="add-children-label">Do you have any children?</FormLabel>
               <RadioGroup
@@ -278,20 +275,20 @@ const LitterApplicationForm = () => {
           </Grid>
           {children === "true" &&
             <>
-              <Grid item xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+              <Grid xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
                 <FormControl>
                   <TextField name="child_age" id="child_age_id" label="Age" type="number" onChange={handleInput} value={formData.child_age} />
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid xs={12}>
                 <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
                   <Button name="add_child" variant="outlined" onClick={handleInput}>
                     Add Child
                   </Button>
                 </Box>
               </Grid>
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-                <Grid item xs={12} md={8}>
+              <Grid xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <Grid xs={12} md={8}>
                   <CustomTable
                     head={
                       <>
@@ -330,7 +327,7 @@ const LitterApplicationForm = () => {
               </Grid>
             </>
           }
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <FormControl sx={{ display: "flex", alignItems: 'center' }}>
               <FormLabel id="add-pets-label">Do you have any pets?</FormLabel>
               <RadioGroup
@@ -347,30 +344,40 @@ const LitterApplicationForm = () => {
           </Grid>
           {pets === "true" &&
             <>
-              <Grid item xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
+              <Grid xs={12} sm={6}>
+                <TextField name="pets_age" fullWidth id="pets_age_id" label="Age" type="number" onChange={handleInput} value={formData.pets_age} />
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <TextField name="pets_type" fullWidth id="pets_type_id" label="Type of Pet" onChange={handleInput} value={formData.pets_type} />
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <TextField name="pets_breed" fullWidth id="pets_breed_id" label="Breed of Pet" onChange={handleInput} value={formData.pets_breed} />
+              </Grid>
+              <Grid xs={12} sm={6} sx={{ display: "flex", justifyContent: "center" }}>
                 <FormControl>
-                  <TextField name="pets_age" id="pets_age_id" label="Age" type="number" onChange={handleInput} value={formData.pets_age} />
+                  <FormLabel htmlFor="pet_desexed_label" >Is Your Dog Desexed?</FormLabel>
+                  <RadioGroup
+                    row
+                    name="desexed"
+                    id="desexed"
+                    aria-labelledby="pet_desexed_label"
+                    onChange={handleInput}
+                    value={formData.desexed}
+                  >
+                    <FormControlLabel value='yes' control={<Radio />} label="Yes" />
+                    <FormControlLabel value='' control={<Radio />} label="No" />
+                  </RadioGroup>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-                <FormControl>
-                  <TextField name="pets_type" id="pets_type_id" label="Type of Pet" onChange={handleInput} value={formData.pets_type} />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-                <FormControl>
-                  <TextField name="pets_breed" id="pets_breed_id" label="Breed of Pet" onChange={handleInput} value={formData.pets_breed} />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
+              <Grid xs={12}>
                 <Box sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
                   <Button variant="outlined" name="add_pet" onClick={handleInput}>
                     Add Pet
                   </Button>
                 </Box>
               </Grid>
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-                <Grid item xs={12}>
+              <Grid xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                <Grid xs={12}>
                   <CustomTable
                     head={
                       <>
@@ -380,6 +387,7 @@ const LitterApplicationForm = () => {
                         <TableCell align="center">Age</TableCell>
                         <TableCell align="center">Type</TableCell>
                         <TableCell align="center">Breed</TableCell>
+                        <TableCell align="center">Desexed</TableCell>
                         <TableCell />
                       </>
                     }
@@ -398,6 +406,12 @@ const LitterApplicationForm = () => {
                           <TableCell align="center">
                             {pet.petbreed}
                           </TableCell>
+                          <TableCell align="center">
+                            {pet.desexed
+                              ? 'Yes'
+                              : 'No'
+                            }
+                          </TableCell>
                           <TableCell align="left" sx={{ p: 0 }}>
                             <IconButton
                               aria-label="delete"
@@ -415,7 +429,7 @@ const LitterApplicationForm = () => {
               </Grid>
             </>
           }
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Container sx={{ display: "flex", justifyContent: "center" }}>
               <Button variant="contained" type='submit'>
                 Post Litter Application
@@ -423,8 +437,8 @@ const LitterApplicationForm = () => {
             </Container>
           </Grid>
         </Grid>
-      </Paper >
-    </Box >
+      </Paper>
+    </Box>
   );
 };
 

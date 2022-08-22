@@ -9,14 +9,10 @@ import {
   // shared components
   Header,
   NavBar,
-  Footer,
   AlertComponent,
   // pages
   Home,
   About,
-  ContactForm,
-  Contacts,
-  ContactDetails,
   DogsManage,
   DogCreationForm,
   DogUpdateForm,
@@ -54,7 +50,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { dogList, litterList, userList } = store;
+  const { loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -90,22 +86,17 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-  }, []);
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: "updateValidBreeders",
-  //     data: Object.values(userList).filter(user => user),
-  //   });
-  //   dispatch({
-  //     type: "updateValidSires",
-  //     data: dogList.filter(dog => dog.sex === 1 && dog.retired === false),
-  //   });
-  //   dispatch({
-  //     type: "updateValidBitches",
-  //     data: dogList.filter(dog => dog.sex === 2 && dog.retired === false),
-  //   });
-  // }, [userList, dogList]);
+    // if (sessionStorage.getItem("litterAppForms") === null && loggedInUser.admin === true) {
+    //   getLitterApps()
+    //     .then(apps => {
+    //       dispatch({
+    //         type: 'setApplicationForms',
+    //         data: apps
+    //       });
+    //     })
+    //     .catch((e) => console.log(e));
+    // }
+  }, [dispatch, loggedInUser]);
 
   return (
     <>
@@ -119,7 +110,9 @@ const App = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* renders an alert with customisable fields depending on requirement */}
         {state && state.alert ?
-          <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+          <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
+            <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+          </Box>
           :
           null}
         {/* renders the header which contains the Myshalair logo*/}
@@ -162,23 +155,6 @@ const App = () => {
               {/* sets the path for a selected dog using a non absolute path. in this case the router will accept any into as :id */}
               <Route path="display/:id" element={<DogDetails />} />
             </Route>
-            {/* sets base path for contacts*/}
-            <Route path="contacts">
-              {/* sets Contacts element as base path using index. Uses AdminRoute to manage unautherised access*/}
-              <Route index element={
-                <AdminRoute>
-                  <Contacts />
-                </AdminRoute>
-              } />
-              {/* sets path for ContactDetails using a non absolute path, will only be routed to if path hasn't been assinged to another element. element uses AdminRoute to manage unautherised access*/}
-              <Route path=":id" element={
-                <AdminRoute>
-                  <ContactDetails />
-                </AdminRoute>
-              } />
-              {/* sets path for contact form element */}
-              <Route path="form" element={<ContactForm />} />
-            </Route>
             {/* sets default path for litters */}
             <Route path="litters" >
               {/* automatically routes path: "/litters" to "/litters/apply" */}
@@ -199,6 +175,11 @@ const App = () => {
                 <SecuredRoute>
                   <LitterApplicationForm />
                 </SecuredRoute>} />
+              <Route path="applications" element={
+                <AdminRoute>
+                  <LitterApplicationManage />
+                </AdminRoute>
+              } />
               {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
               <Route path=":id" element={
                 <AdminRoute>
@@ -246,7 +227,6 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Container>
-        <Footer />
       </Box>
     </>
   );

@@ -1,13 +1,11 @@
 import { Container, Box, Paper, Grid, Typography, TextField, FormControl, Button, InputAdornment, IconButton } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useGlobalState } from "../utils/componentIndex";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { signUp } from "../services/authServices";
 
 const SignUpForm = () => {
-  const { dispatch } = useGlobalState();
   const navigate = useNavigate();
 
   const initialFormData = {
