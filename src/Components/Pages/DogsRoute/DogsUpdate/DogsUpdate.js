@@ -230,7 +230,7 @@ const DogUpdateForm = () => {
             <FormControl fullWidth>
               <InputLabel id="litter_label">Select Dog's Litter</InputLabel>
               <Select
-                name="litter"
+                name="litter_id"
                 id="litter_id"
                 label="Select Dog's Litter"
                 onChange={handleInput}

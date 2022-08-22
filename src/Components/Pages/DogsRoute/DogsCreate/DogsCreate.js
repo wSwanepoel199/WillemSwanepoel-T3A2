@@ -235,7 +235,7 @@ const DogCreationForm = () => {
             <FormControl fullWidth>
               <InputLabel id="litter_label">Select Dog's Litter</InputLabel>
               <Select
-                name="litter"
+                name="litter_id"
                 id="litter_id"
                 label="Select Dog's Litter"
                 onChange={handleInput}
@@ -274,6 +274,13 @@ const DogCreationForm = () => {
             <Button variant="contained" component="label">
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+            </Button>
+            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
+          </Grid>
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant="contained" component="label">
+              Upload Gallery
+              <input hidden name="gallery_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
             <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
