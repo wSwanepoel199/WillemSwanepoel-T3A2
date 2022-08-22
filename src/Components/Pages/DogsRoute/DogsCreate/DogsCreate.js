@@ -28,7 +28,7 @@ const DogCreationForm = () => {
     litter_id: '',
     description: '',
     colour: '',
-    chip_number: '',
+    chipnumber: '',
   };
   const initialHealthTestData = {
     pra: '',
@@ -247,7 +247,7 @@ const DogCreationForm = () => {
             </FormControl>
           </Grid>
           <Grid xs={12} sm={6}>
-            <TextField name='chip_number' id="chip_number" label="Enter Dog's Microchip Number" fullWidth onChange={handleInput} value={formData.chip_number} />
+            <TextField name='chipnumber' id="chipnumber" label="Enter Dog's Microchip Number" fullWidth onChange={handleInput} value={formData.chipnumber} />
           </Grid>
           <Grid xs={12}>
             <TextField name='description' id="description" label="Enter Dog's Description" multiline minRows={3} fullWidth onChange={handleInput} value={formData.description} />

@@ -20,6 +20,11 @@ export async function getDog(id) {
   return response;
 }
 
+export async function getDogByChip(data) {
+  const response = await backEndAPI.get(`/find_dog_by_chipnumber`, data);
+  return response;
+}
+
 export async function patchDog(id, data) {
   const response = await backEndAPI.patch(`/dogs/${id}`, data);
   return response;

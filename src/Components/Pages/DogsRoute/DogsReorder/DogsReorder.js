@@ -1,6 +1,7 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { SortableItem } from '../../SortableItem';
-import { Box, Container, Grid, Typography, Paper, Button } from "@mui/material";
+import { Box, Container, Typography, Paper, Button, Pagination } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState, useRef } from "react";
 import {
   DndContext,
@@ -18,6 +19,8 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
+import { getDogs, pushNewPositions } from "../../../services/dogsServices";
+import { useNavigate } from "react-router";
 
 // known issues; patching to often, patching with to much data(not sure if avoidable)
 // honestly whole page needs rework
@@ -25,9 +28,10 @@ import {
 
 const DogsReorder = () => {
   // initalises store from global state
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   // makes doglist available
   const { dogList } = store;
+  const navigate = useNavigate();
 
   // sets initial states of page
   const mounted = useRef(); // <= is used to control when useEffects trigger
@@ -36,6 +40,10 @@ const DogsReorder = () => {
   const [positions, setPositions] = useState([]); // <= stores the existing positions of displayed dogs
   const [updatedPositions, setUpdatedPositions] = useState({}); // <= stores the ids and new positions of each dog to be patched to backend
   const [filter, setFilter] = useState('all');
+
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [pageCount, setPageCount] = useState(Math.ceil(dogList.length / 12));
 
 
   // controls component mount via mounted constant variable
@@ -150,6 +158,40 @@ const DogsReorder = () => {
     }
   };
 
+  const handleSave = () => {
+    const finalList = { dogs: [] };
+    dogs.forEach((dog) => {
+      const original = dogList.find(original => original.id === dog.id);
+      if (dog.position !== original.position) {
+        finalList.dogs.push({
+          "id": dog.id,
+          "position": dog.position
+        });
+      }
+    });
+    pushNewPositions(finalList)
+      .then(reply => {
+        console.log(reply);
+        if (reply.status === 201) {
+          getDogs()
+            .then(dogs => {
+              console.log(dogs);
+              dispatch({
+                type: "updateDogList",
+                data: dogs
+              });
+              navigate('/dogs/manage', { state: { alert: true, location: '/dogs/manage', severity: 'success', title: 'Success', body: 'Dogs positions successfully updated' } });
+            })
+            .catch(e => console.log(e));
+        }
+      })
+      .catch(e => console.log(e));
+  };
+
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
   // defines sensores drag and drop will use with their applicable constraints
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -191,10 +233,10 @@ const DogsReorder = () => {
 
   // function that reassins dogs position value to the position state value of their index
   const setNewPositions = (arrMove) => {
-    return arrMove.map((dog, id) => {
+    return arrMove.map((dog, index) => {
       return {
         ...dog,
-        position: positions[id]
+        position: positions[index]
       };
     });
   };
@@ -203,8 +245,9 @@ const DogsReorder = () => {
     <Box>
       {console.log("local state dogs:", dogs)}
       {console.log(filter)}
-      <Button>Save New Positions</Button>
-      <Button>Cancel</Button>
+      {console.log(positions)}
+      <Button onClick={handleSave}>Save New Positions</Button>
+      <Button onClick={() => navigate('..')}>Cancel</Button>
       <Box sx={{ py: 2, textAlign: 'center' }}>
         <Typography variant="h2" >Reorder Dogs</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
@@ -226,7 +269,10 @@ const DogsReorder = () => {
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={dogs} strategy={rectSortingStrategy}>
-              {dogs.map((dog, index) => <SortableItem key={index} id={dog.id} dog={dog} />)}
+              {dogs.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
+                .map((dog, index) =>
+                  <SortableItem key={index} id={dog.id} dog={dog} />
+                )}
             </SortableContext>
             <DragOverlay>{activeId ?
               <>
@@ -237,6 +283,7 @@ const DogsReorder = () => {
             }</DragOverlay>
           </DndContext>
         </Grid>
+        <Pagination count={pageCount} page={page} onChange={handleChangePage} />
       </Box>
     </Box>
   );

@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Grid } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { DogCard } from "../utils/componentIndex";
 
 export const SortableItem = (props) => {
@@ -21,12 +21,12 @@ export const SortableItem = (props) => {
 
   return (
     <Grid
-      item
       xs={12} sm={6} md={4} lg={3}
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
+      sx={{ height: '550px' }}
     >
       <DogCard dog={props.dog} />
     </Grid>
