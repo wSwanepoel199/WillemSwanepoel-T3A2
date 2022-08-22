@@ -3,6 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getLitterApp } from "../../../services/litterServices";
 import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
+import { colours } from "../../../utils/helpers/findOriginal";
 
 // include assigned puppy
 
@@ -22,16 +23,26 @@ const LitterApplicationDetails = (props) => {
           console.log(litterApp);
           if (litterApp.status === 200) {
             const { data } = litterApp;
+            const sexPref = data.litterApplication.sex_preference === 1
+              ? "Male"
+              : data.litterApplication.sex_preference === 2
+                ? "Female"
+                :
+                "No Preferance";
+            const colourPref = data.litterApplication.colour_preference !== null
+              ? colours.find(colour => colour.id === data.litterApplication.colour_preference)
+              :
+              colours[0];
             const filledLitterApp = {
               ...data.litterApplication,
-              // children: data.children,
-              // pets: data.pets,
+              sex_preference: sexPref,
+              colour_preference: colourPref.colour,
               litter: litterList.find(litter => litter.id === data.litterApplication.litter_id),
               user: userList.find(user => user.id === data.litterApplication.user_id)
             };
             setApplicationDetais(filledLitterApp);
-            setChildren(data.children || []);
-            setPets(data.pets || []);
+            setChildren(data.litterApplication.children || []);
+            setPets(data.litterApplication.pets || []);
             // setAvailablePups(data.availablePuppies);
           }
         })

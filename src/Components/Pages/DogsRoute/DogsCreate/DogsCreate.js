@@ -5,7 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { postDog } from "../../../services/dogsServices";
-
+import { colours } from "../../../utils/helpers/findOriginal";
 
 // TO-DO 
 // breedername comes from back, don't post breedername or ownername at all
@@ -28,6 +28,7 @@ const DogCreationForm = () => {
     litter_id: '',
     description: '',
     colour: '',
+    chip_number: '',
   };
   const initialHealthTestData = {
     pra: '',
@@ -38,16 +39,17 @@ const DogCreationForm = () => {
   };
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
-  const [imageData, setImageData] = useState([]);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
+  const [dogColours, setDogColours] = useState([]);
 
   // on mount finds nomial litters, status of 3, and makes the choosable
   useEffect(() => {
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
     );
-  }, [litterList]);
+    setDogColours(colours);
+  }, [litterList, colours]);
 
   // handles form general input
   const handleInput = (e) => {
@@ -82,30 +84,31 @@ const DogCreationForm = () => {
     e.preventDefault();
     const { name, files } = e.target;
     console.log(name, files);
+    if (name === 'main_image') {
+      setFormData({
+        ...formData,
+        [name]: files[0]
+      });
+    } else if (name === 'gallery_images') {
+      setFormData({
+        ...formData,
+        [name]: [...files]
+      });
+    }
 
     // https://stackoverflow.com/questions/52566331/formdata-append-nested-object
-
-    setFormData({
-      ...formData,
-      main_image: files[0]
-    });
   };
 
   // on form submit formats data for backend and makes post request to create dog
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
-    // const FormData = require('form-data');
-    // const postForm = new FormData();
     let dog;
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
         return;
       } else {
-        // postForm.append(
-        //   item[0], item[1]
-        // );
         dog = {
           ...dog,
           [item[0]]: item[1]
@@ -121,18 +124,9 @@ const DogCreationForm = () => {
     //     ...postForm
     //   }
     // });
-    // if (imageData !== []) {
-    // postForm.append(
-    //   'main_image', imageData
-    // );
-    //   postForm = {
-    //     ...postForm,
-    //     'main_image': imageData
-    //   };
-    // }
     console.log(dog);
-    const pF = fd({ dog });
-    postDog(pF)
+    const postForm = fd({ dog });
+    postDog(postForm)
       .then(dog => {
         console.log(dog);
         if (dog.status === 201) {
@@ -162,9 +156,9 @@ const DogCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {/* {console.log(formData)}
+      {console.log(formData)}
       {console.log(validLitterList)}
-      {console.log(imageData)} */}
+      {console.log(dogColours)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -178,11 +172,12 @@ const DogCreationForm = () => {
           </Grid>
           <Grid xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
             <FormControl>
-              <FormLabel id="dog-sex-label" >Select Sex</FormLabel>
+              <FormLabel id="dog-sex-label" >Select Dog's Sex</FormLabel>
               <RadioGroup
                 row
                 name="sex"
-                label='Select Sex'
+                label="Select Dog's Sex"
+                required
                 aria-labelledby="dog-sex-label"
                 onChange={handleInput}
                 value={formData.sex}
@@ -194,21 +189,23 @@ const DogCreationForm = () => {
           </Grid>
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="colour_label">Select Colour Preferance</InputLabel>
+              <InputLabel id="colour_label">Select Dog's Colour</InputLabel>
               <Select
                 name="colour"
                 fullWidth
                 id="colour"
                 labelId="colour_label"
-                label="Select Colour Preferance"
+                label="Select Colour"
                 onChange={handleInput}
                 value={formData.colour}
               >
-                {/* {Object.values(sires).map(dog => {
-                  return (
-                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
-                  );
-                })} */}
+                {dogColours.length > 0 && dogColours.map((colour, index) => {
+                  if (colour.id !== 0) {
+                    return (
+                      <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
+                    );
+                  }
+                })}
               </Select>
             </FormControl>
           </Grid>
@@ -249,6 +246,9 @@ const DogCreationForm = () => {
               </Select>
             </FormControl>
           </Grid>
+          <Grid xs={12} sm={6}>
+            <TextField name='chip_number' id="chip_number" label="Enter Dog's Microchip Number" fullWidth onChange={handleInput} value={formData.chip_number} />
+          </Grid>
           <Grid xs={12}>
             <TextField name='description' id="description" label="Enter Dog's Description" multiline minRows={3} fullWidth onChange={handleInput} value={formData.description} />
           </Grid>
@@ -275,15 +275,25 @@ const DogCreationForm = () => {
               Upload Main Image
               <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
-            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
+          {formData.main_image &&
+            <Grid xs={12}>
+              <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.main_image.name} </Typography>
+            </Grid>
+          }
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
-              Upload Gallery
-              <input hidden name="gallery_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+              Upload Images for Gallery
+              <input hidden name="gallery_images" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
-            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
+          {formData.gallery_images &&
+            <Grid xs={12}>
+              <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.gallery_images.map(file => {
+                return `${file.name}, `;
+              })}</Typography>
+            </Grid>
+          }
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

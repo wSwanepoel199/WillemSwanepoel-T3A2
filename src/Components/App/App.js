@@ -18,6 +18,7 @@ import {
   DogUpdateForm,
   DogsReorder,
   DogDetails,
+  DisplayDogs,
   // LitterApplicationsManage,
   LitterApplicationForm,
   LitterApplicationManage,
@@ -144,11 +145,21 @@ const App = () => {
                 <AdminRoute>
                   <DogUpdateForm />
                 </AdminRoute>} />
+              <Route path="display/all" element={
+                <AdminRoute>
+                  <DisplayDogs id={'all'} />
+                </AdminRoute>} />
+              <Route path="re_order" element={
+                <AdminRoute>
+                  <DogsReorder />
+                </AdminRoute>
+              } />
               {/* allows the mapped paths to be used to route the same element */}
-              {['all', 'males', 'females', 'retired'].map((path, index) => {
+              {['male', 'female', 'retired'].map((path, index) => {
                 return (
                   <Route path={`display/${path}`} element={
-                    <DogsReorder id={path} />
+                    // <DogsReorder id={path} />
+                    <DisplayDogs id={path} />
                   } key={index} />
                 );
               })}

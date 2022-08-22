@@ -1,7 +1,6 @@
 import { Box, Button, Paper, TableCell, TableRow, Typography, TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getLitterApps } from "../../../services/litterServices";
-import { useParams } from "react-router";
 import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
 
 const LitterApplicationManage = (props) => {

@@ -122,22 +122,19 @@ const LitterManage = () => {
         {console.log(waitList)}
         {/* {console.log(selectedLitter)} */}
         <Typography variant="h4" component="h1">Manage Litters</Typography>
-        {waitList.length > 0
-          && <>
-            <Box component={Paper} sx={{
-              m: 2,
-              p: 2
-            }}>
+        <Box component={Paper} sx={{
+          m: 2,
+          p: 2
+        }}>
 
-              <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Wait List</Typography>
-              <Collapse
-                in={openApp}
-                unmountOnExit>
-                <LitterApplicationManage handleOpenDialog={handleOpenDialog} openDialog={openDialog} litterApps={waitList} />
-              </Collapse>
+          <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Wait List</Typography>
+          <Collapse
+            in={openApp}
+            unmountOnExit>
+            <LitterApplicationManage handleOpenDialog={handleOpenDialog} openDialog={openDialog} litterApps={waitList} />
+          </Collapse>
 
-            </Box>
-          </>}
+        </Box>
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(!openDialog)}
@@ -163,7 +160,7 @@ const LitterManage = () => {
                     onChange={handleSelect}
                     value={selectedLitter.select_litter}
                   >
-                    {litters.filter(litter => litter.status === 1).map((litter, index) => {
+                    {litterList.filter(litter => litter.status === 1).map((litter, index) => {
 
                       return (
                         <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>

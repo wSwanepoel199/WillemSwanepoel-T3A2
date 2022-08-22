@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { Container, Card, CardContent, CardMedia, Button, Typography } from "@mui/material";
+import { Container, Card, CardContent, CardMedia, Button, Typography, Box } from "@mui/material";
 
 const DogCard = forwardRef(({ id, ...props }, ref) => {
   // makes dog available from props
@@ -10,11 +10,22 @@ const DogCard = forwardRef(({ id, ...props }, ref) => {
     <Card
       ref={ref}
       {...props}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignContent: 'center',
+        height: '100%'
+      }}
     >
-      <CardMedia
-        component="img"
-        image={dog.main_image}
-      />
+      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Box>
+          <CardMedia
+            component="img"
+            image={dog.main_image}
+          />
+        </Box>
+      </Box>
       <CardContent>
         <Container>
           <Typography variant="h5" component="div" textAlign="center">

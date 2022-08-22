@@ -50,16 +50,8 @@ const LitterApplication = (props) => {
     }
   };
 
-  const handleAcceptOrReject = (state) => {
-    if (state === 1 && props.handleOpenDialog) {
-      const { handleOpenDialog, openDialog } = props;
-      handleOpenDialog(!openDialog);
-      dispatch({
-        type: 'setUpdatingApp',
-        data: app
-      });
-      setOpen(!open);
-    } else if (state === 2) {
+  const handleAcceptOrReject = (state, action) => {
+    if (action !== "assign") {
       patchLitterApp(app.id, { ...app, fulfillstate: state, litter_id: 1 })
         .then(app => {
           console.log(app);
@@ -69,13 +61,21 @@ const LitterApplication = (props) => {
               data: updateItemInArray(app.data, applicationForms)
             });
             setOpen(!open);
-            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been rejected` } });
+            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been ${action}` } });
           }
         })
         .catch(e => {
           console.log(e);
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}; ${e.response.statusTxt}` } });
         });
+    } else if (state === 1 && props.handleOpenDialog) {
+      const { handleOpenDialog, openDialog } = props;
+      handleOpenDialog(!openDialog);
+      dispatch({
+        type: 'setUpdatingApp',
+        data: app
+      });
+      setOpen(!open);
     }
   };
 
@@ -135,27 +135,39 @@ const LitterApplication = (props) => {
                     </TableCell> */}
                     {app.fulfillstate !== null ?
                       <>
-                        <TableCell align="left" size="small">
-                          {app.fulfillstate === 2 ?
-                            <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1)}>
+                        {app.fulfillstate === 2 ? //rejected
+                          <TableCell align="left" size="small">
+                            <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "aproved")}>
                               Approve
                             </Button>
+                          </TableCell>
+                          :
+                          app.fulfillstate === 1 ? //approved
+                            <>
+                              <TableCell align="left" size="small">
+                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "assign")}>
+                                  Assign
+                                </Button>
+                              </TableCell>
+                              <TableCell align="left" size="small">
+                                <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
+                                  Reject
+                                </Button>
+                              </TableCell>
+                            </>
                             :
-                            <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2)}>
-                              Reject
-                            </Button>
-                          }
-                        </TableCell>
+                            null
+                        }
                       </>
-                      :
+                      : //unprocessed
                       <>
                         <TableCell align="left" size="small">
-                          <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1)}>
+                          <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "approved")}>
                             Approve
                           </Button>
                         </TableCell>
                         <TableCell align="left" size="small">
-                          <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2)}>
+                          <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
                             Reject
                           </Button>
                         </TableCell>
