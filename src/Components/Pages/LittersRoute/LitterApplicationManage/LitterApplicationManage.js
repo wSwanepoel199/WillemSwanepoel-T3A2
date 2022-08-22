@@ -118,7 +118,7 @@ const LitterApplicationManage = (props) => {
         p: 2
       }}>
         {console.log(filter)}
-        <Typography variant="h4" component="h1">Manage Litters Applications</Typography>
+        <Typography variant="h4" component="h1">Manage Litter Applications</Typography>
         <Box sx={{
           py: 2
         }}>

@@ -4,7 +4,6 @@ import { StateProvider, useGlobalState } from './stateContext';
 // Import Shared Components
 import Header from '../Shared/Header';
 import NavBar from '../Shared/Navbar';
-import Footer from '../Shared/Footer';
 import AlertComponent from '../Shared/Alert/GeneralAlert';
 import CustomTable from '../Shared/CustomTable/CustomTable';
 // Import Pages Components
@@ -45,7 +44,6 @@ export {
   // Shared Components
   Header,
   NavBar,
-  Footer,
   AlertComponent,
   CustomTable,
   // Pages

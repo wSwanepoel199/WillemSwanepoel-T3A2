@@ -9,7 +9,6 @@ import {
   // shared components
   Header,
   NavBar,
-  Footer,
   AlertComponent,
   // pages
   Home,
@@ -228,7 +227,6 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Container>
-        <Footer />
       </Box>
     </>
   );

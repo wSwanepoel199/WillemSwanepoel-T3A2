@@ -11,7 +11,7 @@ const AdminRoute = ({ children }) => {
 
   useEffect(() => {
     if (!admin) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You are not autherised to access that page" } });
+      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorized", body: "You are not autherised to access that page" } });
     }
   }, [admin, navigate]);
 
@@ -37,7 +37,7 @@ const SecuredRoute = ({ children }) => {
 
   useEffect(() => {
     if (!user) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unautherised", body: "You must be signed in to access this page" } });
+      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorized", body: "You must be signed in to access this page" } });
     }
   }, [user, navigate]);
 

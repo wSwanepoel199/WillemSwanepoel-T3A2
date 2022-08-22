@@ -141,7 +141,9 @@ const DogsReorder = (params) => {
     }
   };
 
-
+  const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   // defines sensores drag and drop will use with their applicable constraints
   const sensors = useSensors(
@@ -195,7 +197,7 @@ const DogsReorder = (params) => {
   return (
     <Container >
       {console.log("local state dogs:", dogs)}
-      <Typography variant="h2">{params.id} Dogs</Typography>
+      <Typography variant="h2" >{capitalize(params.id)} Dogs</Typography>
       <Grid
         container
         spacing={2}
@@ -208,7 +210,7 @@ const DogsReorder = (params) => {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={dogs} strategy={rectSortingStrategy}>
-            {dogs.map(dog => <SortableItem key={dog.id} id={dog.id} dog={dog} />)}
+            {dogs.map((dog, index) => <SortableItem key={index} id={dog.id} dog={dog} />)}
           </SortableContext>
           <DragOverlay>{activeId ?
             <>

@@ -26,7 +26,6 @@ const NavBar = () => {
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/dogs/display/all" id="all-dogs">All Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/males" id="male-dogs">Male Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/females" id="female-dogs">Female Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
@@ -38,17 +37,13 @@ const NavBar = () => {
             <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
-          <NavDropdown
-            title="Our Company"
-            id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/about">About Us</NavDropdown.Item>
-          </NavDropdown>
+          <Nav.Link className="nav-link" eventKey="/about">About Us</Nav.Link>
           {store.loggedInUser.admin ?
             <>
               <NavDropdown
                 title="Admin Panel"
                 id={`offcanvasNavbarDropdown-expand-md`}>
-                <NavDropdown.Item eventKey="/contacts" id="view-contacts">View Contact Requests</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/dogs/display/all" id="all-dogs">View All Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/dogs/manage" id="manage-dogs">Manage Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/applications">Manage Litter Applications</NavDropdown.Item>

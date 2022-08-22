@@ -39,7 +39,7 @@ const LitterUpdateForm = () => {
   // initial state of puppies, acts as default
   const initialPuppyData = {
     realname: '',
-    callname: '',
+    colour: '',
     sex: '',
   };
   // defines the state for the form and puppies
@@ -508,7 +508,7 @@ const LitterUpdateForm = () => {
                       <Grid container spacing={2}>
                         <Grid xs={12}>
                           <DialogContentText>
-                            Add or remove puppies from litter.
+                            Add puppies to or remove from litter.
                           </DialogContentText>
                         </Grid>
                         <Grid xs={12}>
@@ -527,7 +527,7 @@ const LitterUpdateForm = () => {
                                   <TableCell align="center">
                                     <TableSortLabel>Name</TableSortLabel>
                                   </TableCell>
-                                  <TableCell align="center">Intended Call name</TableCell>
+                                  <TableCell align="center">Colour</TableCell>
                                   <TableCell align="center">Sex</TableCell>
                                   <TableCell />
                                 </TableRow>
@@ -546,12 +546,37 @@ const LitterUpdateForm = () => {
                                     {/* here we want to add the puppies colour once its ready */}
                                     <TableCell>
                                       <Select
+                                        name="colour"
+                                        displayEmpty
+                                        fullWidth
+                                        required
+                                        label='select colour'
+                                        id="dog_colour"
+                                        onChange={(e) => handlePuppyInput(e, index)}
+                                        value={puppyData[index].colour}
+                                        input={<OutlinedInput />}
+                                        renderValue={(selected) => {
+                                          if (selected === 1) {
+                                            return (<em>Male</em>);
+                                          } else if (selected === 2) {
+                                            return (<em>Female</em>);
+                                          } else {
+                                            return (<em>Select Colour</em>);
+                                          }
+                                        }}
+                                      >
+                                        {/* <MenuItem value={1}>Male</MenuItem>
+                                        <MenuItem value={2}>Female</MenuItem> */}
+                                      </Select>
+                                    </TableCell>
+                                    <TableCell>
+                                      <Select
                                         name="sex"
                                         displayEmpty
                                         fullWidth
                                         required
-                                        label=''
-                                        id="dog_sex_id"
+                                        label='select sex'
+                                        id="dog_sex"
                                         onChange={(e) => handlePuppyInput(e, index)}
                                         value={puppyData[index].sex}
                                         input={<OutlinedInput />}
@@ -591,7 +616,7 @@ const LitterUpdateForm = () => {
                             <TableCell align="center">
                               <TableSortLabel>Name</TableSortLabel>
                             </TableCell>
-                            <TableCell align="center">Intended Call name</TableCell>
+                            <TableCell align="center">Colour</TableCell>
                             <TableCell align="center">Sex</TableCell>
                           </TableRow>
                         </TableHead>

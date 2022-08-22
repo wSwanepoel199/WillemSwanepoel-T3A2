@@ -129,7 +129,7 @@ const LitterManage = () => {
               p: 2
             }}>
 
-              <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Application Wait List</Typography>
+              <Typography variant="h6" component="span" onClick={() => setOpenApp(!openApp)}>{openApp ? <KeyboardArrowDown /> : <KeyboardArrowRight />} Wait List</Typography>
               <Collapse
                 in={openApp}
                 unmountOnExit>
