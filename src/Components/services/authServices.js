@@ -1,4 +1,4 @@
-import { backEndAPI } from "../utils";
+import { backEndAPI } from "../utils/componentIndex";
 
 export async function signUp(data) {
   const response = await backEndAPI.post('/users', data);
@@ -14,3 +14,8 @@ export async function getUsers() {
   const response = await backEndAPI.get('/userlist');
   return response.data;
 }
+
+// export function signOut() {
+//   sessionStorage.clear();
+//   window.location.reload();
+// }

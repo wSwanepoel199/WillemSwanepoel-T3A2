@@ -1,10 +1,10 @@
-import { Container, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <>
-      <Container>
+      <Box sx={{ mt: 'auto' }}>
         <Grid container justifyContent="space-evenly" alignItems="center">
           <Grid item>
             <Link to={`/`}>
@@ -73,7 +73,7 @@ const Footer = () => {
             </Link>
           </Grid>
         </Grid>
-      </Container>
+      </Box>
     </>
   );
 };

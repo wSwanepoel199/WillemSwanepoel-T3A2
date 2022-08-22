@@ -1,12 +1,22 @@
 import banner from './Assests/banner.jpg';
-import { HeaderContainer, HeaderImage } from './styles/Header.styled';
+import { Container } from '@mui/material';
 
 const Header = () => {
   return (
     <>
-      <HeaderContainer id="header" className='header'>
-        <HeaderImage src={banner} alt="Banner" />
-      </HeaderContainer>
+      <Container
+        id="header"
+        className='header'
+        sx={{
+          display: 'flex',
+          p: 0,
+          justifyContent: 'center',
+        }}>
+        <img src={banner}
+          alt="Banner"
+          data-testid="header-img"
+          style={{ maxWidth: '100%', maxHeight: '100%' }} />
+      </Container>
     </>
   );
 };

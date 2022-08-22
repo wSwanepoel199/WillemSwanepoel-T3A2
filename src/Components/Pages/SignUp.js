@@ -1,13 +1,11 @@
 import { Container, Box, Paper, Grid, Typography, TextField, FormControl, Button, InputAdornment, IconButton } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useGlobalState } from "../utils";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { signUp } from "../services/authServices";
 
 const SignUpForm = () => {
-  const { dispatch } = useGlobalState();
   const navigate = useNavigate();
 
   const initialFormData = {
@@ -53,12 +51,8 @@ const SignUpForm = () => {
     signUp(submitForm)
       .then((user) => {
         console.log(user);
-        dispatch({
-          type: "setLoggedInUser",
-          data: user
-        });
         setFormData(initialFormData);
-        navigate("/");
+        navigate("/signup/confirmation");
       })
       .catch(e => {
         console.log(e.response.data.errors);
@@ -93,6 +87,11 @@ const SignUpForm = () => {
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.postcode} type="number" />
               </FormControl>
             </Grid>
             <Grid item xs={12}>

@@ -1,4 +1,4 @@
-import { backEndAPI } from "../utils";
+import { backEndAPI } from "../utils/componentIndex";
 
 export async function getForms() {
   const response = await backEndAPI.get('/contacts');
