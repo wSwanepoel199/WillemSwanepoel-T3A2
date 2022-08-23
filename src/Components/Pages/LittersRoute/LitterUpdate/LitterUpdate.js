@@ -131,7 +131,9 @@ const LitterUpdateForm = () => {
     if (newPuppyData.length > 0) {
       // itters over the newpuppy state
       newPuppyData.forEach(puppy => {
-        const newPuppies = updateItemInArray(puppy, puppyData);
+        console.log(puppy);
+        const newPuppies = updateItemInArray(puppy, puppyData, "newPuppy");
+        console.log(newPuppies);
         // sets the new puppy list to the puppy and form state
         setPuppyData(newPuppies);
         setFormData({
@@ -199,6 +201,7 @@ const LitterUpdateForm = () => {
     // checks if there are any new puppies
     if (newPuppies.length > 0) {
       newPuppies.forEach((puppy) => {
+        console.log(puppy);
         // formats new puppy data so backend can read it
         const dog = {
           id: formData.id,

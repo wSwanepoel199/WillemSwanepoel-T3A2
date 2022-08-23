@@ -196,11 +196,10 @@ const App = () => {
                 </AdminRoute>
               } />
               <Route path="showcase" element={<ShowCase />} />
-              {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
+              {/* sets path to access LitterDetails to a non absolute path */}
               <Route path=":id" element={
-                <AdminRoute>
-                  <LitterDetails />
-                </AdminRoute>} />
+                <LitterDetails />
+              } />
               {/* sets path for litter update page and uses AdminRoute to manage autherisation*/}
               <Route path=":id/edit" element={
                 <AdminRoute>

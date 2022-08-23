@@ -89,7 +89,7 @@ const ProfileView = () => {
                 case "applications": return <ViewApplications apps={applications} user={user} />;
                 case "dogs": return <ViewDogs dogs={dogs} user={user} />;
                 case "litters": return <ViewLitters litters={litters} user={user} />;
-                case "edit": return <EditForm user={user} />;
+                case "edit": return <EditForm user={user} handleProfileSwitch={handleProfileSwitch} />;
                 default: return <Profile user={user} />;
               }
             })()}

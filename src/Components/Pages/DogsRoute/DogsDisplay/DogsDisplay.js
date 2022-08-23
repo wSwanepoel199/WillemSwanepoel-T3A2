@@ -31,7 +31,7 @@ const DisplayDogs = (params) => {
       console.log(dogs);
       console.log(params);
       console.log("newly mounted");
-      setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
+      // setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
       mounted.current = true;
       // runs the rest on every update
     } else {
@@ -43,16 +43,15 @@ const DisplayDogs = (params) => {
   }, [mounted, params, dogList]);
 
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
-  // useEffect(() => {
-  //   if (mounted.current) {
-  //     console.log(dogList);
-  //     console.log("populating dogs");
-  //     setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
-  //   }
-  //   return () => {
-  //     console.log("final call setting dogs");
-  //   };
-  // }, [params, dogList]);
+  useEffect(() => {
+    console.log(dogList);
+    console.log("populating dogs");
+    setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
+  }, [params, dogList]);
+
+  useEffect(() => {
+    setPageCount(Math.ceil(dogs.length / 12));
+  }, [dogs]);
 
 
   // filters dogs based on passed params

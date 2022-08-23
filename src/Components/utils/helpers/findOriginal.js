@@ -1,6 +1,11 @@
-export function updateItemInArray(item, array) {
+export function updateItemInArray(item, array, type) {
   // locates original item in provided array
-  const originalItem = array.find(original => original.id === item.id);
+  let originalItem;
+  originalItem = array.find(original => original.id === item.id);
+  if (!originalItem && type === 'newPuppy') {
+    originalItem = array.find(original => original.realname === item.realname);
+  }
+  console.log(originalItem);
   // makes new mutable array out of provided
   let newArray = [...array];
   // splices in provided item into provided array

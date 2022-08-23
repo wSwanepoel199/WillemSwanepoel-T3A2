@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const EditForm = ({ user }) => {
+const EditForm = ({ user, handleProfileSwitch }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,6 +101,7 @@ const EditForm = ({ user }) => {
       //     });
       //     alert(errorMessage);
       //   });
+      handleProfileSwitch('profile');
     } else {
       navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: "Password miss match", body: "password does not match password confirmation" } });
     }

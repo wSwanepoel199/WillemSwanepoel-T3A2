@@ -16,7 +16,7 @@ const ShowCase = () => {
 
   useEffect(() => {
     if (litter.length === 0) {
-      setLitter(litterList.filter(litter => litter.id !== 1 && litter.adate).sort((a, b) => a.adate - b.adate));
+      setLitter(litterList.filter(litter => litter.id !== 1 && litter.adate).sort((a, b) => b.adate - a.adate));
     }
   }, [litterList, litter]);
 
@@ -30,7 +30,7 @@ const ShowCase = () => {
         <Box sx={{ py: 2, textAlign: 'center' }}>
           <Typography variant="h2" >Litters</Typography>
         </Box>
-        <Box component={Paper} sx={{ px: 2 }}>
+        <Box component={Paper}>
           <Stack
             direction="column"
           // spacing={2}

@@ -23,11 +23,11 @@ const LitterShowItem = ({ litter }) => {
         .then(reply => {
           console.log(reply);
           if (reply.status === 200) {
-            setShowItem(reply.data.litter);
-            setShowImages(reply.data.images);
-            setShowSire(reply.data.sire);
-            setShowBitch(reply.data.bitch);
-            setShowPuppies(reply.data.puppies);
+            setShowItem(reply.data.litter || []);
+            setShowImages(reply.data.images || []);
+            setShowSire(reply.data.sire || []);
+            setShowBitch(reply.data.bitch || []);
+            setShowPuppies(reply.data.puppies || []);
           }
         })
         .catch(e => {
@@ -54,25 +54,25 @@ const LitterShowItem = ({ litter }) => {
           px: 2,
           pt: 2
         }}>
-          <Grid xs={12} sm>
+          <Grid xs={12} sm={6}>
             {showImages.length > 0
               && <Box component='img' src={showImages[0]} sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />}
           </Grid>
-          <Grid container sx={{ display: 'flex', flexDirection: 'column', pb: 2 }}>
+          <Grid container xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', pb: 2 }}>
             <Grid sx={{ py: 2, textAlign: 'center' }}>
               <Typography variant="h4">{showItem.lname}</Typography>
             </Grid>
-            <Grid container spacing={2}>
-              <Grid xs={12} sm>
+            <Grid container xs={12} spacing={2}>
+              <Grid xs={12} sm={6}>
                 <Typography variant="h6">Sire:</Typography>
                 <Typography>{showSire.realname}</Typography>
               </Grid>
-              <Grid xs={12} sm>
+              <Grid xs={12} sm={6}>
                 <Typography variant="h6">Dam:</Typography>
                 <Typography>{showBitch.realname}</Typography>
               </Grid>
             </Grid>
-            <Grid xs={12} sm>
+            <Grid xs={12}>
               <Typography variant="h6">Puppies</Typography>
               <Stack sx={{ textAlign: 'center' }}>
                 {showPuppies.map((puppy, index) => {
@@ -88,32 +88,6 @@ const LitterShowItem = ({ litter }) => {
               </Link>
             </Grid>
           </Grid>
-
-          {showImages.length > 1 &&
-            <Grid sx={12} sm={12}>
-              <Button onClick={() => setOpen(!open)} fullWidth>{open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}</Button>
-              <Collapse
-                in={open}
-                sx={{
-                  overflow: 'scroll',
-                  display: 'flex',
-                }}
-              >
-                <Stack
-                  direction='row'
-                  spacing={2}
-                  sx={{
-                    height: 200,
-                    width: '100%',
-                  }}
-                >
-                  {showImages.map((image, index) => {
-                    return index !== 0 &&
-                      <Box component="img" src={image} key={index} sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />;
-                  })}
-                </Stack>
-              </Collapse>
-            </Grid>}
         </Grid>
       </Box>
     </Box>
