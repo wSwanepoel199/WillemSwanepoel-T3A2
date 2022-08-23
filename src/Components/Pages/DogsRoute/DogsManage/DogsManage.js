@@ -131,11 +131,14 @@ const DogsManage = () => {
     getDogByChip(chipSearch)
       .then(reply => {
         console.log(reply);
-        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.response.status} Dog Found`, body: `Dog Found` } });
+        if (reply.status === 200) {
+          setDogs([reply.data.dog]);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Dog Found`, body: `Dog found with microchip number ${reply.data.dog.chipnumber}` } });
+        }
       })
       .catch(e => {
         console.log(e);
-        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} Dog Not Found`, body: `${e.response.data.message}` } });
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} No Dog Found`, body: `${e.response.data.message}` } });
       });
   };
 
