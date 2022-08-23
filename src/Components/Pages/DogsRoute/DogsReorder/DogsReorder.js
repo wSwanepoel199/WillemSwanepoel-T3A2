@@ -1,6 +1,6 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { SortableItem } from '../../SortableItem';
-import { Box, Container, Typography, Paper, Button, Pagination } from "@mui/material";
+import { Box, Typography, Paper, Button, Pagination } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -59,7 +59,7 @@ const DogsReorder = () => {
     //   console.log("final call for mounting");
     //   mounted.current = false;
     // };
-  });
+  }, [mounted, dogList]);
 
   useEffect(() => {
     if (filter !== 'all') {

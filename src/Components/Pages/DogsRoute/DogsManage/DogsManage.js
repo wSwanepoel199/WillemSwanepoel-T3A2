@@ -3,12 +3,14 @@ import { visuallyHidden } from '@mui/utils';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import { useEffect, useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getDogByChip } from "../../../services/dogsServices";
 
 const DogsManage = () => {
   const { store } = useGlobalState();
   const { dogList, userList } = store;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // sets page initial state
   const [dogs, setDogs] = useState([]);
@@ -126,16 +128,15 @@ const DogsManage = () => {
   };
 
   const handleSearchSubmit = () => {
-    const postSearch = {
-      dog: {
-        ...chipSearch
-      }
-    };
-    getDogByChip(postSearch)
+    getDogByChip(chipSearch)
       .then(reply => {
         console.log(reply);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.response.status} Dog Found`, body: `Dog Found` } });
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+        console.log(e);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} Dog Not Found`, body: `${e.response.data.message}` } });
+      });
   };
 
   return (

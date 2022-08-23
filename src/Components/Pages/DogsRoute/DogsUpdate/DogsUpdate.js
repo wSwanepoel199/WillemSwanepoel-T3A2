@@ -66,7 +66,7 @@ const DogUpdateForm = () => {
       litterList.filter(litter => litter.status === 3)
     );
     setDogColours(colours);
-  }, [litterList, params.id, colours]);
+  }, [litterList, params.id]);
 
   // handlles the forms general input
   const handleInput = (e) => {
@@ -221,12 +221,9 @@ const DogUpdateForm = () => {
                 value={formData.colour}
               >
                 {dogColours.map((colour, index) => {
-                  if (colour.id !== 0) {
-                    return (
-                      <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
-                    );
-                  }
-                })}
+                  return colour.id !== 0 && <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>;
+                }
+                )}
               </Select>
             </FormControl>
           </Grid>

@@ -49,3 +49,13 @@ export async function patchLitterApp(id, data) {
   const response = await backEndAPI.patch(`/litter_applications/${id}`, data);
   return response;
 }
+
+export async function getShowCase(id) {
+  const response = await backEndAPI.get(`/showcase/${id}`);
+  return response;
+}
+
+export async function getBest() {
+  const response = await backEndAPI.get('/showcase');
+  return response;
+}

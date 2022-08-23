@@ -30,13 +30,15 @@ const LitterApplicationDetails = (props) => {
                 :
                 "No Preferance";
             const colourPref = data.litterApplication.colour_preference !== null
-              ? colours.find(colour => colour.id === data.litterApplication.colour_preference)
-              :
-              colours[0];
+              ? typeOf(data.litterApplication.colour_preference, 'string')
+                ? data.litterApplication.colour_preference
+                : colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
+              : colours[0].colour;
+            console.log(typeOf(data.litterApplication.colour_preference, 'string'));
             const filledLitterApp = {
               ...data.litterApplication,
               sex_preference: sexPref,
-              colour_preference: colourPref.colour,
+              colour_preference: colourPref,
               litter: litterList.find(litter => litter.id === data.litterApplication.litter_id),
               user: userList.find(user => user.id === data.litterApplication.user_id)
             };
@@ -50,6 +52,10 @@ const LitterApplicationDetails = (props) => {
     }
 
   }, [props, applicationDetails, litterList, userList]);
+
+  const typeOf = (item, type) => {
+    return typeof item === type ? true : false;
+  };
 
   return (
     <>

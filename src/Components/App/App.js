@@ -35,7 +35,8 @@ import {
   // state
   useGlobalState,
   SignOut,
-  Profile,
+  ProfileView,
+  ShowCase,
 } from '../utils/componentIndex';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
@@ -194,6 +195,7 @@ const App = () => {
                   <LitterApplicationManage />
                 </AdminRoute>
               } />
+              <Route path="showcase" element={<ShowCase />} />
               {/* sets path to access LitterDetails to a non absolute path and uses AdminRoute to manage autherisation */}
               <Route path=":id" element={
                 <AdminRoute>
@@ -235,7 +237,7 @@ const App = () => {
             <Route path='user'>
               <Route path=":id" element={
                 <SecuredRoute>
-                  <Profile />
+                  <ProfileView />
                 </SecuredRoute>
               } />
               <Route path="signIn" element={<SignInForm />} />

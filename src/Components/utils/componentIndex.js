@@ -29,7 +29,14 @@ import LitterApplications from '../Pages/LittersRoute/LitterApplications/LitterA
 import LitterApplicationForm from '../Pages/LittersRoute/LitterAppllicationForm/LitterApplicationForm';
 import LitterApplicationManage from '../Pages/LittersRoute/LitterApplicationManage/LitterApplicationManage';
 import LitterApplicationDetails from '../Pages/LittersRoute/LitterApplicationDetails/LitterApplicationDetails';
-import Profile from '../Pages/UserRoutes/ProfileView/ProfileView';
+import ShowCase from '../Pages/LittersRoute/LitterShowCase/LitterShowcase';
+import LitterShowItem from '../Pages/LittersRoute/LitterShowItem/LitterShowItem';
+import ProfileView from '../Pages/UserRoutes/ProfileView/ProfileView';
+import Profile from '../Pages/UserRoutes/ProfileView/Profile/profile';
+import EditForm from '../Pages/UserRoutes/ProfileView/EditProfile/EditProile';
+import ViewApplications from '../Pages/UserRoutes/ProfileView/ViewApplications/ViewApplications';
+import ViewDogs from '../Pages/UserRoutes/ProfileView/ViewDogs/ViewDogs';
+import ViewLitters from '../Pages/UserRoutes/ProfileView/ViewLitters/ViewLitters';
 import SignInForm from '../Pages/UserRoutes/SignIn/SignIn';
 import SignUpForm from '../Pages/UserRoutes/SignUp/SignUp';
 import SignOut from '../Pages/UserRoutes/SignOut/SignOut';
@@ -72,7 +79,14 @@ export {
   LitterUpdateForm,
   LitterDetails,
   LitterApplications,
+  ShowCase,
+  LitterShowItem,
+  ProfileView,
   Profile,
+  EditForm,
+  ViewApplications,
+  ViewDogs,
+  ViewLitters,
   SignInForm,
   SignUpForm,
   SignUpRedirect,

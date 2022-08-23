@@ -307,10 +307,32 @@ const LitterUpdateForm = () => {
     navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "warning", title: `Changing Litter Notionality to ${notional}`, body: `Updating existing litter's notionality can result in unforseen complications` } });
   };
 
+  // handles image uploads
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+    const { name, files } = e.target;
+    console.log(name, files);
+    if (name === 'main_image') {
+      setFormData({
+        ...formData,
+        [name]: files[0]
+      });
+    } else if (name === 'gallery_images') {
+      setFormData({
+        ...formData,
+        [name]: [...files]
+      });
+    }
+  };
+
   // handles form submit, making a patch request to backend to update litter then makes get to fetch new doglist
   const handleSubmit = (e) => {
     e.preventDefault();
-    patchLitter(formData.id, formData)
+    const litter = {
+      ...formData
+    };
+    const postData = fd({ litter });
+    patchLitter(formData.id, postData)
       .then(reply => {
         if (reply.status === 200) {
           getDogs()
@@ -376,9 +398,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.breeder_id}
                 >
-                  {validBreeders.length > 0 && validBreeders.map(breeder => {
+                  {validBreeders.length > 0 && validBreeders.map((breeder, index) => {
                     return (
-                      <MenuItem key={breeder.id} value={breeder.id}>{breeder.username} {!breeder.breeder && "(No Longer Breeding)"}</MenuItem>
+                      <MenuItem key={index} value={breeder.id}>{breeder.username} {!breeder.breeder && "(No Longer Breeding)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -397,9 +419,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.bitch_id}
                 >
-                  {validBitches.length > 0 && validBitches.map(dog => {
+                  {validBitches.length > 0 && validBitches.map((dog, index) => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
+                      <MenuItem key={index} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -418,9 +440,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.sire_id}
                 >
-                  {validSires.length && validSires.map(dog => {
+                  {validSires.length && validSires.map((dog, index) => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
+                      <MenuItem key={index} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -575,13 +597,9 @@ const LitterUpdateForm = () => {
                                         input={<OutlinedInput />}
                                       >
                                         {dogColours.map((colour, index) => {
-                                          if (colour.id !== 0) {
-                                            return (
-                                              <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
-                                            );
-                                          } else {
-                                            return (<MenuItem>Select Dog's Colour</MenuItem>);
-                                          }
+                                          return colour.id !== 0
+                                            ? <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
+                                            : <MenuItem key={index}>Select Dog's Colour</MenuItem>;
                                         })}
                                       </Select>
                                     </TableCell>
@@ -649,10 +667,10 @@ const LitterUpdateForm = () => {
                                 {dog.realname}
                               </TableCell>
                               <TableCell align="center">
-                                {dog.colour !== null ?
+                                {dog.colour !== 0 ?
                                   dog.colour !== '' && dogColours.find(colour => colour.id === dog.colour).colour
                                   :
-                                  dogColours.find(colour => colour.id === 0)}
+                                  "No colour provided"}
                               </TableCell>
                               <TableCell align="center">
                                 {dog.sex === 2 && "female"}
@@ -679,14 +697,25 @@ const LitterUpdateForm = () => {
             }
             <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Button variant="contained" component="label">
-                Upload Images of Litter for Gallery
-                <input hidden name="gallery_images" accept="image/*" type="file" id="image" multiple />
+                Upload Litter's Main Image
+                <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+              </Button>
+            </Grid>
+            {formData.main_image &&
+              <Grid xs={12}>
+                <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.main_image.name} </Typography>
+              </Grid>
+            }
+            <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" component="label">
+                Upload for Litter's Gallery
+                <input hidden name="gallery_images" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
               </Button>
             </Grid>
             {formData.gallery_images &&
               <Grid xs={12}>
-                <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.gallery_images.map(file => {
-                  return `${file.name}, `;
+                <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.gallery_images.map((file) => {
+                  return (`${file.name}, `);
                 })}</Typography>
               </Grid>
             }

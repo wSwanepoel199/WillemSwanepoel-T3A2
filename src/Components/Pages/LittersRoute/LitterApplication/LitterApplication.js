@@ -15,7 +15,7 @@ import LitterApplicationDetails from "../LitterApplicationDetails/LitterApplicat
 const LitterApplication = (props) => {
   const { app, user, litter } = props;
   const { store, dispatch } = useGlobalState();
-  const { applicationForms } = store;
+  const { applicationForms, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -133,46 +133,49 @@ const LitterApplication = (props) => {
                         </Button>
                       </Link>
                     </TableCell> */}
-                    {app.fulfillstate !== null ?
-                      <>
-                        {app.fulfillstate === 2 ? //rejected
-                          <TableCell align="left" size="small">
-                            <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "aproved")}>
-                              Approve
-                            </Button>
-                          </TableCell>
-                          :
-                          app.fulfillstate === 1 ? //approved
-                            <>
+                    {loggedInUser.admin
+                      && <>
+                        {app.fulfillstate !== null ?
+                          <>
+                            {app.fulfillstate === 2 ? //rejected
                               <TableCell align="left" size="small">
-                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "assign")}>
-                                  Assign
+                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "aproved")}>
+                                  Approve
                                 </Button>
                               </TableCell>
-                              <TableCell align="left" size="small">
-                                <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
-                                  Reject
-                                </Button>
-                              </TableCell>
-                            </>
-                            :
-                            null
+                              :
+                              app.fulfillstate === 1 ? //approved
+                                <>
+                                  <TableCell align="left" size="small">
+                                    <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "assign")}>
+                                      Assign
+                                    </Button>
+                                  </TableCell>
+                                  <TableCell align="left" size="small">
+                                    <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
+                                      Reject
+                                    </Button>
+                                  </TableCell>
+                                </>
+                                :
+                                null
+                            }
+                          </>
+                          : //unprocessed
+                          <>
+                            <TableCell align="left" size="small">
+                              <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "approved")}>
+                                Approve
+                              </Button>
+                            </TableCell>
+                            <TableCell align="left" size="small">
+                              <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
+                                Reject
+                              </Button>
+                            </TableCell>
+                          </>
                         }
-                      </>
-                      : //unprocessed
-                      <>
-                        <TableCell align="left" size="small">
-                          <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "approved")}>
-                            Approve
-                          </Button>
-                        </TableCell>
-                        <TableCell align="left" size="small">
-                          <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
-                            Reject
-                          </Button>
-                        </TableCell>
-                      </>
-                    }
+                      </>}
                   </TableRow>
                 </TableBody>
               </Table>
@@ -180,17 +183,6 @@ const LitterApplication = (props) => {
             <Box sx={{ p: 2 }}>
               <LitterApplicationDetails id={app.id} />
             </Box>
-            <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box>
-                <Button>Test</Button>
-              </Box>
-              <Box>
-                <Button>Test</Button>
-              </Box>
-              <Box>
-                <Button>Test</Button>
-              </Box>
-            </Container>
           </Collapse>
         </TableCell>
       </TableRow>

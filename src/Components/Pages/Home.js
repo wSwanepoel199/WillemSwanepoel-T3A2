@@ -1,12 +1,29 @@
 import temp_avatar from '../Shared/Assests/Temp Avatar.jpg';
 import { StyledImage } from '../Shared/styles/Home.styled';
-import { Container, Typography, Paper } from '@mui/material';
+import { Container, Typography, Paper, Box } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { DogCard, useGlobalState } from '../utils/componentIndex';
+import { useEffect, useState } from 'react';
+import { getBest } from '../services/litterServices';
 
 const Home = () => {
   const { store } = useGlobalState();
   const { dogList } = store;
+
+  const [showCase, setShowCase] = useState([]);
+
+  useEffect(() => {
+    getBest()
+      .then(reply => {
+        console.log(reply);
+        if (reply.status === 200) {
+          setShowCase(reply.data.images.filter((image, index) => index < 5));
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);
 
   return (
     <>
@@ -24,15 +41,28 @@ const Home = () => {
         </Grid>
       </Container>
       <Container sx={{ my: 2 }} component={Paper}>
-        <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Dogs</Typography>
-        {/* Cards for display items */}
-        <Grid container spacing={3} justifyContent="center" >
-          {dogList.filter((dog) => dog.position < 5).map((dog, index) =>
-            <Grid key={index} xs={10} sm={5} md={5} lg={3}>
-              <DogCard dog={dog} />
-            </Grid>
-          )}
-        </Grid>
+        <Box>
+          <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Dogs</Typography>
+          {/* Cards for display items */}
+          <Grid container spacing={3} justifyContent="center" >
+            {dogList.filter((dog) => dog.position < 5).map((dog, index) =>
+              <Grid key={index} xs={10} sm={5} md={5} lg={3}>
+                <DogCard dog={dog} />
+              </Grid>
+            )}
+          </Grid>
+        </Box>
+        <Box>
+          <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Litter</Typography>
+          <Grid container justifyContent="center">
+            {showCase.map((image, index) =>
+              <Grid key={index} xs={10} sm={5} md={5} lg={3}>
+                {console.log(image)}
+                <Box component="img" src={image} sx={{ width: '100%' }} />
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       </Container>
     </>
   );

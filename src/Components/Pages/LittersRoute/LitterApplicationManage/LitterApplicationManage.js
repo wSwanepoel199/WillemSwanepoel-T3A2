@@ -55,7 +55,6 @@ const LitterApplicationManage = (props) => {
   }, [litterApps, applicationForms, dispatch, applications]);
 
   useEffect(() => {
-    console.log("updatin waitlist");
     if (applications !== waitList && filter === 'none') {
       setWaitList(applications);
     }
@@ -116,12 +115,10 @@ const LitterApplicationManage = (props) => {
         textAlign: "center",
         p: 2
       }}>
-        {console.log(filter)}
         <Typography variant="h4" component="h1">Manage Litter Applications</Typography>
         <Box sx={{
           py: 2
         }}>
-          {console.log(litterApps)}
           <Box sx={{ py: 2 }}>
             <Typography>Filter Application Status</Typography>
             <Box>
