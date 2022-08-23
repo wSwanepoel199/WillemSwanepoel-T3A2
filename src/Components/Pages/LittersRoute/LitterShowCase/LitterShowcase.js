@@ -20,6 +20,10 @@ const ShowCase = () => {
     }
   }, [litterList, litter]);
 
+  useEffect(() => {
+    setPageCount(Math.ceil(litter.length / 5));
+  }, [litter]);
+
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };

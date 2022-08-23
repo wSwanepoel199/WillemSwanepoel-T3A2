@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-// imports required services
+// imports required services for dispatch
 import { getDogs } from '../services/dogsServices';
 import { getLitters } from '../services/litterServices';
 import { getUsers } from '../services/authServices';
-// centralises imports of reducer, global state, the shared components and pages to a single file.
+// centralises all majour imports into one index file
 import {
   // shared components
   Header,
@@ -38,8 +38,9 @@ import {
   ProfileView,
   ShowCase,
 } from '../utils/componentIndex';
-// Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
+// Custom components which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. AdminRoute blocks any user which isn't an admin and SecuredRoute blocks any user that isn't signed in
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
+// some basic styling
 import { Box, Container } from '@mui/material';
 
 // TO-DO Sprint 5
@@ -54,11 +55,13 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
-  // on component mount, which is page load/reload, makes get request to backend and uses reducer to assign fetched values to store.
+  //   Inputs: dispatch function
+  // Outputs: makes the 3 standard get requess to back end if they are not in sesssionStorage
+  // Function: if not already stored, makes get requestss to back, and uses dispatch to assign response to session storage and global state
+  // Used for: ensures all of the most basic info is available to be displayed to all users
   useEffect(() => {
     if (sessionStorage.getItem("dogList") === null) {
       getDogs()
@@ -90,75 +93,78 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    // if (sessionStorage.getItem("litterAppForms") === null && loggedInUser.admin === true) {
-    //   getLitterApps()
-    //     .then(apps => {
-    //       dispatch({
-    //         type: 'setApplicationForms',
-    //         data: apps
-    //       });
-    //     })
-    //     .catch((e) => console.log(e));
-    // }
-  }, [dispatch, loggedInUser]);
+  }, [dispatch]);
+
+
 
   return (
     <>
-      {console.log("store:", store)}
-      {console.log("list of dogs:", store.dogList)}
-      {console.log("list of litters:", store.litterList)}
+      {/* {console.log("store:", store)} */}
+      {/* {console.log("list of dogs:", store.dogList)} */}
+      {/* {console.log("list of litters:", store.litterList)} */}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
+
+      {/* wraps whole application in a box that ensures its always the width of the window */}
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* renders an alert with customisable fields depending on requirement */}
+        {/* renders custom alert component when location.state containes alert which is set to true */}
         {state && state.alert ?
-          <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
-            {console.log("alert triggered")}
-            <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
-          </Box>
+          <>
+            {/* ensures alert is rendered absolutely so it appears ontop of application */}
+            <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
+              {console.log("alert triggered")}
+              {/* custom alert component that uses material ui's alert components to display a user friendly alert, fills fields with values passed through location.state */}
+              <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+            </Box>
+          </>
           :
           null}
         {/* renders the header which contains the Myshalair logo*/}
         <Header data-testid="header" />
         {/* renders navbar, which is the main form of navigation */}
         <NavBar />
-        {/* A styled material ui container which provides a top margin of 5% unless screen is larger than 955px. in which case the top margin is 25px */}
+        {/* Wraps main application in a container which which has a top margin of 5% if window is less than the 'md' break point or 25 if window is more */}
         <Container sx={{ mt: { xs: '5%', md: '25px' }, pb: '2.5rem' }}>
-          {/* specifies the routes, the path and its associated element, the router has access to */}
+          {/* The routes component from React Routing, controls navigation throughout the application */}
           <Routes>
-            {/* sets the path for the home page */}
+            {/* sets the route that renders the Home component */}
             <Route path="/" element={<Home />} />
-            {/* sets the path for about page */}
+            {/* sets the route that renders the About component */}
             <Route path="about" element={<About />} />
-            {/* sets the main path for dogs */}
+            {/* sets the route dogs */}
             <Route path="dogs" >
-              {/* automatically routes path: "/dogs" to "/dogs/manage" */}
+              {/* routes anyone who tries to access dogs to dogs/mange */}
               <Route index element={<Navigate to={'manage'} replace={true} />} />
+              {/* sets the route that renders the DogsManage component */}
               <Route path="manage" element={
                 <AdminRoute>
                   <DogsManage />
                 </AdminRoute>
               } />
+              {/* sets the route that renders DogCreationForm component */}
               <Route path="create" element={
                 <AdminRoute>
                   <DogCreationForm />
                 </AdminRoute>} />
+              {/* sets the route that renders DogUpdateForm component */}
               <Route path=":id/edit" element={
                 <AdminRoute>
                   <DogUpdateForm />
                 </AdminRoute>} />
+              {/* sets the route that renders the DisplayDogs component with a id prop of all */}
               <Route path="display/all" element={
                 <AdminRoute>
                   <DisplayDogs id={'all'} />
                 </AdminRoute>} />
+              {/* sets the route that renders the DogsReorder componet */}
               <Route path="re_order" element={
                 <AdminRoute>
                   <DogsReorder />
                 </AdminRoute>
               } />
-              {/* allows the mapped paths to be used to route the same element */}
+              {/* maps the 3 values to the route that renders the DisplayDogs component, used for showing filtered lists to public */}
               {['male', 'female', 'retired'].map((path, index) => {
                 return (
                   <Route path={`display/${path}`} element={
@@ -167,7 +173,7 @@ const App = () => {
                   } key={index} />
                 );
               })}
-              {/* sets the path for a selected dog using a non absolute path. in this case the router will accept any into as :id */}
+              {/* sets the route that renders DogDetails component, uses :id param to control which dog is providing details */}
               <Route path="display/:id" element={<DogDetails />} />
             </Route>
             {/* sets default path for litters */}
@@ -260,3 +266,10 @@ const App = () => {
 };
 
 export default App;
+
+
+//   Inputs: what args does the function take and what type are each of them.
+// Outputs: what are the names of the things the function might return, what type are they, what conditions lead to one return or another.
+// Function: what does the function do with the inputs to turn them into the outputs, the control flow and the functions
+// Called by: list all functions that call this function
+// Used for: what feature(s) does this support at the userspace level
