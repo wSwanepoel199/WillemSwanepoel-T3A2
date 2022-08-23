@@ -24,8 +24,8 @@ export async function patchLitter(id, data) {
   return response;
 }
 
-export async function postNewPuppies(data) {
-  const response = await backEndAPI.post('/add_puppies', data);
+export async function postNewPuppy(data) {
+  const response = await backEndAPI.post('/add_puppy', data);
   return response;
 }
 

@@ -8,8 +8,8 @@ const LitterApplicationManage = (props) => {
   const { store, dispatch } = useGlobalState();
   const { userList, applicationForms } = store;
 
-  const [openApp, setOpenApp] = useState(false);
-  const [appClosed, setAppClosed] = useState(true);
+  // const [openApp, setOpenApp] = useState(false);
+  // const [appClosed, setAppClosed] = useState(true);
   const [applications, setApplications] = useState([]);
   // const [availablePups, setAvailablePups] = useState([]);
   // const waitlistLitter = litterList.find(litter => litter.id === 1);
@@ -52,7 +52,7 @@ const LitterApplicationManage = (props) => {
         })
         .catch(e => console.log(e));
     }
-  }, [litterApps, applicationForms, dispatch]);
+  }, [litterApps, applicationForms, dispatch, applications]);
 
   useEffect(() => {
     console.log("updatin waitlist");
@@ -67,7 +67,7 @@ const LitterApplicationManage = (props) => {
     } else {
       setWaitList(applications);
     }
-  }, [filter]);
+  }, [filter, applications]);
 
   // const handleLitterAppOpen = (stage, alt) => {
   //   switch (stage) {

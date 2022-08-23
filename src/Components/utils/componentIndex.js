@@ -29,8 +29,10 @@ import LitterApplications from '../Pages/LittersRoute/LitterApplications/LitterA
 import LitterApplicationForm from '../Pages/LittersRoute/LitterAppllicationForm/LitterApplicationForm';
 import LitterApplicationManage from '../Pages/LittersRoute/LitterApplicationManage/LitterApplicationManage';
 import LitterApplicationDetails from '../Pages/LittersRoute/LitterApplicationDetails/LitterApplicationDetails';
-import SignInForm from '../Pages/SignIn';
-import SignUpForm from '../Pages/SignUp';
+import Profile from '../Pages/UserRoutes/ProfileView/ProfileView';
+import SignInForm from '../Pages/UserRoutes/SignIn/SignIn';
+import SignUpForm from '../Pages/UserRoutes/SignUp/SignUp';
+import SignOut from '../Pages/UserRoutes/SignOut/SignOut';
 import SignUpRedirect from '../Pages/SignUpRedirect';
 // API
 import backEndAPI from './api';
@@ -70,9 +72,11 @@ export {
   LitterUpdateForm,
   LitterDetails,
   LitterApplications,
+  Profile,
   SignInForm,
   SignUpForm,
   SignUpRedirect,
+  SignOut,
   // api
   backEndAPI,
 };

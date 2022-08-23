@@ -49,7 +49,7 @@ const LitterApplicationDetails = (props) => {
         .catch(e => console.log(e));
     }
 
-  }, [props, applicationDetails]);
+  }, [props, applicationDetails, litterList, userList]);
 
   return (
     <>

@@ -12,21 +12,17 @@ const DogCard = forwardRef(({ id, ...props }, ref) => {
       ref={ref}
       {...props}
       sx={{
-        height: '100%',
-        maxHeight: '534px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between'
+        maxHeight: 510, display: 'flex', flexDirection: 'column'
       }}
     >
-      <Box sx={{ maxHeight: '320px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <Box sx={{ height: 311, overflow: 'hidden', display: 'flex' }}>
         <CardMedia
           component="img"
           image={dog.main_image}
-          sx={{ height: 400 }}
+          sx={{ maxHeight: 'auto', maxWidth: 'auto', objectFit: 'contain' }}
         />
       </Box>
-      <CardContent>
+      <CardContent sx={{ height: 207, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <Container>
           <Typography variant="h5" component="div" textAlign="center">
             {dog.callname}

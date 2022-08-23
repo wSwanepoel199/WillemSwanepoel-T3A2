@@ -26,7 +26,7 @@ export const SortableItem = (props) => {
       style={style}
       {...attributes}
       {...listeners}
-      sx={{ height: '550px' }}
+      sx={{ maxHeight: '550px' }}
     >
       <DogCard dog={props.dog} />
     </Grid>

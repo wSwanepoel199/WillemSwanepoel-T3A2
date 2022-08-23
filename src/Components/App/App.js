@@ -34,6 +34,8 @@ import {
   NotFound,
   // state
   useGlobalState,
+  SignOut,
+  Profile,
 } from '../utils/componentIndex';
 // Custom Element which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. Only if admin is equal to true in sessionStorage will it allow access to children
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
@@ -112,6 +114,7 @@ const App = () => {
         {/* renders an alert with customisable fields depending on requirement */}
         {state && state.alert ?
           <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
+            {console.log("alert triggered")}
             <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
           </Box>
           :
@@ -229,10 +232,22 @@ const App = () => {
             </Route>
 
             {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
-            <Route path="signIn" element={<SignInForm />}></Route>
-            <Route path="signUp" >
-              <Route index element={<SignUpForm />} />
-              <Route path="confirmation" element={<SignUpRedirect />} />
+            <Route path='user'>
+              <Route path=":id" element={
+                <SecuredRoute>
+                  <Profile />
+                </SecuredRoute>
+              } />
+              <Route path="signIn" element={<SignInForm />} />
+              <Route path="signUp" >
+                <Route index element={<SignUpForm />} />
+                <Route path="confirmation" element={<SignUpRedirect />} />
+              </Route>
+              <Route path="signOut" element={
+                <SecuredRoute>
+                  <SignOut />
+                </SecuredRoute>
+              } />
             </Route>
             {/* sets path to render 404 page when attempting to access a route that does not exist */}
             <Route path="*" element={<NotFound />} />

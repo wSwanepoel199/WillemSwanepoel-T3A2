@@ -3,17 +3,11 @@ import { useGlobalState } from "../utils/componentIndex";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-  const { store, dispatch } = useGlobalState();
+  const { store } = useGlobalState();
   const navigate = useNavigate();
 
   const handleSelect = (e) => {
     navigate(e);
-  };
-
-  const handleSignOut = () => {
-    dispatch({
-      type: "signOutUser"
-    });
   };
 
   const NavBody = () => {
@@ -62,13 +56,13 @@ const NavBar = () => {
                 align={{ md: 'end' }}
                 style={{ textAlign: 'right' }}
               >
-                <NavDropdown.Item eventKey={`/users/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
-                <NavDropdown.Item eventKey="/" onClick={handleSignOut} id="sign-out">Sign Out</NavDropdown.Item>
+                <NavDropdown.Item eventKey={`/user/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/user/signOut" id="sign-out">Sign Out</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             :
             <Nav>
-              <Nav.Link className="nav-link" eventKey="/signIn">Sign In</Nav.Link>
+              <Nav.Link className="nav-link" eventKey="/user/signIn">Sign In</Nav.Link>
             </Nav>
         }
       </>
