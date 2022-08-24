@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Button } from "@mui/material";
+import { Box, Container, Typography, Button, Paper, Stack } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -16,6 +16,7 @@ const LitterApplications = () => {
 
   const [litterDetail, setLitterDetail] = useState([]);
   const [litterApplications, setLitterApplications] = useState([]);
+  const [availablePuppies, setAvailablePups] = useState([]);
 
   useEffect(() => {
     getLitter(params.id)
@@ -29,6 +30,9 @@ const LitterApplications = () => {
         });
         if (litter.litterApplications) {
           setLitterApplications(litter.litterApplications);
+        }
+        if (litter.puppies) {
+          setAvailablePups(litter.puppies);
         }
       })
       .catch(e => console.log(e));
@@ -64,7 +68,27 @@ const LitterApplications = () => {
         </Grid>
       </Container>
       <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
-        <LitterApplicationManage litterApps={litterApplications} litter={litterDetail} />
+        {/* <LitterApplicationManage litterApps={litterApplications} litter={litterDetail} /> */}
+        <Grid container spacing={4}>
+          <Grid xs={6} component={Paper}>
+            <Stack>
+              {litterApplications.map((app, index) => {
+                return (
+                  <Typography key={index}>{app.id}</Typography>
+                );
+              })}
+            </Stack>
+          </Grid>
+          <Grid xs={6} component={Paper}>
+            <Stack>
+              {availablePuppies.map((puppy, index) => {
+                return (
+                  <Typography key={index}>{puppy.realname}</Typography>
+                );
+              })}
+            </Stack>
+          </Grid>
+        </Grid>
       </Container>
       <Container>
         <Link to="/litters/manage">

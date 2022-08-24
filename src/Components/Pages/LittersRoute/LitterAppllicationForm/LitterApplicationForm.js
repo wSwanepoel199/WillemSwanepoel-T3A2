@@ -1,10 +1,11 @@
-import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, TableRow, TableCell, IconButton } from "@mui/material";
+import { Box, Paper, Typography, FormControl, Container, Button, TextField, InputLabel, Select, InputAdornment, RadioGroup, FormLabel, FormControlLabel, Radio, TableRow, TableCell, IconButton, MenuItem } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
+import { colours } from "../../../utils/helpers/findOriginal";
 
 
 // Criteria form must account for
@@ -49,6 +50,7 @@ const LitterApplicationForm = () => {
   const [petsData, setPetsData] = useState([]);
   const [children, setChildren] = useState(false);
   const [pets, setPets] = useState(false);
+  const [colourPref, setColourPref] = useState([]);
 
   // adds the user's id to the contact form automaticallly
   useEffect(() => {
@@ -57,6 +59,7 @@ const LitterApplicationForm = () => {
         ...formData,
         user_id: loggedInUser.id,
       });
+      setColourPref(colours);
       mounted.current = true;
     }
 
@@ -150,10 +153,7 @@ const LitterApplicationForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const appForm = {
-      user_id: formData.user_id,
-      litter_id: formData.litter_id,
-      yardarea: formData.yardarea,
-      yardfenceheight: formData.yardfenceheight,
+      ...formData,
       children: [...childrenData],
       pets: [...petsData],
     };
@@ -244,17 +244,18 @@ const LitterApplicationForm = () => {
               <Select
                 name="colour_preference"
                 fullWidth
+                required
                 id="colour_preference"
                 label="colour_preference_label"
                 aria-labelledby="colour_preference_label"
                 onChange={handleInput}
                 value={formData.colour_preference}
               >
-                {/* {Object.values(sires).map(dog => {
+                {colourPref.map((colour, index) => {
                   return (
-                    <MenuItem key={dog.id} value={dog.id}>{dog.callname}</MenuItem>
+                    <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
                   );
-                })} */}
+                })}
               </Select>
             </FormControl>
           </Grid>

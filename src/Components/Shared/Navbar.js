@@ -3,17 +3,11 @@ import { useGlobalState } from "../utils/componentIndex";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
-  const { store, dispatch } = useGlobalState();
+  const { store } = useGlobalState();
   const navigate = useNavigate();
 
   const handleSelect = (e) => {
     navigate(e);
-  };
-
-  const handleSignOut = () => {
-    dispatch({
-      type: "signOutUser"
-    });
   };
 
   const NavBody = () => {
@@ -25,15 +19,15 @@ const NavBar = () => {
           <NavDropdown
             title="Dogs"
             id={`offcanvasNavbarDropdown-expand-md`}>
-            <NavDropdown.Item eventKey="/dogs/display/males" id="male-dogs">Male Dogs</NavDropdown.Item>
-            <NavDropdown.Item eventKey="/dogs/display/females" id="female-dogs">Female Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/display/male" id="male-dogs">Male Dogs</NavDropdown.Item>
+            <NavDropdown.Item eventKey="/dogs/display/female" id="female-dogs">Female Dogs</NavDropdown.Item>
             <NavDropdown.Item eventKey="/dogs/display/retired" id="retired-dogs">Retired Dogs</NavDropdown.Item>
           </NavDropdown>
           <NavDropdown
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
             <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Litter Application</NavDropdown.Item>
-            <NavDropdown.Item eventKey="litter-showcase">Litter Showcase</NavDropdown.Item>
+            <NavDropdown.Item eventKey="litters/showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
           <Nav.Link className="nav-link" eventKey="/about">About Us</Nav.Link>
@@ -62,13 +56,13 @@ const NavBar = () => {
                 align={{ md: 'end' }}
                 style={{ textAlign: 'right' }}
               >
-                <NavDropdown.Item eventKey={`/users/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
-                <NavDropdown.Item eventKey="/" onClick={handleSignOut} id="sign-out">Sign Out</NavDropdown.Item>
+                <NavDropdown.Item eventKey={`/user/${store.loggedInUser.id}`} id="view-contacts">Profile</NavDropdown.Item>
+                <NavDropdown.Item eventKey="/user/signOut" id="sign-out">Sign Out</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             :
             <Nav>
-              <Nav.Link className="nav-link" eventKey="/signIn">Sign In</Nav.Link>
+              <Nav.Link className="nav-link" eventKey="/user/signIn">Sign In</Nav.Link>
             </Nav>
         }
       </>

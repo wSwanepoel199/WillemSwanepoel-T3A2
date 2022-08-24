@@ -39,7 +39,7 @@ const LitterCreationForm = () => {
 
   // assigns states of breeder, sires, and bitches to filtered lists where dogs are not retired and users are breeders
   useEffect(() => {
-    setBreeders(userList.filter(user => user.breeder === true));
+    setBreeders(userList.filter(user => user));
     setSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
     setBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
   }, [userList, dogList]);

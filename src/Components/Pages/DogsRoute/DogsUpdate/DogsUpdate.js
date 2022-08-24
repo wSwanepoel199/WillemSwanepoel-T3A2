@@ -5,6 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getDog, patchDog, getDogs } from "../../../services/dogsServices";
+import { colours } from "../../../utils/helpers/findOriginal";
 
 // can't update litter of dog due to to lack of support from back
 
@@ -24,6 +25,8 @@ const DogUpdateForm = () => {
     sex: '',
     litter_id: '',
     description: '',
+    colour: '',
+    chipnumber: '',
   };
   const initialHealthTestData = {
     pra: '',
@@ -37,6 +40,7 @@ const DogUpdateForm = () => {
   const [dog, setDog] = useState({});
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
   const [validLitterList, setValidLitterList] = useState([]);
+  const [dogColours, setDogColours] = useState([]);
 
   // on component mount, makes get request for a dog and assigns specific values to the form state, also saves the whole dog to the dog state
   useEffect(() => {
@@ -52,8 +56,7 @@ const DogUpdateForm = () => {
             callname: data.dog.callname,
             sex: data.dog.sex,
             description: data.dog.description,
-            litter_id: '',
-            main_image: data.dog.main_image
+            colour: data.dog.colour
           });
         }
       })
@@ -62,6 +65,7 @@ const DogUpdateForm = () => {
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
     );
+    setDogColours(colours);
   }, [litterList, params.id]);
 
   // handlles the forms general input
@@ -109,22 +113,27 @@ const DogUpdateForm = () => {
 
   // handles image uploads
   const handleImageUpload = (e) => {
-    const { files } = e.target;
-    setFormData({
-      ...formData,
-      main_image: files[0]
-    });
+    e.preventDefault();
+    const { name, files } = e.target;
+    console.log(name, files);
+    if (name === 'main_image') {
+      setFormData({
+        ...formData,
+        [name]: files[0]
+      });
+    } else if (name === 'gallery_images') {
+      setFormData({
+        ...formData,
+        [name]: [...files]
+      });
+    }
   };
 
   // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // const postForm = new FormData();
     let dog;
-    // postForm.append(
-    //   'healthtest', healthTestData
-    // );
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
@@ -134,16 +143,8 @@ const DogUpdateForm = () => {
           ...dog,
           [item[0]]: item[1]
         };
-        // postForm.append(
-        //   item[0], item[1]
-        // );
       }
     });
-    // let dogData = {};
-    // postForm.forEach((value, key) => {
-    //   dogData[key] = value;
-    // });
-    // console.log(postForm);
     const postForm = fd({ dog });
     patchDog(params.id, postForm)
       .then(dog => {
@@ -191,7 +192,7 @@ const DogUpdateForm = () => {
           <Grid xs={12} sm={6}>
             <TextField name="callname" required fullWidth id="callname" label="Dog's Call Name" onChange={handleInput} value={formData.callname} />
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
             <FormControl>
               <FormLabel id="dog-sex-label" >Select Sex</FormLabel>
               <RadioGroup
@@ -205,6 +206,25 @@ const DogUpdateForm = () => {
                 <FormControlLabel value={1} control={<Radio />} label="Male" />
                 <FormControlLabel value={2} control={<Radio />} label="Female" />
               </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="colour_label">Select Colour</InputLabel>
+              <Select
+                name="colour"
+                fullWidth
+                id="colour"
+                labelId="colour_label"
+                label="Select Colour"
+                onChange={handleInput}
+                value={formData.colour}
+              >
+                {dogColours.map((colour, index) => {
+                  return colour.id !== 0 && <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>;
+                }
+                )}
+              </Select>
             </FormControl>
           </Grid>
           {/* <Grid xs={12} sm={6}>
@@ -244,6 +264,9 @@ const DogUpdateForm = () => {
               </Select>
             </FormControl>
           </Grid>
+          <Grid xs={12} sm={6}>
+            <TextField name='chipnumber' id="chipnumber" label="Enter Dog's Microchip Number" fullWidth onChange={handleInput} value={formData.chipnumber} />
+          </Grid>
           <Grid xs={12}>
             <TextField name='description' id="description" label="Enter Dog's Description" multiline minRows={3} fullWidth onChange={handleInput} value={formData.description} />
           </Grid>
@@ -268,10 +291,27 @@ const DogUpdateForm = () => {
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
-              <input hidden name="main_image" accept="image/*" type="file" multiple onChange={handleImageUpload} />
+              <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
             </Button>
-            <Typography sx={{ pl: 1 }}>{formData.main_image && formData.main_image.name}</Typography>
           </Grid>
+          {formData.main_image &&
+            <Grid xs={12}>
+              <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.main_image.name} </Typography>
+            </Grid>
+          }
+          <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant="contained" component="label">
+              Upload Images for Gallery
+              <input hidden name="gallery_images" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+            </Button>
+          </Grid>
+          {formData.gallery_images &&
+            <Grid xs={12}>
+              <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.gallery_images.map(file => {
+                return `${file.name}, `;
+              })}</Typography>
+            </Grid>
+          }
           <Grid xs={12}>
             <Container>
               <Button variant="contained" type='submit'>

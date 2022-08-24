@@ -1,7 +1,6 @@
 import { Box, Button, Paper, TableCell, TableRow, Typography, TablePagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getLitterApps } from "../../../services/litterServices";
-import { useParams } from "react-router";
 import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
 
 const LitterApplicationManage = (props) => {
@@ -9,8 +8,8 @@ const LitterApplicationManage = (props) => {
   const { store, dispatch } = useGlobalState();
   const { userList, applicationForms } = store;
 
-  const [openApp, setOpenApp] = useState(false);
-  const [appClosed, setAppClosed] = useState(true);
+  // const [openApp, setOpenApp] = useState(false);
+  // const [appClosed, setAppClosed] = useState(true);
   const [applications, setApplications] = useState([]);
   // const [availablePups, setAvailablePups] = useState([]);
   // const waitlistLitter = litterList.find(litter => litter.id === 1);
@@ -53,10 +52,9 @@ const LitterApplicationManage = (props) => {
         })
         .catch(e => console.log(e));
     }
-  }, [litterApps, applicationForms, dispatch]);
+  }, [litterApps, applicationForms, dispatch, applications]);
 
   useEffect(() => {
-    console.log("updatin waitlist");
     if (applications !== waitList && filter === 'none') {
       setWaitList(applications);
     }
@@ -68,7 +66,7 @@ const LitterApplicationManage = (props) => {
     } else {
       setWaitList(applications);
     }
-  }, [filter]);
+  }, [filter, applications]);
 
   // const handleLitterAppOpen = (stage, alt) => {
   //   switch (stage) {
@@ -117,12 +115,10 @@ const LitterApplicationManage = (props) => {
         textAlign: "center",
         p: 2
       }}>
-        {console.log(filter)}
         <Typography variant="h4" component="h1">Manage Litter Applications</Typography>
         <Box sx={{
           py: 2
         }}>
-          {console.log(litterApps)}
           <Box sx={{ py: 2 }}>
             <Typography>Filter Application Status</Typography>
             <Box>

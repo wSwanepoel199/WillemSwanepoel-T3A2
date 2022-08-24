@@ -15,7 +15,7 @@ export async function getUsers() {
   return response.data;
 }
 
-// export function signOut() {
-//   sessionStorage.clear();
-//   window.location.reload();
-// }
+export async function getUser(id) {
+  const response = await backEndAPI.get(`/users/${id}`);
+  return response;
+}
