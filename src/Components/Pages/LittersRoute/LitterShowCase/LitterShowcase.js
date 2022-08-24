@@ -1,5 +1,4 @@
 import { Box, Typography, Paper, Pagination, Stack } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/stateContext";
 import LitterShowItem from "../LitterShowItem/LitterShowItem";
@@ -21,6 +20,7 @@ const ShowCase = () => {
   }, [litterList, litter]);
 
   useEffect(() => {
+    setItemsPerPage(5);
     setPageCount(Math.ceil(litter.length / 5));
   }, [litter]);
 

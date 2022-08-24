@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Container, Card, CardContent, CardMedia, Button, Typography, Box } from "@mui/material";
-import { maxHeight } from "@mui/system";
 
 const DogCard = forwardRef(({ id, ...props }, ref) => {
   // makes dog available from props

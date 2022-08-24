@@ -28,22 +28,22 @@ const EditForm = ({ user, handleProfileSwitch }) => {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
-    let filteredUser;
+    let filteredUser = { ...formData };
     Object.entries(user).map(user => {
       if (user[1] === null) {
-        return;
+        return filteredUser = {
+          ...filteredUser,
+          [user[0]]: ''
+        };
       } else {
-        filteredUser = {
+        return filteredUser = {
           ...filteredUser,
           [user[0]]: user[1]
         };
       }
     });
-    setFormData({
-      ...formData,
-      ...filteredUser
-    });
-  }, [user]);
+    setFormData(filteredUser);
+  }, []);
 
   const handleShowPassword = (name) => {
     console.log(name);

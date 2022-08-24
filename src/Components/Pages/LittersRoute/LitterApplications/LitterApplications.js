@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getLitter } from "../../../services/litterServices";
-import { useGlobalState, LitterApplicationManage } from "../../../utils/componentIndex";
+import { useGlobalState } from "../../../utils/componentIndex";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected

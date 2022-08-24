@@ -35,8 +35,26 @@ const DogCreationForm = () => {
     fn: '',
     aon: '',
     ams: '',
-    bss: ''
+    bss: '',
   };
+  const healthTestValues = [
+    {
+      id: 0,
+      status: 'Unknown'
+    },
+    {
+      id: 1,
+      status: 'Clear'
+    },
+    {
+      id: 2,
+      status: 'Carrier'
+    },
+    {
+      id: 3,
+      status: 'Affected'
+    },
+  ];
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
   const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
@@ -49,7 +67,7 @@ const DogCreationForm = () => {
       litterList.filter(litter => litter.status === 3)
     );
     setDogColours(colours);
-  }, [litterList, colours]);
+  }, [litterList]);
 
   // handles form general input
   const handleInput = (e) => {
@@ -72,10 +90,11 @@ const DogCreationForm = () => {
   // handles health test input
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
-
+    console.log(healthTestData);
+    console.log(name, value);
     setHealthTestData({
       ...healthTestData,
-      [name]: parseInt(value)
+      [name]: value
     });
   };
 
@@ -103,7 +122,9 @@ const DogCreationForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(e);
-    let dog;
+    let dog = {
+      healthtest: { ...healthTestData }
+    };
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
@@ -200,41 +221,18 @@ const DogCreationForm = () => {
                 value={formData.colour}
               >
                 {dogColours.length > 0 && dogColours.map((colour, index) => {
-                  if (colour.id !== 0) {
-                    return (
-                      <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
-                    );
-                  }
+                  return colour.id !== 0 && <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>;
                 })}
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id="owner_label">Select Dog's Owner</InputLabel>
-              <Select
-                name="owner_id"
-                id="owner_id"
-                required
-                label="Select Dog's Owner"
-                onChange={handleInput}
-                value={formData.owner_id}
-              >
-                {userList.map(owner => {
-                  return (
-                    <MenuItem key={owner.id} value={owner.id}>{owner.username}</MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid> */}
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="litter_label">Select Dog's Litter</InputLabel>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
               <Select
                 name="litter_id"
                 id="litter_id"
-                label="Select Dog's Litter"
+                label="Add to Notional Litter"
                 onChange={handleInput}
                 value={formData.litter_id}
               >
@@ -255,21 +253,123 @@ const DogCreationForm = () => {
           <Grid xs={12}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="pra" id="pra_id" label="PRA" fullWidth onChange={handleHealthTestInput} value={healthTestData.pra} />
+          {Object.entries(healthTestData).map((healthTest, index) => {
+            console.log(healthTest);
+            return (
+              <Grid key={index} xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor={`${healthTest[0]}_id`}>{healthTest[0].toUpperCase()}</InputLabel>
+                  <Select
+                    name={healthTest[0]}
+                    id={`${healthTest[0]}_id`}
+                    label={healthTest[0]}
+                    onChange={handleHealthTestInput}
+                    value={healthTest[1]}
+                  >
+                    {healthTestValues.map((test, index) => {
+                      return (
+                        <MenuItem key={index} value={test.id}>{test.status}</MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          })}
+          {/* <Grid xs={12} sm={4}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="pra_id">PRA</InputLabel>
+              <Select
+                name="pra"
+                id="pra_id"
+                label="PRA"
+                onChange={handleHealthTestInput}
+                value={healthTestData.pra}
+              >
+                {healthTestValues.map((test, index) => {
+                  return (
+                    <MenuItem key={index} value={test.id}>{test.status}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid xs={12} sm={4}>
             <TextField name="fn" id="fn_id" label="FN" fullWidth onChange={handleHealthTestInput} value={healthTestData.fn} />
+            <FormControl fullWidth>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
+              <Select
+                name="litter_id"
+                id="litter_id"
+                label="Add to Notional Litter"
+                onChange={handleInput}
+                value={formData.litter_id}
+              >
+                {validLitterList.length > 0 && validLitterList.map((litter, index) => {
+                  return (
+                    <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid xs={12} sm={4}>
             <TextField name="aon" id="aon_id" label="AON" fullWidth onChange={handleHealthTestInput} value={healthTestData.aon} />
+            <FormControl fullWidth>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
+              <Select
+                name="litter_id"
+                id="litter_id"
+                label="Add to Notional Litter"
+                onChange={handleInput}
+                value={formData.litter_id}
+              >
+                {validLitterList.length > 0 && validLitterList.map((litter, index) => {
+                  return (
+                    <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid xs={12} sm={4}>
             <TextField name="ams" id="ams_id" label="AMS" fullWidth onChange={handleHealthTestInput} value={healthTestData.ams} />
+            <FormControl fullWidth>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
+              <Select
+                name="litter_id"
+                id="litter_id"
+                label="Add to Notional Litter"
+                onChange={handleInput}
+                value={formData.litter_id}
+              >
+                {validLitterList.length > 0 && validLitterList.map((litter, index) => {
+                  return (
+                    <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid xs={12} sm={4}>
             <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
-          </Grid>
+            <FormControl fullWidth>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
+              <Select
+                name="litter_id"
+                id="litter_id"
+                label="Add to Notional Litter"
+                onChange={handleInput}
+                value={formData.litter_id}
+              >
+                {validLitterList.length > 0 && validLitterList.map((litter, index) => {
+                  return (
+                    <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Grid> */}
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
@@ -308,7 +408,7 @@ const DogCreationForm = () => {
           </Grid>
         </Grid>
       </Paper>
-    </Box>
+    </Box >
   );
 };
 

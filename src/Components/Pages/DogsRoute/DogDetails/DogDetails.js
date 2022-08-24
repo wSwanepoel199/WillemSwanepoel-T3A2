@@ -10,6 +10,10 @@ const DogDetails = () => {
   const navigate = useNavigate();
 
   const [dogDetails, setDogDetails] = useState(initialDogDetails);
+  const [gallery, setGallery] = useState([]);
+  const [healthtest, setHealthtest] = useState([]);
+  const [litter, setLittter] = useState([]);
+  const [litters, setLitters] = useState([]);
 
   useEffect(() => {
     console.log(params);
@@ -17,6 +21,10 @@ const DogDetails = () => {
       .then(response => {
         console.log(response.data);
         setDogDetails(response.data.dog);
+        setGallery(response.data.gallery_images);
+        setHealthtest(response.data.healthtest);
+        setLitters(response.data.litters);
+        setLittter(response.data.litter || []);
       })
       .catch(e => console.log(e));
   }, [params]);

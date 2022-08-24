@@ -1,8 +1,8 @@
-import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button, Container } from "@mui/material";
+import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button } from "@mui/material";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { patchLitterApp } from "../../../services/litterServices";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 import { useGlobalState } from "../../../utils/stateContext";
@@ -13,25 +13,13 @@ import LitterApplicationDetails from "../LitterApplicationDetails/LitterApplicat
 // impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
 const LitterApplication = (props) => {
-  const { app, user, litter } = props;
+  const { app, user } = props;
   const { store, dispatch } = useGlobalState();
   const { applicationForms, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
-  const initialAppLitter = {
-    id: 1,
-    lname: ''
-  };
-
   const [open, setOpen] = useState(false);
-  const [appLitter, setAppLitter] = useState(initialAppLitter);
-
-  useEffect(() => {
-    if (litter) {
-      setAppLitter(litter);
-    }
-  }, [litter]);
 
   const fulFillState = (state) => {
     switch (state) {
@@ -119,13 +107,13 @@ const LitterApplication = (props) => {
               <Table size="small">
                 <TableBody>
                   <TableRow sx={{ display: 'flex' }}>
-                    <TableCell align="left" size="small" >
+                    {/* <TableCell align="left" size="small" >
                       <Link to={`./${app.id}`}>
                         <Button variant="contained" color="success">
                           View
                         </Button>
                       </Link>
-                    </TableCell>
+                    </TableCell> */}
                     {/* <TableCell align="left" size="small">
                       <Link to={`/litters/${appLitter.id}/applications/${app.id}/manage`}>
                         <Button variant="contained" color="warning">

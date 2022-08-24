@@ -25,7 +25,7 @@ const DogsManage = () => {
     if (dogs.length === 0 && dogList.length > 0) {
       setDogs(dogList);
     }
-  }, [dogList]);
+  }, [dogList, dogs]);
 
   // order values based on provided id
   function descendingComparator(a, b, orderBy) {

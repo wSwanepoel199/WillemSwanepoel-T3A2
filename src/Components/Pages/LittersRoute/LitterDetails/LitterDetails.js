@@ -34,7 +34,7 @@ const LitterDetails = () => {
       .catch(e => {
         console.log(e);
       });
-  }, [params]);
+  }, [params, userList]);
 
   return (
     <>

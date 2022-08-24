@@ -35,6 +35,24 @@ const DogUpdateForm = () => {
     ams: '',
     bss: ''
   };
+  const healthTestValues = [
+    {
+      id: 0,
+      status: 'Unknown'
+    },
+    {
+      id: 1,
+      status: 'Clear'
+    },
+    {
+      id: 2,
+      status: 'Carrier'
+    },
+    {
+      id: 3,
+      status: 'Affected'
+    },
+  ];
   // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
   const [dog, setDog] = useState({});
@@ -51,12 +69,22 @@ const DogUpdateForm = () => {
           const { data } = dog;
           setDog(data);
           setFormData({
+            ...formData,
             id: data.dog.id,
             realname: data.dog.realname,
             callname: data.dog.callname,
             sex: data.dog.sex,
             description: data.dog.description,
-            colour: data.dog.colour
+            colour: data.dog.colour,
+            chipnumber: data.dog.chipnumber,
+          });
+          setHealthTestData({
+            ...healthTestData,
+            pra: data.healthtest.pra,
+            fn: data.healthtest.fn,
+            aon: data.healthtest.aon,
+            ams: data.healthtest.ams,
+            bss: data.healthtest.bss,
           });
         }
       })
@@ -273,21 +301,29 @@ const DogUpdateForm = () => {
           <Grid xs={12}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="pra" id="pra_id" label="PRA" fullWidth onChange={handleHealthTestInput} value={healthTestData.pra} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="fn" id="fn_id" label="FN" fullWidth onChange={handleHealthTestInput} value={healthTestData.fn} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="aon" id="aon_id" label="AON" fullWidth onChange={handleHealthTestInput} value={healthTestData.aon} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="ams" id="ams_id" label="AMS" fullWidth onChange={handleHealthTestInput} value={healthTestData.ams} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
-          </Grid>
+          {Object.entries(healthTestData).map((healthTest, index) => {
+            console.log(healthTest);
+            return (
+              <Grid key={index} xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor={`${healthTest[0]}_id`}>{healthTest[0].toUpperCase()}</InputLabel>
+                  <Select
+                    name={healthTest[0]}
+                    id={`${healthTest[0]}_id`}
+                    label={healthTest[0]}
+                    onChange={handleHealthTestInput}
+                    value={healthTest[1]}
+                  >
+                    {healthTestValues.map((test, index) => {
+                      return (
+                        <MenuItem key={index} value={test.id}>{test.status}</MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          })}
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image

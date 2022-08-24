@@ -1,7 +1,7 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { Box, Typography, Paper, Pagination } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 // known issues; patching to often, patching with to much data(not sure if avoidable)
 // honestly whole page needs rework
@@ -15,38 +15,15 @@ const DisplayDogs = (params) => {
   const { dogList } = store;
 
   // sets initial states of page
-  const mounted = useRef(); // <= is used to control when useEffects trigger
   const [dogs, setDogs] = useState([]); // <= stores the dogs that are being displaye
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [pageCount, setPageCount] = useState(Math.ceil(dogs.length / 12));
 
-
-  // controls component mount via mounted constant variable
-  useEffect(() => {
-    // if mounted.current is false sets to true, run other inital mount functions here
-    if (!mounted.current && dogList.length > 0) {
-      console.log(mounted);
-      console.log(dogList);
-      console.log(dogs);
-      console.log(params);
-      console.log("newly mounted");
-      // setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
-      mounted.current = true;
-      // runs the rest on every update
-    } else {
-    }
-    // return () => {
-    //   console.log("final call for mounting");
-    //   mounted.current = false;
-    // };
-  }, [mounted, params, dogList]);
-
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
   useEffect(() => {
-    console.log(dogList);
-    console.log("populating dogs");
     setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
+    setItemsPerPage(12);
   }, [params, dogList]);
 
   useEffect(() => {

@@ -54,7 +54,7 @@ import { Box, Container } from '@mui/material';
 
 
 const App = () => {
-  const { store, dispatch } = useGlobalState();
+  const { dispatch } = useGlobalState();
   const location = useLocation();
   const { state } = location;
 
@@ -106,7 +106,6 @@ const App = () => {
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
-      {console.log(process.env)}
 
       {/* wraps whole application in a box that ensures its always the width of the window */}
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
