@@ -1,7 +1,7 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
+import { getDog } from "../../../services/dogsServices";
 
 const DogDetails = () => {
   const initialDogDetails = {
@@ -13,7 +13,7 @@ const DogDetails = () => {
 
   useEffect(() => {
     console.log(params);
-    axios.get(`https://myshalair-back.herokuapp.com/dogs/${params.id}`)
+    getDog(params.id)
       .then(response => {
         console.log(response.data);
         setDogDetails(response.data.dog);

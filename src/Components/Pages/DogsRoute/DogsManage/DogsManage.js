@@ -226,7 +226,7 @@ const DogsManage = () => {
             </Link>
             <Link to="/dogs/re_order">
               <Button variant="contained" sx={{ m: 1 }}>
-                Manage Dogs Positions
+                Manage Dog's Positions
               </Button>
             </Link>
           </Box>

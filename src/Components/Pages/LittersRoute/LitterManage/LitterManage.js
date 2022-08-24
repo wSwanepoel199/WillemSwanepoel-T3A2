@@ -18,6 +18,8 @@ const LitterManage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
+
 
   const [litters, setLitters] = useState([]);
   // const waitlistLitter = litterList.find(litter => litter.id === 1);
@@ -33,8 +35,6 @@ const LitterManage = () => {
   // const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     if (!mounted.current) {
