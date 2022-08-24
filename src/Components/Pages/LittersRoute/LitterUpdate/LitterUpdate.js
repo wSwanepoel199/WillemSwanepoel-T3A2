@@ -1,14 +1,16 @@
-import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useMediaQuery, useTheme, InputBase, OutlinedInput, Collapse, Switch, FormControlLabel } from "@mui/material";
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Container, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, useMediaQuery, useTheme, InputBase, OutlinedInput, Collapse, Switch, FormControlLabel, IconButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from 'moment';
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useGlobalState } from "../../../utils/componentIndex";
-import { getLitter, patchLitter, postNewPuppies } from "../../../services/litterServices";
+import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
+import { getLitter, patchLitter, postNewPuppy } from "../../../services/litterServices";
 import { getDogs, patchDog } from "../../../services/dogsServices";
+import { colours, updateItemInArray } from "../../../utils/helpers/findOriginal";
 
 // TODO, include link to full dogs edit page
 
@@ -20,6 +22,7 @@ const LitterUpdateForm = () => {
   const location = useLocation();
   const theme = useTheme();
   const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
+  const fd = require('form-data-extended');
 
   // initial state of form data
   const initialFormData = {
@@ -59,6 +62,8 @@ const LitterUpdateForm = () => {
   // used to manage whether component is mounted or not
   const mounted = useRef();
 
+  const [dogColours, setDogColours] = useState([]);
+
   // on page mount makes get request for specified litter
   useEffect(() => {
     if (params.id === '1') {
@@ -91,7 +96,6 @@ const LitterUpdateForm = () => {
           if (litter.status === 3) {
             setNotional(!notional);
           }
-
           // write if to check if litter breeder is no longer valid and add them back in
           setValidBreeders([...userList.filter(user => user)]);
           // if to check if litter sire is retired, if true add back in
@@ -115,18 +119,21 @@ const LitterUpdateForm = () => {
 
   }, [mounted, params, dogList, navigate, notional, userList]);
 
+  useEffect(() => {
+    if (dogColours.length === 0) {
+      setDogColours(colours);
+    }
+  }, [dogColours]);
+
   // triggers when the newpuppy state is changed
   useEffect(() => {
     // checks if there is new data in the puppy state, is yes runs
     if (newPuppyData.length > 0) {
       // itters over the newpuppy state
       newPuppyData.forEach(puppy => {
-        // finds the original iteration of the newpuppy
-        const originalPup = puppyData.find(pup => pup.id === puppy.id);
-        // spreads the puppy state into a new mutable variable
-        let newPuppies = [...puppyData];
-        // splices in the new puppy inplace of its old itteration
-        newPuppies.splice(newPuppies.indexOf(originalPup), 1, puppy);
+        console.log(puppy);
+        const newPuppies = updateItemInArray(puppy, puppyData, "newPuppy");
+        console.log(newPuppies);
         // sets the new puppy list to the puppy and form state
         setPuppyData(newPuppies);
         setFormData({
@@ -160,20 +167,27 @@ const LitterUpdateForm = () => {
 
   // handles the input for puppies
   const handlePuppyInput = (e, index) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
+    console.log(name, value, files);
     // spreads puppyData into new array inorder to mutate values
     const newPuppyData = [...puppyData];
     // located and alters the object containing the specifc puppies data that is being altered
-    newPuppyData.splice(index, 1, {
-      ...newPuppyData[index],
-      [name]: value
-    });
+    if (name === 'main_image') {
+      newPuppyData.splice(index, 1, {
+        ...newPuppyData[index],
+        [name]: files[0]
+      });
+    } else {
+      newPuppyData.splice(index, 1, {
+        ...newPuppyData[index],
+        [name]: value
+      });
+    }
     // updates puppyData state with new data
     setPuppyData([
       ...newPuppyData
     ]);
   };
-
   // updates puppies on the backend
   const handleUpdate = () => {
     // filters out puppies that already exist on the back
@@ -186,29 +200,32 @@ const LitterUpdateForm = () => {
     });
     // checks if there are any new puppies
     if (newPuppies.length > 0) {
-      // formats new puppy data so backend can read it
-      const updatedPuppies = {
-        id: formData.id,
-        dogs: [
-          ...newPuppies
-        ]
-      };
-      // makes a post request to backend, creates new puppies
-      postNewPuppies(updatedPuppies)
-        .then(puppies => {
-          // if returnes with statuss 201, will add newly created puppies to the newpuppy state
-          if (puppies.status === 201) {
-            setNewPuppyData([
-              ...newPuppyData,
-              ...puppies.data.dogs
-            ]);
-          }
-        })
-        .catch((e) => {
-          // catches any errors and triggers an alert
-          console.log(e.response);
-          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
-        });
+      newPuppies.forEach((puppy) => {
+        console.log(puppy);
+        // formats new puppy data so backend can read it
+        const dog = {
+          id: formData.id,
+          ...puppy
+        };
+        const postForm = fd({ ...dog });
+        // makes a post request to backend, creates new puppies
+        postNewPuppy(postForm)
+          .then(puppies => {
+            // if returnes with statuss 201, will add newly created puppies to the newpuppy state
+            console.log(puppies);
+            if (puppies.status === 201) {
+              setNewPuppyData([
+                ...newPuppyData,
+                puppies.data.dog
+              ]);
+            }
+          })
+          .catch((e) => {
+            // catches any errors and triggers an alert
+            console.log(e);
+            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+          });
+      });
     }
     // checks of there are any old puppies
     if (oldPuppies.length > 0) {
@@ -218,7 +235,11 @@ const LitterUpdateForm = () => {
         const originalPup = formData.puppies.find(pup => pup.id === puppy.id);
         // compares if there are any differences, if true, makes post to update puppy on back
         if (JSON.stringify(puppy) !== JSON.stringify(originalPup)) {
-          patchDog(puppy.id, puppy)
+          const dog = {
+            ...puppy
+          };
+          const postForm = fd({ dog });
+          patchDog(puppy.id, postForm)
             .then(dog => {
               // if returned with status 200 adds any updated puppies to the newpuppy state
               if (dog.status === 200) {
@@ -289,10 +310,32 @@ const LitterUpdateForm = () => {
     navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "warning", title: `Changing Litter Notionality to ${notional}`, body: `Updating existing litter's notionality can result in unforseen complications` } });
   };
 
+  // handles image uploads
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+    const { name, files } = e.target;
+    console.log(name, files);
+    if (name === 'main_image') {
+      setFormData({
+        ...formData,
+        [name]: files[0]
+      });
+    } else if (name === 'gallery_images') {
+      setFormData({
+        ...formData,
+        [name]: [...files]
+      });
+    }
+  };
+
   // handles form submit, making a patch request to backend to update litter then makes get to fetch new doglist
   const handleSubmit = (e) => {
     e.preventDefault();
-    patchLitter(formData.id, formData)
+    const litter = {
+      ...formData
+    };
+    const postData = fd({ litter });
+    patchLitter(formData.id, postData)
       .then(reply => {
         if (reply.status === 200) {
           getDogs()
@@ -358,9 +401,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.breeder_id}
                 >
-                  {validBreeders.length > 0 && validBreeders.map(breeder => {
+                  {validBreeders.length > 0 && validBreeders.map((breeder, index) => {
                     return (
-                      <MenuItem key={breeder.id} value={breeder.id}>{breeder.username} {!breeder.breeder && "(No Longer Breeding)"}</MenuItem>
+                      <MenuItem key={index} value={breeder.id}>{breeder.username} {!breeder.breeder && "(No Longer Breeding)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -379,9 +422,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.bitch_id}
                 >
-                  {validBitches.length > 0 && validBitches.map(dog => {
+                  {validBitches.length > 0 && validBitches.map((dog, index) => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
+                      <MenuItem key={index} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -400,9 +443,9 @@ const LitterUpdateForm = () => {
                   onChange={handleInput}
                   value={formData.sire_id}
                 >
-                  {validSires.length && validSires.map(dog => {
+                  {validSires.length && validSires.map((dog, index) => {
                     return (
-                      <MenuItem key={dog.id} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
+                      <MenuItem key={index} value={dog.id}>{dog.callname} {dog.retired && "(Retired)"}</MenuItem>
                     );
                   })}
                 </Select>
@@ -555,18 +598,12 @@ const LitterUpdateForm = () => {
                                         onChange={(e) => handlePuppyInput(e, index)}
                                         value={puppyData[index].colour}
                                         input={<OutlinedInput />}
-                                        renderValue={(selected) => {
-                                          if (selected === 1) {
-                                            return (<em>Male</em>);
-                                          } else if (selected === 2) {
-                                            return (<em>Female</em>);
-                                          } else {
-                                            return (<em>Select Colour</em>);
-                                          }
-                                        }}
                                       >
-                                        {/* <MenuItem value={1}>Male</MenuItem>
-                                        <MenuItem value={2}>Female</MenuItem> */}
+                                        {dogColours.map((colour, index) => {
+                                          return colour.id !== 0
+                                            ? <MenuItem key={index} value={colour.id}>{colour.colour}</MenuItem>
+                                            : <MenuItem key={index}>Select Dog's Colour</MenuItem>;
+                                        })}
                                       </Select>
                                     </TableCell>
                                     <TableCell>
@@ -594,6 +631,12 @@ const LitterUpdateForm = () => {
                                         <MenuItem value={2}>Female</MenuItem>
                                       </Select>
                                     </TableCell>
+                                    <TableCell>
+                                      <IconButton aria-label="upload picture" component="label">
+                                        <input hidden name="main_image" accept="image/*" type="file" onChange={(e) => handlePuppyInput(e, index)} />
+                                        <AddPhotoAlternateIcon />
+                                      </IconButton>
+                                    </TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
@@ -609,25 +652,28 @@ const LitterUpdateForm = () => {
                   </Dialog>
                   <Grid xs={12}>
                     {/* another table to view all puppies in list no ability to edit */}
-                    <TableContainer component={Paper} sx={{ width: '100%' }}>
-                      <Table size='small' sx={{ minWidth: 650 }} >
-                        <TableHead >
-                          <TableRow>
-                            <TableCell align="center">
-                              <TableSortLabel>Name</TableSortLabel>
-                            </TableCell>
-                            <TableCell align="center">Colour</TableCell>
-                            <TableCell align="center">Sex</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
+                    <CustomTable
+                      head={
+                        <>
+                          <TableCell align="center">
+                            <TableSortLabel>Name</TableSortLabel>
+                          </TableCell>
+                          <TableCell align="center">Colour</TableCell>
+                          <TableCell align="center">Sex</TableCell>
+                        </>
+                      }
+                      body={
+                        <>
                           {puppyData.map((dog, index) => (
                             <TableRow key={index}>
                               <TableCell align="center">
                                 {dog.realname}
                               </TableCell>
                               <TableCell align="center">
-                                {dog.callname}
+                                {dog.colour !== 0 ?
+                                  dog.colour !== '' && dogColours.find(colour => colour.id === dog.colour).colour
+                                  :
+                                  "No colour provided"}
                               </TableCell>
                               <TableCell align="center">
                                 {dog.sex === 2 && "female"}
@@ -635,12 +681,46 @@ const LitterUpdateForm = () => {
                               </TableCell>
                             </TableRow>
                           ))}
+                        </>
+                      }
+                    />
+                    <TableContainer component={Paper} sx={{ width: '100%' }}>
+                      <Table size='small' sx={{ minWidth: 650 }} >
+                        <TableHead >
+
+                        </TableHead>
+                        <TableBody>
+
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </Grid>
                 </Collapse>
               </>
+            }
+            <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" component="label">
+                Upload Litter's Main Image
+                <input hidden name="main_image" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+              </Button>
+            </Grid>
+            {formData.main_image &&
+              <Grid xs={12}>
+                <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.main_image.name} </Typography>
+              </Grid>
+            }
+            <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" component="label">
+                Upload for Litter's Gallery
+                <input hidden name="gallery_images" accept="image/*" type="file" id="image" multiple onChange={handleImageUpload} />
+              </Button>
+            </Grid>
+            {formData.gallery_images &&
+              <Grid xs={12}>
+                <Typography sx={{ pl: 1, textAlign: 'center' }}> {formData.gallery_images.map((file) => {
+                  return (`${file.name}, `);
+                })}</Typography>
+              </Grid>
             }
             <Grid xs={12}>
               <Container>

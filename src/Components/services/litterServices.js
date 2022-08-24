@@ -24,8 +24,8 @@ export async function patchLitter(id, data) {
   return response;
 }
 
-export async function postNewPuppies(data) {
-  const response = await backEndAPI.post('/add_puppies', data);
+export async function postNewPuppy(data) {
+  const response = await backEndAPI.post('/add_puppy', data);
   return response;
 }
 
@@ -47,5 +47,15 @@ export async function postApplication(data) {
 
 export async function patchLitterApp(id, data) {
   const response = await backEndAPI.patch(`/litter_applications/${id}`, data);
+  return response;
+}
+
+export async function getShowCase(id) {
+  const response = await backEndAPI.get(`/showcase/${id}`);
+  return response;
+}
+
+export async function getBest() {
+  const response = await backEndAPI.get('/showcase');
   return response;
 }

@@ -3,8 +3,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useGlobalState } from "../utils/componentIndex";
-import { signIn } from "../services/authServices";
+import { useGlobalState } from "../../../utils/componentIndex";
+import { signIn } from "../../../services/authServices";
+import { Link } from "react-router-dom";
 
 const SignInForm = () => {
   const { dispatch } = useGlobalState();
@@ -136,7 +137,9 @@ const SignInForm = () => {
             <Grid item xs={12}>
               <Container fluid="true">
                 <Button variant="contained" type="submit" data-testid="sign-in-submit">Sign In</Button>
-                <Button variant="text" href="/signUp">sign up</Button>
+                <Link to="/user/signUp">
+                  <Button variant="text">sign up</Button>
+                </Link>
               </Container>
             </Grid>
           </Grid>

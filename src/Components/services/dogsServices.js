@@ -20,6 +20,11 @@ export async function getDog(id) {
   return response;
 }
 
+export async function getDogByChip(data) {
+  const response = await backEndAPI.post(`/find_dog`, data);
+  return response;
+}
+
 export async function patchDog(id, data) {
   const response = await backEndAPI.patch(`/dogs/${id}`, data);
   return response;
@@ -29,11 +34,6 @@ export async function addPuppy(data) {
   const response = await backEndAPI.post('/add_puppy', data);
   return response.data;
 }
-
-// export async function patchDogs(id, data) {
-//   const response = await backEndAPI.patch(`/dogs/${id}`, data);
-//   return response;
-// }=-
 
 export async function pushNewPositions(data) {
   console.log(data);

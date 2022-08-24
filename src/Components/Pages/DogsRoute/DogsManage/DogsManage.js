@@ -1,19 +1,31 @@
-import { Box, Paper, Typography, Container, TableRow, TableCell, Button, TablePagination, TableSortLabel, IconButton } from "@mui/material";
+import { Box, Paper, Typography, Container, TableRow, TableCell, Button, TablePagination, TableSortLabel, IconButton, TextField } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getDogByChip } from "../../../services/dogsServices";
 
 const DogsManage = () => {
   const { store } = useGlobalState();
   const { dogList, userList } = store;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // sets page initial state
+  const [dogs, setDogs] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [chipSearch, setChipSearch] = useState({});
+
+
+  useEffect(() => {
+    if (dogs.length === 0 && dogList.length > 0) {
+      setDogs(dogList);
+    }
+  }, [dogList]);
 
   // order values based on provided id
   function descendingComparator(a, b, orderBy) {
@@ -31,19 +43,6 @@ const DogsManage = () => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  // main sort function coded coded to suppoty IE11
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
   }
 
   // sets page value for pagination
@@ -67,11 +66,12 @@ const DogsManage = () => {
   const handleFilterReset = () => {
     setOrderBy("id");
     setOrder('asc');
+    setDogs(dogList);
   };
 
   // calculates missing entries to keep table the same size
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dogList.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - dogs.length) : 0;
 
   // array of values to become header to redice repeated code
   const headCells = [
@@ -119,11 +119,37 @@ const DogsManage = () => {
     }
   ];
 
+  const handleSearch = (e) => {
+    const { name, value } = e.target;
+    setChipSearch({
+      ...chipSearch,
+      [name]: value
+    });
+  };
+
+  const handleSearchSubmit = () => {
+    getDogByChip(chipSearch)
+      .then(reply => {
+        console.log(reply);
+        if (reply.status === 200) {
+          setDogs([reply.data.dog]);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Dog Found`, body: `Dog found with microchip number ${reply.data.dog.chipnumber}` } });
+        }
+      })
+      .catch(e => {
+        console.log(e);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} No Dog Found`, body: `${e.response.data.message}` } });
+      });
+  };
+
   return (
     <>
       <Paper sx={{ display: 'flex' }}>
         <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
-          <Typography variant="h5" component="h1">Manage Dogs</Typography>
+          <Typography variant="h4" component="h1">Manage Dogs</Typography>
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+            <TextField variant="standard" sx={{ mx: 1 }} label="search chip number" name="chipnumber" onChange={handleSearch} /><Button variant="outlined" sx={{ mx: 1 }} onClick={handleSearchSubmit}>Search</Button>
+          </Box>
           <CustomTable
             head={
               <>
@@ -161,7 +187,7 @@ const DogsManage = () => {
             }
             body={
               <>
-                {stableSort(dogList, getComparator(order, orderBy))
+                {dogs.sort(getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((dog, index) => {
                     const owner = userList.find(user => user.id === dog.owner_id);
@@ -181,7 +207,7 @@ const DogsManage = () => {
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     colSpan={8}
-                    count={dogList.length}
+                    count={dogs.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

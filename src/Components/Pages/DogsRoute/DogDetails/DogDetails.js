@@ -13,7 +13,7 @@ const DogDetails = () => {
 
   useEffect(() => {
     console.log(params);
-    axios.get(`http://127.0.0.1:3001/dogs/${params.id}`)
+    axios.get(`https://myshalair-back.herokuapp.com/dogs/${params.id}`)
       .then(response => {
         console.log(response.data);
         setDogDetails(response.data.dog);

@@ -1,6 +1,6 @@
 import { Button, Table, TableBody, TableCell, TableRow, Collapse, IconButton, Box } from "@mui/material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import { patchDog } from "../../../services/dogsServices";
 const Dog = (props) => {
   const { dog } = props;
   const { store, dispatch } = useGlobalState();
-  const { dogList } = store;
+  const { dogList, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -56,7 +56,7 @@ const Dog = (props) => {
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </IconButton>
         </TableCell>
         <TableCell align="center" padding="none">
@@ -69,7 +69,7 @@ const Dog = (props) => {
           {dog.ownername ? dog.ownername : `Not Provided`}
         </TableCell>
         <TableCell align="center" padding="none">
-          {dog.breedername ? dog.ownername : "Not Provided"}
+          {dog.breedername ? dog.breedername : "Not Provided"}
         </TableCell>
         <TableCell align="center">
           {dog.dob ?
@@ -85,9 +85,10 @@ const Dog = (props) => {
             "Not Retired"
           }
         </TableCell>
-        <TableCell align="center" padding="none">
-          {dog.position}
-        </TableCell>
+        {loggedInUser.admin
+          && <TableCell align="center" padding="none">
+            {dog.position}
+          </TableCell>}
       </TableRow>
       <TableRow>
         <TableCell sx={{ pb: 0, pt: 0 }} colSpan={8}>
@@ -103,23 +104,26 @@ const Dog = (props) => {
                         </Button>
                       </Link>
                     </TableCell>
-                    <TableCell align="left" size="small">
-                      <Link to={`/dogs/${dog.id}/edit`}>
-                        <Button variant="contained" color="warning">
-                          Edit
-                        </Button>
-                      </Link>
-                    </TableCell>
-                    <TableCell align="left" size="small">
-                      <Button variant="contained" color="error">
-                        Delete
-                      </Button>
-                    </TableCell>
-                    <TableCell align="left" size="small">
-                      <Button variant="contained" color="primary" onClick={handleRetire}>
-                        {dog.retired ? "Unretire Dog" : "Retire Dog"}
-                      </Button>
-                    </TableCell>
+                    {loggedInUser.admin
+                      && <>
+                        <TableCell align="left" size="small">
+                          <Link to={`/dogs/${dog.id}/edit`}>
+                            <Button variant="contained" color="warning">
+                              Edit
+                            </Button>
+                          </Link>
+                        </TableCell>
+                        <TableCell align="left" size="small">
+                          <Button variant="contained" color="error">
+                            Delete
+                          </Button>
+                        </TableCell>
+                        <TableCell align="left" size="small">
+                          <Button variant="contained" color="primary" onClick={handleRetire}>
+                            {dog.retired ? "Unretire Dog" : "Retire Dog"}
+                          </Button>
+                        </TableCell>
+                      </>}
                   </TableRow>
                 </TableBody>
               </Table>
