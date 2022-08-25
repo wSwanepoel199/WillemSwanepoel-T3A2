@@ -68,7 +68,7 @@ const LitterUpdateForm = () => {
   useEffect(() => {
     if (params.id === '1') {
       navigate('..', { state: { alert: true, location: '.', severity: "warning", title: "Inaccessable", body: `This litter is not accessable` } });
-    } else if (!mounted.current) {
+    } else if (userList.length > 0 && dogList.length > 0) {
       getLitter(params.id)
         .then(litter => {
           console.log("litter", litter);
@@ -79,12 +79,13 @@ const LitterUpdateForm = () => {
             sire: dogList.find(dog => dog.id === litter.sire_id),
             bitch: dogList.find(dog => dog.id === litter.bitch_id)
           };
-          // clears out null values and replaces them with an empty string
+          // // clears out null values and replaces them with an empty string
           Object.keys(updatingLitter).forEach((key) => {
             if (updatingLitter[key] === null) {
               updatingLitter[key] = '';
             }
           });
+          console.log(updatingLitter);
           // assigns newly mutated object to formData
           setFormData({
             ...updatingLitter,
@@ -112,12 +113,11 @@ const LitterUpdateForm = () => {
         })
         .catch(e => {
           console.log(e);
-          navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+          // navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
         });
-      mounted.current = true;
     }
 
-  }, [mounted, params, dogList, navigate, notional, userList]);
+  }, [params, dogList, navigate, notional, userList]);
 
   useEffect(() => {
     if (dogColours.length === 0) {
@@ -341,7 +341,7 @@ const LitterUpdateForm = () => {
           getDogs()
             .then(dogs => {
               dispatch({
-                type: "updateDogList",
+                type: "setDogList",
                 data: dogs
               });
 

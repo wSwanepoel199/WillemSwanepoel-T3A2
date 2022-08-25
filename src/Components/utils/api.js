@@ -10,7 +10,7 @@ const backEndAPI = axios.create({
 
 backEndAPI.interceptors.request.use(req => {
   console.log(req);
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   if (token) {
     req.headers["Authorization"] = `Bearer ${token}`;
   }
@@ -21,7 +21,7 @@ backEndAPI.interceptors.request.use(req => {
 backEndAPI.interceptors.response.use(res => {
   if (res.headers['authorization']) {
     const jwt = res.headers['authorization'].split('Bearer ')[1];
-    window.sessionStorage.setItem("token", jwt);
+    window.localStorage.setItem("token", jwt);
   }
 
   return res;

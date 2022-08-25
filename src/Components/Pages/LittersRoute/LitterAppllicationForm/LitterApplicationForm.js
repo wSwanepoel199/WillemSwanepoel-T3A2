@@ -356,7 +356,7 @@ const LitterApplicationForm = () => {
               </Grid>
               <Grid xs={12} sm={6} sx={{ display: "flex", justifyContent: "center" }}>
                 <FormControl>
-                  <FormLabel htmlFor="pet_desexed_label" >Is Your Dog Desexed?</FormLabel>
+                  <FormLabel htmlFor="pet_desexed_label" >Is Your Pet Desexed?</FormLabel>
                   <RadioGroup
                     row
                     name="desexed"

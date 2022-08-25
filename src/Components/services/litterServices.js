@@ -59,3 +59,8 @@ export async function getBest() {
   const response = await backEndAPI.get('/showcase');
   return response;
 }
+
+export async function assignPuppy(data) {
+  const response = await backEndAPI.patch(`/assign_puppy`, data);
+  return response;
+}

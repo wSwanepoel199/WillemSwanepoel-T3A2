@@ -181,7 +181,7 @@ const DogUpdateForm = () => {
           getDogs()
             .then(dogs => {
               dispatch({
-                type: 'updateDogList',
+                type: 'setDogList',
                 data: dogs
               });
             })

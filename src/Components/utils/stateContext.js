@@ -9,16 +9,16 @@ export const StateContext = createContext();
 export const StateProvider = ({ children }) => {
   // sets the inital state of the application
   const initialState = {
-    dogList: JSON.parse(sessionStorage.getItem("dogList")) || [],
-    litterList: JSON.parse(sessionStorage.getItem("litterList")) || [],
-    loggedInUser: JSON.parse(sessionStorage.getItem("user")) || {},
-    token: sessionStorage.getItem("token") || null,
-    userList: JSON.parse(sessionStorage.getItem("userList")) || [],
+    dogList: [],
+    litterList: [],
+    loggedInUser: JSON.parse(localStorage.getItem("user")) || [],
+    token: localStorage.getItem("token") || null,
+    userList: [],
     mergedLitterList: {},
     breeders: {},
     sires: {},
     bitches: {},
-    applicationForms: JSON.parse(sessionStorage.getItem("litterAppForms")) || [],
+    applicationForms: [],
   };
 
   // uses reducer to globalise state.
@@ -28,7 +28,7 @@ export const StateProvider = ({ children }) => {
     <>
       {/* provides date and time framework for use in date pickers provided by material ui. The framework chosen is Moment.js */}
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <StateContext.Provider value={{ store, dispatch }}>
+        <StateContext.Provider value={{ store, dispatch, initialState }}>
           {children}
         </StateContext.Provider>
       </LocalizationProvider>

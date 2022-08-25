@@ -176,7 +176,7 @@ const DogsReorder = () => {
             .then(dogs => {
               console.log(dogs);
               dispatch({
-                type: "updateDogList",
+                type: "setDogList",
                 data: dogs
               });
               navigate('/dogs/manage', { state: { alert: true, location: '/dogs/manage', severity: 'success', title: 'Success', body: 'Dogs positions successfully updated' } });
@@ -270,7 +270,13 @@ const DogsReorder = () => {
             <SortableContext items={dogs} strategy={rectSortingStrategy}>
               {dogs.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
                 .map((dog, index) =>
-                  <SortableItem key={index} id={dog.id} dog={dog} />
+                  <Grid
+                    key={index}
+                    xs={12} sm={6} md={4} lg={3}
+                    sx={{ maxHeight: '550px' }}
+                  >
+                    <SortableItem id={dog.id} component={"div"} item={<DogCard dog={dog} />} />
+                  </Grid>
                 )}
             </SortableContext>
             <DragOverlay>{activeId ?

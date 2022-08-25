@@ -1,18 +1,21 @@
-import { Box, Container, Typography, Button, Paper, Stack } from "@mui/material";
+import { Box, Container, Typography, Button, Paper, Stack, List, ListItem, TableBody, ListItemText, IconButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { getLitter } from "../../../services/litterServices";
-import { useGlobalState } from "../../../utils/componentIndex";
+import { getLitter, patchLitter } from "../../../services/litterServices";
+import { CustomTable, LitterApplicationManage, useGlobalState } from "../../../utils/componentIndex";
+import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected
 
 const LitterApplications = () => {
   const params = useParams();
-  const { store } = useGlobalState();
-  const { userList, dogList } = store;
+  const { store, dispatch } = useGlobalState();
+  const { userList, dogList, litterList } = store;
 
   const [litterDetail, setLitterDetail] = useState([]);
   const [litterApplications, setLitterApplications] = useState([]);
@@ -38,65 +41,86 @@ const LitterApplications = () => {
       .catch(e => console.log(e));
   }, [dogList, userList, params]);
 
+  const handleOpenOrClose = (newStatus) => {
+    const litter = {
+      ...litterDetail,
+      status: newStatus
+    };
+    patchLitter(litter.id, litter)
+      .then(litter => {
+        console.log(litter);
+        // on success dispatches new litter list to update global state
+        if (litter.status === 200) {
+          dispatch({
+            type: 'updateLitterList',
+            data: updateItemInArray(litter.data.litter, litterList)
+          });
+        };
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   return (
     <>
-      <Box>
-        {console.log(litterDetail)}
-        <Container maxWidth="sm">
-          <Typography variant="h3" align="center">
-            {litterDetail.lname} Applications
-          </Typography>
-        </Container>
-      </Box>
-      <Container sx={{ py: 8 }} maxWidth="md">
-        <Grid container spacing={4}>
-          <Grid xs={12} sx={{
+      {litterDetail.length !== 0
+        && <Box sx={{
+          mr: 'auto',
+          ml: 'auto',
+          maxWidth: 'md',
+        }}>
+          <Grid container component={Paper} sx={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
+            flexDirection: 'column',
+            py: 2
           }}>
-            <Typography>
-              Breeder: {litterDetail.breeder && litterDetail.breeder.username}
-            </Typography>
-            <Typography>
-              Sire: {litterDetail.sire && litterDetail.sire.realname}
-            </Typography>
-            <Typography>
-              Bitch: {litterDetail.bitch && litterDetail.bitch.realname}
-            </Typography>
+            {console.log(litterDetail)}
+            {console.log(litterApplications)}
+            <Grid xs={12} >
+              <Typography variant="h3" align="center">
+                {litterDetail.lname} Applications
+              </Typography>
+            </Grid>
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'space-around', py: 2 }}>
+              <Grid xs={5} sx={{ textAlign: 'center' }}>
+                <Typography variant="h5">Available Puppies</Typography>
+                <List component={Paper}>
+                  {availablePuppies.map((puppy, index) => {
+                    return (
+                      <ListItem key={index}>
+                        <Typography >{puppy.realname}</Typography>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Grid>
+              <Grid xs={12} sx={{ textAlign: 'center' }}>
+                <LitterApplicationManage litterApps={litterApplications} puppies={availablePuppies} />
+              </Grid>
+            </Grid>
+            <Grid xs={12} container columnSpacing={2} sx={{ px: 2 }}>
+              <Grid xs="auto">
+                <Link to="/litters/manage">
+                  <Button variant="contained">
+                    Return to Manage Litters
+                  </Button>
+                </Link>
+              </Grid>
+              <Grid xs="auto">
+                {(litterDetail.status === 1
+                  && <Button variant="contained" color="error" onClick={() => handleOpenOrClose(2)}>
+                    Close Litter
+                  </Button>)
+                  ||
+                  (litterDetail.status === 2
+                    && <Button variant="contained" onClick={() => handleOpenOrClose(1)}>
+                      Open Litter
+                    </Button>)}
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
-      <Container sx={{ justifyContent: 'center', textAlign: "center", mt: 4 }}>
-        {/* <LitterApplicationManage litterApps={litterApplications} litter={litterDetail} /> */}
-        <Grid container spacing={4}>
-          <Grid xs={6} component={Paper}>
-            <Stack>
-              {litterApplications.map((app, index) => {
-                return (
-                  <Typography key={index}>{app.id}</Typography>
-                );
-              })}
-            </Stack>
-          </Grid>
-          <Grid xs={6} component={Paper}>
-            <Stack>
-              {availablePuppies.map((puppy, index) => {
-                return (
-                  <Typography key={index}>{puppy.realname}</Typography>
-                );
-              })}
-            </Stack>
-          </Grid>
-        </Grid>
-      </Container>
-      <Container>
-        <Link to="/litters/manage">
-          <Button variant="contained">
-            Return to Manage Litters
-          </Button>
-        </Link>
-      </Container>
+        </Box>}
     </>
   );
 };

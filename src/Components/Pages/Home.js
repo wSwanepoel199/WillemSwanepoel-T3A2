@@ -5,14 +5,25 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { DogCard, useGlobalState } from '../utils/componentIndex';
 import { useEffect, useState } from 'react';
 import { getBest } from '../services/litterServices';
+import { getDogs } from '../services/dogsServices';
 
 const Home = () => {
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const { dogList } = store;
 
   const [showCase, setShowCase] = useState([]);
 
   useEffect(() => {
+    // getDogs()
+    //   .then(reply => {
+    //     dispatch({
+    //       type: "setDogList",
+    //       data: reply.filter(dog => dog.display === true)
+    //     });
+    //   })
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
     getBest()
       .then(reply => {
         console.log(reply);

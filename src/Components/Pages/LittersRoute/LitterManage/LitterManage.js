@@ -4,7 +4,7 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useRef, useState } from "react";
 import { useGlobalState, Litter, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
-import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
+import { patchLitterApp } from "../../../services/litterServices";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 
@@ -38,20 +38,10 @@ const LitterManage = () => {
 
   useEffect(() => {
     if (!mounted.current) {
-      if (applicationForms.length === 0) {
-        getLitterApps()
-          .then(apps => {
-            dispatch({
-              type: "setApplicationForms",
-              data: apps
-            });
-            setOrder('asc');
-          })
-          .catch(e => console.log(e));
-      }
+      setOrder('asc');
       mounted.current = true;
     }
-  }, [mounted, dispatch, applicationForms]);
+  }, [mounted, dispatch]);
 
   useEffect(() => {
     setLitters(litterList.filter(litter => litter.id !== 1));
@@ -209,7 +199,7 @@ const LitterManage = () => {
             }
             body={
               <>
-                {litters.length > 0 && litters.sort((a, b) => {
+                {(litters.length > 0 && userList.length > 0 && dogList.length > 0) && litters.sort((a, b) => {
                   return order === 'asc'
                     ? a.orderBy - b.orderBy
                     : b.orderBy - a.orderBy;

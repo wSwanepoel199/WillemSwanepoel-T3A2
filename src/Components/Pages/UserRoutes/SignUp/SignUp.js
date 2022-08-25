@@ -35,7 +35,7 @@ const SignUpForm = () => {
         ...formData,
         showPassword: !formData.showPassword
       });
-    } else if (name === "password_confirmation") {
+    } else if (name === "passwordConfirmation") {
       setFormData({
         ...formData,
         showPasswordConfirmation: !formData.showPasswordConfirmation

@@ -153,7 +153,7 @@ const DogCreationForm = () => {
         if (dog.status === 201) {
           // on success adds dog to dogList
           dispatch({
-            type: 'updateDogList',
+            type: 'setDogList',
             data: [...dogList, dog.data.dog]
           });
           // clears form and health test data

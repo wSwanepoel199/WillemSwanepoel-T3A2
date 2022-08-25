@@ -1,10 +1,16 @@
 export function updateItemInArray(item, array, type) {
   // locates original item in provided array
   let originalItem;
-  originalItem = array.find(original => original.id === item.id);
-  if (!originalItem && type === 'newPuppy') {
-    originalItem = array.find(original => original.realname === item.realname);
+  switch (type) {
+    case 'newPuppy': {
+      originalItem = array.find(original => original.realname === item.realname);
+      break;
+    }
+    default: {
+      originalItem = array.find(original => original.id === item.id);
+    }
   }
+  console.log(item);
   console.log(originalItem);
   // makes new mutable array out of provided
   let newArray = [...array];

@@ -4,11 +4,12 @@ import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import { useEffect, useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getDogByChip } from "../../../services/dogsServices";
+import { getDogByChip, getDogs } from "../../../services/dogsServices";
+import { getUsers } from "../../../services/authServices";
 
 const DogsManage = () => {
   const { store } = useGlobalState();
-  const { dogList, userList } = store;
+  const { dogList } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,12 +21,32 @@ const DogsManage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [chipSearch, setChipSearch] = useState({});
 
-
   useEffect(() => {
-    if (dogs.length === 0 && dogList.length > 0) {
-      setDogs(dogList);
-    }
-  }, [dogList, dogs]);
+    setDogs(dogList);
+  }, [dogList]);
+
+  const handleSearch = (e) => {
+    const { name, value } = e.target;
+    setChipSearch({
+      ...chipSearch,
+      [name]: value
+    });
+  };
+
+  const handleSearchSubmit = () => {
+    getDogByChip(chipSearch)
+      .then(reply => {
+        console.log(reply);
+        if (reply.status === 200) {
+          setDogs([reply.data.dog]);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Dog Found`, body: `Dog found with microchip number ${reply.data.dog.chipnumber}` } });
+        }
+      })
+      .catch(e => {
+        console.log(e);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} No Dog Found`, body: `${e.response.data.message}` } });
+      });
+  };
 
   // order values based on provided id
   function descendingComparator(a, b, orderBy) {
@@ -112,6 +133,12 @@ const DogsManage = () => {
       label: 'Retired Status'
     },
     {
+      id: 'display',
+      numeric: false,
+      disablePadding: false,
+      label: 'Display Status'
+    },
+    {
       id: 'position',
       numeric: false,
       disablePadding: false,
@@ -119,28 +146,6 @@ const DogsManage = () => {
     }
   ];
 
-  const handleSearch = (e) => {
-    const { name, value } = e.target;
-    setChipSearch({
-      ...chipSearch,
-      [name]: value
-    });
-  };
-
-  const handleSearchSubmit = () => {
-    getDogByChip(chipSearch)
-      .then(reply => {
-        console.log(reply);
-        if (reply.status === 200) {
-          setDogs([reply.data.dog]);
-          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Dog Found`, body: `Dog found with microchip number ${reply.data.dog.chipnumber}` } });
-        }
-      })
-      .catch(e => {
-        console.log(e);
-        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} No Dog Found`, body: `${e.response.data.message}` } });
-      });
-  };
 
   return (
     <>
@@ -190,9 +195,8 @@ const DogsManage = () => {
                 {dogs.sort(getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((dog, index) => {
-                    const owner = userList.find(user => user.id === dog.owner_id);
                     return (
-                      <Dog key={index} dog={dog} owner={owner} />
+                      <Dog key={index} dog={dog} />
                     );
                   })}
                 {emptyRows > 0 && (

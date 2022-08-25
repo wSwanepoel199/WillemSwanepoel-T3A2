@@ -1,12 +1,12 @@
 import { Box, Button, Paper, TableCell, TableRow, Typography, TablePagination } from "@mui/material";
-import { useEffect, useState } from "react";
-import { getLitterApps } from "../../../services/litterServices";
+import { useEffect, useRef, useState } from "react";
 import { useGlobalState, LitterApplication, CustomTable } from "../../../utils/componentIndex";
 
 const LitterApplicationManage = (props) => {
   const { litterApps } = props;
   const { store, dispatch } = useGlobalState();
   const { userList, applicationForms } = store;
+  const mounted = useRef();
 
   // const [openApp, setOpenApp] = useState(false);
   // const [appClosed, setAppClosed] = useState(true);
@@ -42,17 +42,9 @@ const LitterApplicationManage = (props) => {
     if (litterApps) {
       setApplications(litterApps);
     } else if (applicationForms !== applications) {
-      getLitterApps()
-        .then(apps => {
-          dispatch({
-            type: "setApplicationForms",
-            data: apps
-          });
-          setApplications(apps);
-        })
-        .catch(e => console.log(e));
+      setApplications(applicationForms);
     }
-  }, [litterApps, applicationForms, dispatch, applications]);
+  }, [litterApps, applicationForms, applications]);
 
   useEffect(() => {
     if (applications !== waitList && filter === 'none') {

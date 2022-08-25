@@ -1,7 +1,7 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { Box, Typography, Paper, Pagination } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // known issues; patching to often, patching with to much data(not sure if avoidable)
 // honestly whole page needs rework
@@ -14,6 +14,8 @@ const DisplayDogs = (params) => {
   // makes doglist available
   const { dogList } = store;
 
+  const mounted = useRef();
+
   // sets initial states of page
   const [dogs, setDogs] = useState([]); // <= stores the dogs that are being displaye
   const [page, setPage] = useState(1);
@@ -22,7 +24,7 @@ const DisplayDogs = (params) => {
 
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
   useEffect(() => {
-    setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
+    setDogs(handleSex(params, dogList.filter(dog => dog.display ? dog.display === true : dog).sort((a, b) => a.position - b.position)));
     setItemsPerPage(12);
   }, [params, dogList]);
 

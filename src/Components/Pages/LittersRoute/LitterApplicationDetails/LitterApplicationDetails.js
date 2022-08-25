@@ -2,7 +2,7 @@ import { Box, Typography, Paper, TableCell, TableRow } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getLitterApp } from "../../../services/litterServices";
-import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
+import { CustomTable, DogCard, useGlobalState } from "../../../utils/componentIndex";
 import { colours } from "../../../utils/helpers/findOriginal";
 
 // include assigned puppy
@@ -12,7 +12,7 @@ const LitterApplicationDetails = (props) => {
   const { litterList, userList } = store;
 
   const [applicationDetails, setApplicationDetais] = useState([]);
-  // const [availablePups, setAvailablePups] = useState([]);
+  const [allocatedPuppy, setAllocatedPuppy] = useState([]);
   const [children, setChildren] = useState([]);
   const [pets, setPets] = useState([]);
 
@@ -45,7 +45,7 @@ const LitterApplicationDetails = (props) => {
             setApplicationDetais(filledLitterApp);
             setChildren(data.litterApplication.children || []);
             setPets(data.litterApplication.pets || []);
-            // setAvailablePups(data.availablePuppies);
+            setAllocatedPuppy(data.allocatedPuppy || []);
           }
         })
         .catch(e => console.log(e));
@@ -90,6 +90,15 @@ const LitterApplicationDetails = (props) => {
             <Grid xs={12} sm={6}>
               <Typography textAlign='center'>Colour preferance: {applicationDetails.colour_preference}</Typography>
             </Grid>
+            {allocatedPuppy.length !== 0
+              && <>
+                <Grid xs={12}>
+                  <Typography variant="h5" textAlign='center'>Puppy:</Typography>
+                </Grid>
+                <Grid xs={12}>
+                  <DogCard dog={allocatedPuppy} />
+                </Grid>
+              </>}
             {children.length > 0
               && <>
                 <Grid xs={12}>

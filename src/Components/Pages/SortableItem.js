@@ -1,9 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Grid from "@mui/material/Unstable_Grid2";
-import { DogCard } from "../utils/componentIndex";
+import { Box } from "@mui/material";
 
-export const SortableItem = (props) => {
+export const SortableItem = ({ id, component, item }) => {
   // makes the listed attributes available from useSortable, making sure to affect specificied id
   const {
     attributes,
@@ -11,7 +10,7 @@ export const SortableItem = (props) => {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: props.id });
+  } = useSortable({ id: id });
 
   // draggin affects
   const style = {
@@ -20,16 +19,15 @@ export const SortableItem = (props) => {
   };
 
   return (
-    <Grid
-      xs={12} sm={6} md={4} lg={3}
+    <Box
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      sx={{ maxHeight: '550px' }}
+      component={component}
     >
-      <DogCard dog={props.dog} />
-    </Grid>
+      {item}
+    </Box>
 
   );
 
