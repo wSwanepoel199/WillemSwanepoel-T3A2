@@ -20,25 +20,27 @@ const DogDetails = () => {
   const [healthtest, setHealthtest] = useState([]);
   const [litter, setLittter] = useState([]);
   const [litters, setLitters] = useState([]);
+  const [owner, setOwner] = useState([]);
 
   const [viewPedigree, setViewPedigree] = useState(false);
 
   useEffect(() => {
     console.log(params);
-    if (!mounted.current) {
-      getDog(params.id)
-        .then(res => {
-          console.log(res);
-          const { data } = res;
-          setDogDetails(data.dog);
-          setHealthtest(data.healthtest || []);
-          setLitters(data.litters || []);
-          setLittter(data.litter || []);
-          setGallery(data.gallery_images || []);
-          mounted.current = true;
-        })
-        .catch(e => console.log(e));
-    }
+    // if (!mounted.current) {
+    getDog(params.id)
+      .then(res => {
+        console.log(res);
+        const { data } = res;
+        setDogDetails(data.dog);
+        setHealthtest(data.healthtest || []);
+        setLitters(data.litters || []);
+        setLittter(data.litter || []);
+        setGallery(data.gallery_images || []);
+        setOwner(data.owner_details || []);
+        // mounted.current = true;
+      })
+      .catch(e => console.log(e));
+    // }
   }, [mounted, params]);
 
   const healthTestAnalizer = (test) => {
@@ -59,7 +61,7 @@ const DogDetails = () => {
             <Typography variant="h3">{dogDetails.realname}</Typography>
           </Grid>
           <Grid xs={12} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6">Owner: {dogDetails.ownername}</Typography>
+            <Typography variant="h6">Owner: {owner.username}</Typography>
           </Grid>
           <Grid xs={6} sx={{ textAlign: 'center' }}>
             {dogDetails.dob
@@ -78,14 +80,29 @@ const DogDetails = () => {
               <Box component='img' src={dogDetails.main_image} sx={{ width: '100%', objectFit: 'contain' }} />
             </Box>
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid xs={12} sx={{ textAlign: 'center', p: 2 }}>
+            <Typography>
+              {dogDetails.description}
+            </Typography>
+          </Grid>
+          {/* <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button variant="contained" onClick={() => { setViewPedigree(!viewPedigree); }}>View Pedigree Breakdown</Button>
           </Grid>
           <Collapse in={viewPedigree} unmountOnExit>
             <Grid xs={12} sx={{ py: 2 }}>
-              <ViewPedigree dog={dogDetails} tier={3} />
+              <ViewPedigree dog={dogDetails} />
             </Grid>
-          </Collapse>
+          </Collapse> */}
+          {(loggedInUser.admin && owner !== [])
+            && <Grid xs={12} container component={Paper} sx={{ py: 2, justifyContent: 'center' }}>
+              <Grid xs="auto" sx={{ textAlign: 'center' }} component={Paper} >
+                <Typography>Name: {owner.firstname} {owner.lastname}</Typography>
+                <Typography>Username: {owner.username}</Typography>
+                <Typography>Email: {owner.email}</Typography>
+                <Typography>Phonenumber: {owner.phonenumber}</Typography>
+                <Typography>Address: {owner.address1} {owner.address2}, {owner.suburb}, {owner.postcode}</Typography>
+              </Grid>
+            </Grid>}
           {healthtest.length !== 0
             && <Grid xs={12} container component={Paper} sx={{ py: 2 }}>
               <Grid xs={12}>
@@ -126,12 +143,12 @@ const DogDetails = () => {
               </Grid>
               {litters.map((litter, index) => {
                 return litter.id !== 1 &&
-                  <Grid key={index} xs={12} sm={7} sx={{ textAlign: 'center', p: 1, my: 2 }} component={Paper}>
+                  <Grid key={index} xs={12} sm={5} sx={{ textAlign: 'center', p: 1, my: 2 }} component={Paper}>
                     <Typography variant="h5" sx={{ py: 2, my: 1 }} component={Paper}>
                       {litter.lname}
                     </Typography>
                     <Box>
-                      <Box component='img' sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />
+                      <Box component='img' src={litter.main_image} sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />
                     </Box>
                   </Grid>;
 

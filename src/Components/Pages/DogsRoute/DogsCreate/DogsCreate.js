@@ -28,13 +28,11 @@ const DogCreationForm = () => {
     description: '',
     colour: '',
     chipnumber: '',
-    litter: {
-      litter_id: ''
-    }
   };
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
   const [healthTestData, setHealthTestData] = useState(healthTestKeys);
+  const [litterData, setLitterData] = useState({ litter_id: '' });
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
@@ -56,6 +54,9 @@ const DogCreationForm = () => {
         [name]: parseInt(value)
       });
     } else if (name === "litter_id") {
+      setLitterData({
+        [name]: value
+      });
       setFormData({
         ...formData,
         litter: {
@@ -163,7 +164,6 @@ const DogCreationForm = () => {
       {console.log(formData)}
       {console.log(validLitterList)}
       {console.log(dogColours)}
-      {console.log(formData.litter)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -218,7 +218,7 @@ const DogCreationForm = () => {
                 id="litter_id"
                 label="Add to Notional Litter"
                 onChange={handleInput}
-                value={formData.litter.litter_id}
+                value={litterData.litter_id}
               >
                 {validLitterList.length > 0 && validLitterList.map((litter, index) => {
                   return (

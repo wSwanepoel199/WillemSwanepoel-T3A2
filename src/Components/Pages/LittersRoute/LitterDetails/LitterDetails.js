@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getShowCase } from "../../../services/litterServices";
 import { useGlobalState } from "../../../utils/stateContext";
 import DogCard from "../../DogsRoute/Dogcard/DogCard";
@@ -9,6 +9,7 @@ import DogCard from "../../DogsRoute/Dogcard/DogCard";
 
 const LitterDetails = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [litter, setLitter] = useState([]);
   const [images, setImages] = useState([]);
@@ -30,6 +31,7 @@ const LitterDetails = () => {
       })
       .catch(e => {
         console.log(e);
+        navigate('..', { state: { alert: true, location: '..', severity: 'error', title: `${e.response.status} ${e.response.statusText}`, body: `Invalid Route` } });
       });
   }, [params]);
 

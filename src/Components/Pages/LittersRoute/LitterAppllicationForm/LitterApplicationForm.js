@@ -224,7 +224,7 @@ const LitterApplicationForm = () => {
           </Grid>
           <Grid xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
             <FormControl>
-              <FormLabel htmlFor="sex_preference_label" >Select Prefered Sex</FormLabel>
+              <FormLabel htmlFor="sex_preference_label" >Select Preferred Sex</FormLabel>
               <RadioGroup
                 row
                 name="sex_preference"
@@ -240,7 +240,7 @@ const LitterApplicationForm = () => {
           </Grid>
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel htmlFor="colour_preference_label">Select Colour Preferance</InputLabel>
+              <InputLabel htmlFor="colour_preference_label">Select Colour Preference</InputLabel>
               <Select
                 name="colour_preference"
                 fullWidth

@@ -1,40 +1,39 @@
-import { Box } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useRef, useState } from "react";
-import Xarrow from "react-xarrows";
+import DogCard from "../Dogcard/DogCard";
 
 
-const ViewPedigree = ({ dog, tier }) => {
+const ViewPedigree = ({ dog }) => {
 
-  const boxStyle = { border: "grey solid 2px", borderRadius: "10px", padding: "5px" };
-  const boxRef = useRef(null);
-
-  const [level, setLevel] = useState(tier);
-
-  const FamilyElement = (dog, tier) => {
-    console.log(dog, tier);
-    let level = tier - 1;
-    if (level === 0) {
-      console.log("no more tier");
-      return;
-    } else {
-      return (
-        <>
-          <Grid xs={12} container sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Grid xs={6} id={dog.sire.id}>
-              {console.log(dog.sire.callname, tier)}
-              {dog.sire.callname || dog.sire.realname}
-              {dog.sire.realname && FamilyElement(dog.sire, level)}
-            </Grid>
-            <Grid xs={6} id={dog.bitch.id}>
-              {console.log(dog.bitch.callname, tier)}
-              {dog.bitch.callname || dog.bitch.realname}
-              {dog.bitch.callname && FamilyElement(dog.bitch, level)}
-            </Grid>
+  const FamilyElement = (dog) => {
+    console.log(dog);
+    return (
+      <>
+        <Grid xs={12} container sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid xs={6} id={dog.sire.id}>
+            {dog.sire.id !== 'unrecorded'
+              ? <>
+                <DogCard dog={dog.sire} />
+                {FamilyElement(dog.sire)}
+              </>
+              : <Grid xs={12} component={Paper}>
+                <Typography variant="h5">{dog.sire.id}</Typography>
+              </Grid>}
           </Grid>
-        </>
-      );
-    }
+          <Grid xs={6} id={dog.bitch.id}>
+            {console.log(dog.bitch.callname)}
+            {dog.bitch.id !== 'unrecorded'
+              ? <>
+                <DogCard dog={dog.bitch} />
+                {FamilyElement(dog.bitch)}
+              </>
+              : <Grid xs={12} component={Paper}>
+                <Typography variant="h5">{dog.bitch.id}</Typography>
+              </Grid>}
+          </Grid>
+        </Grid>
+      </>
+    );
   };
 
   return (
@@ -47,12 +46,9 @@ const ViewPedigree = ({ dog, tier }) => {
         display: 'flex',
         flexDirection: 'column'
       }}>
-        {console.log(dog, level)}
+        {console.log(dog)}
         <Grid container sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-          <Grid xs={12} ref={boxRef}>
-            {(dog.callname || dog.realname)}
-          </Grid>
-          {FamilyElement(dog, level)}
+          {FamilyElement(dog)}
         </Grid>
       </Box>
     </>

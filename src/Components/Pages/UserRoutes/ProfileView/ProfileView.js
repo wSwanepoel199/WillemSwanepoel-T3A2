@@ -5,11 +5,13 @@ import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getUser } from "../../../services/authServices";
-import { EditForm, Profile, ViewApplications, ViewDogs, ViewLitters } from "../../../utils/componentIndex";
+import { EditForm, Profile, useGlobalState, ViewApplications, ViewDogs, ViewLitters } from "../../../utils/componentIndex";
 
 const ProfileView = () => {
   const params = useParams();
   const { id } = params;
+  const { store } = useGlobalState();
+  const { loggedInUser } = store;
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -34,10 +36,12 @@ const ProfileView = () => {
           }
         })
         .catch(e => console.log(e));
+    } else if (user !== [] && user !== loggedInUser) {
+      setUser(loggedInUser);
     }
     // setUser(loggedInUser);
 
-  }, [id, user.length]);
+  }, [id, user, loggedInUser]);
 
   const handleProfileSwitch = (page) => {
     setPageRender(page);

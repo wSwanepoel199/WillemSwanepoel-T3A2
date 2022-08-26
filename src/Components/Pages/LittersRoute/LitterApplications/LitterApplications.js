@@ -34,8 +34,8 @@ const LitterApplications = () => {
         if (litter.litterApplications) {
           setLitterApplications(litter.litterApplications);
         }
-        if (litter.puppies) {
-          setAvailablePups(litter.puppies);
+        if (litter.puppies && litter.unassigned.length > 0) {
+          setAvailablePups(litter.puppies.filter(puppy => litter.unassigned.includes(puppy.id)));
         }
       })
       .catch(e => console.log(e));
@@ -77,6 +77,7 @@ const LitterApplications = () => {
           }}>
             {console.log(litterDetail)}
             {console.log(litterApplications)}
+            {console.log(availablePuppies)}
             <Grid xs={12} >
               <Typography variant="h3" align="center">
                 {litterDetail.lname} Applications
@@ -88,7 +89,7 @@ const LitterApplications = () => {
                 <List component={Paper}>
                   {availablePuppies.map((puppy, index) => {
                     return (
-                      <ListItem key={index}>
+                      <ListItem key={index} sx={{ justifyContent: 'center' }}>
                         <Typography >{puppy.realname}</Typography>
                       </ListItem>
                     );
@@ -109,14 +110,18 @@ const LitterApplications = () => {
               </Grid>
               <Grid xs="auto">
                 {(litterDetail.status === 1
-                  && <Button variant="contained" color="error" onClick={() => handleOpenOrClose(2)}>
-                    Close Litter
-                  </Button>)
+                  && <Link to="/litters/manage">
+                    <Button variant="contained" color="error" onClick={() => handleOpenOrClose(2)}>
+                      Close Litter
+                    </Button>
+                  </Link>)
                   ||
                   (litterDetail.status === 2
-                    && <Button variant="contained" onClick={() => handleOpenOrClose(1)}>
-                      Open Litter
-                    </Button>)}
+                    && <Link to="/litters/manage">
+                      <Button variant="contained" onClick={() => handleOpenOrClose(1)}>
+                        Open Litter
+                      </Button>
+                    </Link>)}
               </Grid>
             </Grid>
           </Grid>

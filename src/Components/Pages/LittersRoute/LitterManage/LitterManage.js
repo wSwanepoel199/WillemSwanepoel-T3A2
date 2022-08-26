@@ -4,7 +4,7 @@ import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useRef, useState } from "react";
 import { useGlobalState, Litter, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
-import { patchLitterApp } from "../../../services/litterServices";
+import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 
@@ -49,7 +49,7 @@ const LitterManage = () => {
 
   useEffect(() => {
     if (applicationForms.length > 0) {
-      setWaitList(applicationForms.filter(form => form.litter_id === 1));
+      setWaitList(applicationForms);
     }
   }, [applicationForms]);
 
@@ -78,10 +78,16 @@ const LitterManage = () => {
         .then(app => {
           console.log(app);
           if (app.status === 200) {
-            dispatch({
-              type: 'updateLitterApplications',
-              data: updateItemInArray(app.data, applicationForms)
-            });
+            getLitterApps()
+              .then(reply => {
+                dispatch({
+                  type: 'setLitterApplications',
+                  data: reply
+                });
+              })
+              .catch(e => {
+                console.log(e);
+              });
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} assigned to ${chosenLitter.lname}` } });
             setSelectedLitter({ select_litter: '' });
           }
@@ -106,11 +112,6 @@ const LitterManage = () => {
         textAlign: "center",
         p: 2
       }}>
-        {/* {console.log(litterList)}
-        {console.log(litters)}
-        {console.log(applicationForms)} */}
-        {console.log(waitList)}
-        {/* {console.log(selectedLitter)} */}
         <Typography variant="h4" component="h1">Manage Litters</Typography>
         <Box component={Paper} sx={{
           m: 2,

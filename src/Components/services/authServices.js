@@ -20,6 +20,11 @@ export async function getUser(id) {
   return response;
 }
 
+export async function updateUser(id, data) {
+  const response = await backEndAPI.patch(`/users/${id}`, data);
+  return response;
+}
+
 export async function getConfirm(confirmToken) {
   const response = await backEndAPI.get(`/users/confirmation${confirmToken}`);
   return response;

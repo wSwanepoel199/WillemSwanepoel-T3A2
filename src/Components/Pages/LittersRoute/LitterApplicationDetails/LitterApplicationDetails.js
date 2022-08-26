@@ -34,7 +34,6 @@ const LitterApplicationDetails = (props) => {
                 ? data.litterApplication.colour_preference
                 : colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
               : colours[0].colour;
-            console.log(typeOf(data.litterApplication.colour_preference, 'string'));
             const filledLitterApp = {
               ...data.litterApplication,
               sex_preference: sexPref,
@@ -85,10 +84,10 @@ const LitterApplicationDetails = (props) => {
               <Typography textAlign='center'>Fence height: {applicationDetails.yardfenceheight}m</Typography>
             </Grid>
             <Grid xs={12} sm={6}>
-              <Typography textAlign='center'>Sex preferance: {applicationDetails.sex_preference}</Typography>
+              <Typography textAlign='center'>Sex preference: {applicationDetails.sex_preference}</Typography>
             </Grid>
             <Grid xs={12} sm={6}>
-              <Typography textAlign='center'>Colour preferance: {applicationDetails.colour_preference}</Typography>
+              <Typography textAlign='center'>Colour preference: {applicationDetails.colour_preference}</Typography>
             </Grid>
             {allocatedPuppy.length !== 0
               && <>

@@ -4,37 +4,43 @@ import { Container, Typography, Paper, Box } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { DogCard, useGlobalState } from '../utils/componentIndex';
 import { useEffect, useState } from 'react';
-import { getBest } from '../services/litterServices';
-import { getDogs } from '../services/dogsServices';
+// import { getBest } from '../services/litterServices';
+// import { getDogs } from '../services/dogsServices';
 
 const Home = () => {
   const { store, dispatch } = useGlobalState();
   const { dogList } = store;
 
-  const [showCase, setShowCase] = useState([]);
+  // const [showCase, setShowCase] = useState([]);
 
-  useEffect(() => {
-    // getDogs()
-    //   .then(reply => {
-    //     dispatch({
-    //       type: "setDogList",
-    //       data: reply.filter(dog => dog.display === true)
-    //     });
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //   });
-    // getBest()
-    //   .then(reply => {
-    //     console.log(reply);
-    //     if (reply.status === 200) {
-    //       setShowCase(reply.data.images.filter((image, index) => index < 5));
-    //     }
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //   });
-  }, []);
+  // useEffect(() => {
+  // getDogs()
+  //   .then(reply => {
+  //     dispatch({
+  //       type: "setDogList",
+  //       data: reply.filter(dog => dog.display === true)
+  //     });
+  //   })
+  //   .catch(e => {
+  //     console.log(e);
+  //   });
+  // getBest()
+  //   .then(reply => {
+  //     console.log(reply);
+  //     if (reply.status === 200) {
+  //       setShowCase(reply.data.images.filter((image, index) => index < 5));
+  //     }
+  //   })
+  //   .catch(e => {
+  //     console.log(e);
+  //   });
+  // }, []);
+
+  const topDogs = (dogs) => {
+    const orderedDogs = dogs.sort((a, b) => a.position - b.position);
+    let topDogs;
+    let n = 0;
+  };
 
   return (
     <>
