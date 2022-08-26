@@ -47,10 +47,16 @@ const LitterApplication = (props) => {
         .then(app => {
           console.log(app);
           if (app.status === 200) {
-            dispatch({
-              type: 'updateLitterApplications',
-              data: updateItemInArray(app.data, applicationForms)
-            });
+            getLitterApps()
+              .then(reply => {
+                dispatch({
+                  type: "setApplicationForms",
+                  data: reply
+                });
+              })
+              .catch(e => {
+                console.log(e);
+              });
             setOpen(!open);
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been ${action}` } });
           }
@@ -181,11 +187,17 @@ const LitterApplication = (props) => {
                                         Assign
                                       </Button>
                                     </TableCell>}
-                                  <TableCell align="left" size="small">
-                                    <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
-                                      Reject
-                                    </Button>
-                                  </TableCell>
+                                  {app.litter_id === 1
+                                    ? <TableCell align="left" size="small">
+                                      <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
+                                        Reject
+                                      </Button>
+                                    </TableCell>
+                                    : <TableCell align="left" size="small">
+                                      <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(2, "returned to waitlist")}>
+                                        Return to Waitlist
+                                      </Button>
+                                    </TableCell>}
                                 </>
                                 :
                                 null

@@ -37,7 +37,7 @@ const SecuredRoute = ({ children }) => {
 
   useEffect(() => {
     if (!user) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorised", body: "You must be signed in to access this page" } });
+      navigate('/user/signin', { state: { alert: true, location: "/user/signin", severity: "warning", title: "Unauthorised", body: "Please sign in or create an account to access this page" } });
     }
   }, [user, navigate]);
 

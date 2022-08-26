@@ -110,14 +110,18 @@ const LitterApplications = () => {
               </Grid>
               <Grid xs="auto">
                 {(litterDetail.status === 1
-                  && <Button variant="contained" color="error" onClick={() => handleOpenOrClose(2)}>
-                    Close Litter
-                  </Button>)
+                  && <Link to="/litters/manage">
+                    <Button variant="contained" color="error" onClick={() => handleOpenOrClose(2)}>
+                      Close Litter
+                    </Button>
+                  </Link>)
                   ||
                   (litterDetail.status === 2
-                    && <Button variant="contained" onClick={() => handleOpenOrClose(1)}>
-                      Open Litter
-                    </Button>)}
+                    && <Link to="/litters/manage">
+                      <Button variant="contained" onClick={() => handleOpenOrClose(1)}>
+                        Open Litter
+                      </Button>
+                    </Link>)}
               </Grid>
             </Grid>
           </Grid>

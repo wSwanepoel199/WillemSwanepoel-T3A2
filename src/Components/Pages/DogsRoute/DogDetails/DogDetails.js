@@ -61,7 +61,7 @@ const DogDetails = () => {
             <Typography variant="h3">{dogDetails.realname}</Typography>
           </Grid>
           <Grid xs={12} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6">Owner: {dogDetails.ownername}</Typography>
+            <Typography variant="h6">Owner: {owner.username}</Typography>
           </Grid>
           <Grid xs={6} sx={{ textAlign: 'center' }}>
             {dogDetails.dob
@@ -85,17 +85,17 @@ const DogDetails = () => {
               {dogDetails.description}
             </Typography>
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          {/* <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button variant="contained" onClick={() => { setViewPedigree(!viewPedigree); }}>View Pedigree Breakdown</Button>
           </Grid>
           <Collapse in={viewPedigree} unmountOnExit>
             <Grid xs={12} sx={{ py: 2 }}>
               <ViewPedigree dog={dogDetails} />
             </Grid>
-          </Collapse>
+          </Collapse> */}
           {(loggedInUser.admin && owner !== [])
-            && <Grid xs={12} container component={Paper} sx={{ py: 2 }}>
-              <Grid xs={12} sx={{ textAlign: 'center' }}>
+            && <Grid xs={12} container component={Paper} sx={{ py: 2, justifyContent: 'center' }}>
+              <Grid xs="auto" sx={{ textAlign: 'center' }} component={Paper} >
                 <Typography>Name: {owner.firstname} {owner.lastname}</Typography>
                 <Typography>Username: {owner.username}</Typography>
                 <Typography>Email: {owner.email}</Typography>

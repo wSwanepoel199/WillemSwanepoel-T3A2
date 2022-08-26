@@ -30,7 +30,7 @@ export async function postNewPuppy(data) {
 }
 
 export async function getLitterApps() {
-  const response = await backEndAPI.get('/litter_applications');
+  const response = await backEndAPI.get('/waitlisted');
   return response.data;
 }
 

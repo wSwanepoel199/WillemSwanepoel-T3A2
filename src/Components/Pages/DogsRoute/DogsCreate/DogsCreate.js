@@ -58,6 +58,7 @@ const DogCreationForm = () => {
         [name]: value
       });
       setFormData({
+        ...formData,
         litter: {
           [name]: value
         }

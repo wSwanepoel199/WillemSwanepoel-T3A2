@@ -214,8 +214,8 @@ const App = () => {
                   <LitterApplicationManage />
                 </AdminRoute>
               } /> */}
-              <Route path="showcase" element={<ShowCase />} />
-              <Route path="gallery" element={<LitterGallery />} />
+              <Route path="browse" element={<ShowCase />} />
+              <Route path="showcase" element={<LitterGallery />} />
               {/* sets path to access LitterDetails to a non absolute path */}
               <Route path=":id" element={
                 <LitterDetails />

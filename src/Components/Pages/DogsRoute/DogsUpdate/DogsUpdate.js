@@ -21,7 +21,6 @@ const DogUpdateForm = () => {
   const initialFormData = {
     callname: "",
     realname: "",
-    // retired: false,
     sex: '',
     description: '',
     colour: '',
