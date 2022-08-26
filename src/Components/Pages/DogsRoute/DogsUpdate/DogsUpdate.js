@@ -260,11 +260,11 @@ const DogUpdateForm = () => {
           </Grid> */}
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="litter_label">Select Dog's Litter</InputLabel>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
               <Select
                 name="litter_id"
                 id="litter_id"
-                label="Select Dog's Litter"
+                label="Add to Notional Litter"
                 onChange={handleInput}
                 value={formData.litter.litter_id}
               >
