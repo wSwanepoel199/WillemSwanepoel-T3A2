@@ -55,9 +55,9 @@ const DogUpdateForm = () => {
             realname: data.dog.realname,
             callname: data.dog.callname,
             sex: data.dog.sex,
-            description: data.dog.description,
+            description: data.dog.description || '',
             colour: dogColour,
-            chipnumber: data.dog.chipnumber,
+            chipnumber: data.dog.chipnumber || '',
             litter: {
               litter_id: data.litter.id
             }
@@ -239,25 +239,6 @@ const DogUpdateForm = () => {
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id="owner_label">Select Dog's Owner</InputLabel>
-              <Select
-                name="owner_id"
-                id="owner_id"
-                required
-                label="Select Dog's Owner"
-                onChange={handleInput}
-                value={formData.owner_id}
-              >
-                {userList.map(owner => {
-                  return (
-                    <MenuItem key={owner.id} value={owner.id}>{owner.username}</MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid> */}
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
