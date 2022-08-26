@@ -33,11 +33,11 @@ const AdminRoute = ({ children }) => {
 const SecuredRoute = ({ children }) => {
   const navigate = useNavigate();
 
-  const user = Boolean(sessionStorage.getItem("user"));
+  const user = Boolean(localStorage.getItem('user'));
 
   useEffect(() => {
     if (!user) {
-      navigate('/', { state: { alert: true, location: "/", severity: "warning", title: "Unauthorised", body: "You must be signed in to access this page" } });
+      navigate('/user/signin', { state: { alert: true, location: "/user/signin", severity: "warning", title: "Unauthorised", body: "Please sign in or create an account to access this page" } });
     }
   }, [user, navigate]);
 

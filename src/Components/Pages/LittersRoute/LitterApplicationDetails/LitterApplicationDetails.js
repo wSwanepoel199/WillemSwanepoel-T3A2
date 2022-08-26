@@ -2,7 +2,7 @@ import { Box, Typography, Paper, TableCell, TableRow } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getLitterApp } from "../../../services/litterServices";
-import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
+import { CustomTable, DogCard, useGlobalState } from "../../../utils/componentIndex";
 import { colours } from "../../../utils/helpers/findOriginal";
 
 // include assigned puppy
@@ -12,7 +12,7 @@ const LitterApplicationDetails = (props) => {
   const { litterList, userList } = store;
 
   const [applicationDetails, setApplicationDetais] = useState([]);
-  // const [availablePups, setAvailablePups] = useState([]);
+  const [allocatedPuppy, setAllocatedPuppy] = useState([]);
   const [children, setChildren] = useState([]);
   const [pets, setPets] = useState([]);
 
@@ -34,7 +34,6 @@ const LitterApplicationDetails = (props) => {
                 ? data.litterApplication.colour_preference
                 : colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
               : colours[0].colour;
-            console.log(typeOf(data.litterApplication.colour_preference, 'string'));
             const filledLitterApp = {
               ...data.litterApplication,
               sex_preference: sexPref,
@@ -45,7 +44,7 @@ const LitterApplicationDetails = (props) => {
             setApplicationDetais(filledLitterApp);
             setChildren(data.litterApplication.children || []);
             setPets(data.litterApplication.pets || []);
-            // setAvailablePups(data.availablePuppies);
+            setAllocatedPuppy(data.allocatedPuppy || []);
           }
         })
         .catch(e => console.log(e));
@@ -85,11 +84,20 @@ const LitterApplicationDetails = (props) => {
               <Typography textAlign='center'>Fence height: {applicationDetails.yardfenceheight}m</Typography>
             </Grid>
             <Grid xs={12} sm={6}>
-              <Typography textAlign='center'>Sex preferance: {applicationDetails.sex_preference}</Typography>
+              <Typography textAlign='center'>Sex preference: {applicationDetails.sex_preference}</Typography>
             </Grid>
             <Grid xs={12} sm={6}>
-              <Typography textAlign='center'>Colour preferance: {applicationDetails.colour_preference}</Typography>
+              <Typography textAlign='center'>Colour preference: {applicationDetails.colour_preference}</Typography>
             </Grid>
+            {allocatedPuppy.length !== 0
+              && <>
+                <Grid xs={12}>
+                  <Typography variant="h5" textAlign='center'>Puppy:</Typography>
+                </Grid>
+                <Grid xs={12}>
+                  <DogCard dog={allocatedPuppy} />
+                </Grid>
+              </>}
             {children.length > 0
               && <>
                 <Grid xs={12}>

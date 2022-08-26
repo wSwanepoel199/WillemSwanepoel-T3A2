@@ -5,8 +5,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { updateUser } from "../../../../services/authServices";
+import { useGlobalState } from "../../../../utils/stateContext";
 
 const EditForm = ({ user, handleProfileSwitch }) => {
+  const { dispatch } = useGlobalState();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +23,7 @@ const EditForm = ({ user, handleProfileSwitch }) => {
     address1: '',
     address2: '',
     suburb: '',
-    state: '',
+    phonenumber: '',
     postcode: "",
     showPassword: false,
     showPasswordConfirmation: false
@@ -28,22 +31,22 @@ const EditForm = ({ user, handleProfileSwitch }) => {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
-    let filteredUser;
+    let filteredUser = { ...formData };
     Object.entries(user).map(user => {
       if (user[1] === null) {
-        return;
+        return filteredUser = {
+          ...filteredUser,
+          [user[0]]: ''
+        };
       } else {
-        filteredUser = {
+        return filteredUser = {
           ...filteredUser,
           [user[0]]: user[1]
         };
       }
     });
-    setFormData({
-      ...formData,
-      ...filteredUser
-    });
-  }, [user]);
+    setFormData(filteredUser);
+  }, []);
 
   const handleShowPassword = (name) => {
     console.log(name);
@@ -87,6 +90,22 @@ const EditForm = ({ user, handleProfileSwitch }) => {
         }
       };
       console.log(submitForm);
+      updateUser(formData.id, submitForm)
+        .then(reply => {
+          console.log(reply);
+          if (reply.status === 200) {
+            sessionStorage.setItem('user', JSON.stringify(reply.data));
+            dispatch({
+              type: "setLoggedInUser",
+              data: reply.data
+            });
+            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `Success`, body: "Your details have been updated" } });
+          }
+        })
+        .catch(e => {
+          console.log(e);
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `Error`, body: "Your details could not be updated" } });
+        });
       // signUp(submitForm)
       //   .then((user) => {
       //     console.log(user);
@@ -128,6 +147,11 @@ const EditForm = ({ user, handleProfileSwitch }) => {
             <Grid xs={12}>
               <FormControl fullWidth>
                 <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.email} type="email" />
+              </FormControl>
+            </Grid>
+            <Grid xs={12} sm={6}>
+              <FormControl fullWidth>
+                <TextField name="phonenumber" required id="phonenumber_id" label="Phonenumber" onChange={handleInput} value={formData.phonenumber} />
               </FormControl>
             </Grid>
             {/* <Grid xs={12}>
@@ -184,40 +208,40 @@ const EditForm = ({ user, handleProfileSwitch }) => {
               />
             </FormControl>
           </Grid> */}
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="firstname" required id="first_name_id" label="First Name" onChange={handleInput} value={formData.firstname} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="lastname" required id="last_name_id" label="Last Name" onChange={handleInput} value={formData.lastname} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="address1" id="address_l1_id" label="Address line 1" onChange={handleInput} value={formData.address1} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="address2" id="address_l2_id" label="Address line 2" onChange={handleInput} value={formData.address2} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12}>
-              <FormControl fullWidth>
-                <TextField name="suburb" required id="suburb_id" label="Suburb/Town" onChange={handleInput} value={formData.suburb} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="state" required id="state_id" label="State" onChange={handleInput} value={formData.state} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.postcode} type="number" />
-              </FormControl>
+            <Grid xs={12} container>
+              <Grid xs={12}>
+                <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Address Info</Typography>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="firstname" required id="first_name_id" label="First Name" onChange={handleInput} value={formData.firstname} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="lastname" required id="last_name_id" label="Last Name" onChange={handleInput} value={formData.lastname} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="address1" id="address_l1_id" label="Address line 1" onChange={handleInput} value={formData.address1} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="address2" id="address_l2_id" label="Address line 2" onChange={handleInput} value={formData.address2} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="suburb" required id="suburb_id" label="Suburb/Town" onChange={handleInput} value={formData.suburb} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.postcode} type="number" />
+                </FormControl>
+              </Grid>
             </Grid>
             <Grid xs={12}>
               <Container fluid="true">

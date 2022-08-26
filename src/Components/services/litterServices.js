@@ -30,7 +30,7 @@ export async function postNewPuppy(data) {
 }
 
 export async function getLitterApps() {
-  const response = await backEndAPI.get('/litter_applications');
+  const response = await backEndAPI.get('/waitlisted');
   return response.data;
 }
 
@@ -57,5 +57,10 @@ export async function getShowCase(id) {
 
 export async function getBest() {
   const response = await backEndAPI.get('/showcase');
+  return response;
+}
+
+export async function assignPuppy(data) {
+  const response = await backEndAPI.patch(`/assign_puppy`, data);
   return response;
 }

@@ -1,10 +1,16 @@
 export function updateItemInArray(item, array, type) {
   // locates original item in provided array
   let originalItem;
-  originalItem = array.find(original => original.id === item.id);
-  if (!originalItem && type === 'newPuppy') {
-    originalItem = array.find(original => original.realname === item.realname);
+  switch (type) {
+    case 'newPuppy': {
+      originalItem = array.find(original => original.realname === item.realname);
+      break;
+    }
+    default: {
+      originalItem = array.find(original => original.id === item.id);
+    }
   }
+  console.log(item);
   console.log(originalItem);
   // makes new mutable array out of provided
   let newArray = [...array];
@@ -29,4 +35,31 @@ export const colours = [
   { id: 11, colour: "Liver and Tan" },
   { id: 12, colour: "Liver Roan" },
   { id: 13, colour: "Liver Roan and Tan" }
+];
+
+export const healthTestKeys = {
+  pra: 0,
+  fn: 0,
+  aon: 0,
+  ams: 0,
+  bss: 0,
+};
+
+export const healthTestValues = [
+  {
+    id: 0,
+    status: 'Unknown'
+  },
+  {
+    id: 1,
+    status: 'Clear'
+  },
+  {
+    id: 2,
+    status: 'Carrier'
+  },
+  {
+    id: 3,
+    status: 'Affected'
+  },
 ];

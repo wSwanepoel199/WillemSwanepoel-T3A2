@@ -214,7 +214,7 @@ const LitterCreationForm = () => {
               <DatePicker
                 name="pdate"
                 id="pdate_picker"
-                label="Select Predicted Delivery Date"
+                label="Select Planned Delivery Date"
                 ampm
                 required
                 inputFormat="DD/MM/YYYY"

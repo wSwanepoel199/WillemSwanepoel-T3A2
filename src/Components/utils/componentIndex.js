@@ -9,6 +9,7 @@ import CustomTable from '../Shared/CustomTable/CustomTable';
 // Import Pages Components
 import Home from '../Pages/Home';
 import About from '../Pages/About';
+import DogIndex from '../Pages/DogsRoute/DogIndex';
 import DogsReorder from '../Pages/DogsRoute/DogsReorder/DogsReorder';
 import DogCard from '../Pages/DogsRoute/Dogcard/DogCard';
 import Dog from '../Pages/DogsRoute/Dog/Dog';
@@ -16,8 +17,10 @@ import DogsManage from '../Pages/DogsRoute/DogsManage/DogsManage';
 import DogCreationForm from '../Pages/DogsRoute/DogsCreate/DogsCreate';
 import DogUpdateForm from '../Pages/DogsRoute/DogsUpdate/DogsUpdate';
 import DogDetails from '../Pages/DogsRoute/DogDetails/DogDetails';
+import ViewPedigree from '../Pages/DogsRoute/DogPedigree/DogPedigree';
 import DisplayDogs from '../Pages/DogsRoute/DogsDisplay/DogsDisplay';
 import NotFound from '../Pages/NotFound';
+import LitterIndex from '../Pages/LittersRoute/LitterIndex';
 import LitterApplication from '../Pages/LittersRoute/LitterApplication/LitterApplication';
 // import LitterApplicationsManage from '../Pages/LittersRoute/LitterApplicationsManage/LitterApplicationsManage';
 import Litter from '../Pages/LittersRoute/Litter/Litter';
@@ -32,6 +35,7 @@ import LitterApplicationDetails from '../Pages/LittersRoute/LitterApplicationDet
 import ShowCase from '../Pages/LittersRoute/LitterShowCase/LitterShowcase';
 import LitterShowItem from '../Pages/LittersRoute/LitterShowItem/LitterShowItem';
 import ProfileView from '../Pages/UserRoutes/ProfileView/ProfileView';
+import LitterGallery from '../Pages/LittersRoute/LitterGallery/LitterGallery';
 import Profile from '../Pages/UserRoutes/ProfileView/Profile/profile';
 import EditForm from '../Pages/UserRoutes/ProfileView/EditProfile/EditProile';
 import ViewApplications from '../Pages/UserRoutes/ProfileView/ViewApplications/ViewApplications';
@@ -40,7 +44,8 @@ import ViewLitters from '../Pages/UserRoutes/ProfileView/ViewLitters/ViewLitters
 import SignInForm from '../Pages/UserRoutes/SignIn/SignIn';
 import SignUpForm from '../Pages/UserRoutes/SignUp/SignUp';
 import SignOut from '../Pages/UserRoutes/SignOut/SignOut';
-import SignUpRedirect from '../Pages/SignUpRedirect';
+import SignUpRedirect from '../Pages/UserRoutes/SignUpRedirect/SignUpRedirect';
+import SignUpConfirm from '../Pages/UserRoutes/SignUpConfirm/SignUpConfirm';
 // API
 import backEndAPI from './api';
 
@@ -59,6 +64,7 @@ export {
   // Pages
   Home,
   About,
+  DogIndex,
   DogsReorder,
   DogCard,
   Dog,
@@ -66,8 +72,9 @@ export {
   DogCreationForm,
   DogUpdateForm,
   DogDetails,
+  ViewPedigree,
   DisplayDogs,
-  NotFound,
+  LitterIndex,
   LitterApplication,
   // LitterApplicationsManage,
   LitterApplicationForm,
@@ -81,6 +88,7 @@ export {
   LitterApplications,
   ShowCase,
   LitterShowItem,
+  LitterGallery,
   ProfileView,
   Profile,
   EditForm,
@@ -91,6 +99,8 @@ export {
   SignUpForm,
   SignUpRedirect,
   SignOut,
+  SignUpConfirm,
+  NotFound,
   // api
   backEndAPI,
 };

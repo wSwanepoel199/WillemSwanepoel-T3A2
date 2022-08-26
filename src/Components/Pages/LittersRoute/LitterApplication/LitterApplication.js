@@ -1,37 +1,28 @@
-import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button, Container } from "@mui/material";
+import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { patchLitterApp } from "../../../services/litterServices";
+import { useLocation, useNavigate } from "react-router-dom";
+import { assignPuppy, getLitterApps, patchLitterApp } from "../../../services/litterServices";
 import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 import { useGlobalState } from "../../../utils/stateContext";
 import LitterApplicationDetails from "../LitterApplicationDetails/LitterApplicationDetails";
+import { getUser } from "../../../services/authServices";
 
 // TODO
 // Add detailed View for each application
 // impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
 const LitterApplication = (props) => {
-  const { app, user, litter } = props;
+  const { app, user } = props;
   const { store, dispatch } = useGlobalState();
   const { applicationForms, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
-  const initialAppLitter = {
-    id: 1,
-    lname: ''
-  };
+  const [puppySelect, setPuppySelect] = useState({ selected_puppy_id: '' });
 
   const [open, setOpen] = useState(false);
-  const [appLitter, setAppLitter] = useState(initialAppLitter);
-
-  useEffect(() => {
-    if (litter) {
-      setAppLitter(litter);
-    }
-  }, [litter]);
 
   const fulFillState = (state) => {
     switch (state) {
@@ -56,10 +47,16 @@ const LitterApplication = (props) => {
         .then(app => {
           console.log(app);
           if (app.status === 200) {
-            dispatch({
-              type: 'updateLitterApplications',
-              data: updateItemInArray(app.data, applicationForms)
-            });
+            getLitterApps()
+              .then(reply => {
+                dispatch({
+                  type: "setApplicationForms",
+                  data: reply
+                });
+              })
+              .catch(e => {
+                console.log(e);
+              });
             setOpen(!open);
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been ${action}` } });
           }
@@ -77,6 +74,44 @@ const LitterApplication = (props) => {
       });
       setOpen(!open);
     }
+  };
+
+  const handlePuppySelect = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setPuppySelect({
+      [name]: value
+    });
+  };
+
+  const handlePuppySubmit = (e) => {
+    e.preventDefault();
+    const postForm = {
+      ...puppySelect,
+      id: app.id
+    };
+    assignPuppy(postForm)
+      .then(reply => {
+        console.log(reply);
+        if (reply.status === 200) {
+          getLitterApps()
+            .then(reply => {
+              dispatch({
+                type: "setApplicationForms",
+                data: reply
+              });
+            });
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Success`, body: `${reply.data.message}` } });
+          setOpen(!open);
+          setPuppySelect({
+            selected_puppy_id: ''
+          });
+        }
+      })
+      .catch(e => {
+        console.log(e);
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}` } });
+      });
   };
 
   return (
@@ -118,44 +153,51 @@ const LitterApplication = (props) => {
             <Box sx={{ m: 1 }}>
               <Table size="small">
                 <TableBody>
-                  <TableRow sx={{ display: 'flex' }}>
-                    <TableCell align="left" size="small" >
+                  {loggedInUser.admin
+                    && <>
+                      <TableRow sx={{ display: 'flex' }}>
+                        {/* <TableCell align="left" size="small" >
                       <Link to={`./${app.id}`}>
                         <Button variant="contained" color="success">
                           View
                         </Button>
                       </Link>
-                    </TableCell>
-                    {/* <TableCell align="left" size="small">
+                    </TableCell> */}
+                        {/* <TableCell align="left" size="small">
                       <Link to={`/litters/${appLitter.id}/applications/${app.id}/manage`}>
                         <Button variant="contained" color="warning">
                           Manage
                         </Button>
                       </Link>
                     </TableCell> */}
-                    {loggedInUser.admin
-                      && <>
                         {app.fulfillstate !== null ?
                           <>
                             {app.fulfillstate === 2 ? //rejected
                               <TableCell align="left" size="small">
-                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "aproved")}>
+                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "approved")}>
                                   Approve
                                 </Button>
                               </TableCell>
                               :
                               app.fulfillstate === 1 ? //approved
                                 <>
-                                  <TableCell align="left" size="small">
-                                    <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "assign")}>
-                                      Assign
-                                    </Button>
-                                  </TableCell>
-                                  <TableCell align="left" size="small">
-                                    <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
-                                      Reject
-                                    </Button>
-                                  </TableCell>
+                                  {props.handleOpenDialog
+                                    && <TableCell align="left" size="small">
+                                      <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "assign")}>
+                                        Assign
+                                      </Button>
+                                    </TableCell>}
+                                  {app.litter_id === 1
+                                    ? <TableCell align="left" size="small">
+                                      <Button variant="contained" color="error" onClick={() => handleAcceptOrReject(2, "rejected")}>
+                                        Reject
+                                      </Button>
+                                    </TableCell>
+                                    : <TableCell align="left" size="small">
+                                      <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(2, "returned to waitlist")}>
+                                        Return to Waitlist
+                                      </Button>
+                                    </TableCell>}
                                 </>
                                 :
                                 null
@@ -175,8 +217,42 @@ const LitterApplication = (props) => {
                             </TableCell>
                           </>
                         }
-                      </>}
-                  </TableRow>
+                      </TableRow>
+                      {(app.litter_id !== 1 && app.fulfillstate !== 3)
+                        && <>
+                          <TableRow>
+                            <TableCell>
+                              <Box component="form">
+                                <FormControl fullWidth>
+                                  <InputLabel id="puppy_label">Assign Puppy</InputLabel>
+                                  <Select
+                                    name="selected_puppy_id"
+                                    fullWidth
+                                    required
+                                    id="puppy_label"
+                                    label="Assign Puppy"
+                                    onChange={handlePuppySelect}
+                                    value={puppySelect.selected_puppy_id}
+                                  >
+                                    {props.puppies && props.puppies.map((puppy, index) => {
+                                      return (
+                                        <MenuItem key={index} value={puppy.id}>{puppy.realname}</MenuItem>
+                                      );
+                                    })}
+                                  </Select>
+                                </FormControl>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Button variant="contained" color="success" onClick={handlePuppySubmit}>
+                                  Confirm Puppy Assignment
+                                </Button>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        </>}
+                    </>}
                 </TableBody>
               </Table>
             </Box>

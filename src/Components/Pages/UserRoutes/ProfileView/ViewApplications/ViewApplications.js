@@ -1,12 +1,10 @@
-import { Box, TableCell, TableRow, Typography } from "@mui/material";
+import { Box, TableCell, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { CustomTable, useGlobalState } from "../../../../utils/componentIndex";
+import { CustomTable } from "../../../../utils/componentIndex";
 import LitterApplication from "../../../LittersRoute/LitterApplication/LitterApplication";
 
 
 const ViewApplications = ({ apps, user }) => {
-  const { store } = useGlobalState();
-  const { loggedInUser } = store;
 
   return (
     <>

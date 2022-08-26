@@ -1,5 +1,5 @@
 import { Box, Typography, Paper, Pagination, Stack } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useGlobalState } from "../../../utils/stateContext";
 import LitterShowItem from "../LitterShowItem/LitterShowItem";
@@ -16,11 +16,12 @@ const ShowCase = () => {
 
   useEffect(() => {
     if (litter.length === 0) {
-      setLitter(litterList.filter(litter => litter.id !== 1 && litter.adate).sort((a, b) => b.adate - a.adate));
+      setLitter(litterList.filter(litter => litter.id !== 1 && litter.adate).sort((a, b) => moment(b.adate) - moment(a.adate)));
     }
   }, [litterList, litter]);
 
   useEffect(() => {
+    setItemsPerPage(5);
     setPageCount(Math.ceil(litter.length / 5));
   }, [litter]);
 
@@ -41,9 +42,13 @@ const ShowCase = () => {
           // sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}
           >
             {litter.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
-              .map((litter, index) =>
-                <LitterShowItem key={index} litter={litter} />
-              )}
+              .map((litter, index) => {
+                if (litter.status !== 3) {
+                  return (
+                    <LitterShowItem key={index} litter={litter} />
+                  );
+                }
+              })}
           </Stack>
           <Pagination count={pageCount} page={page} onChange={handleChangePage} />
         </Box>

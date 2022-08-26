@@ -1,12 +1,11 @@
-import { Box, Paper, Button, Stack, Typography, useMediaQuery, useTheme, Collapse, IconButton } from "@mui/material";
+import { Box, Paper, Button, Stack, useMediaQuery, useTheme, Collapse, IconButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getUser } from "../../../services/authServices";
-import { EditForm, Profile, ViewApplications, ViewDogs, ViewLitters } from "../../../utils/componentIndex";
-import { useGlobalState } from "../../../utils/stateContext";
+import { EditForm, Profile, useGlobalState, ViewApplications, ViewDogs, ViewLitters } from "../../../utils/componentIndex";
 
 const ProfileView = () => {
   const params = useParams();
@@ -37,10 +36,12 @@ const ProfileView = () => {
           }
         })
         .catch(e => console.log(e));
+    } else if (user !== [] && user !== loggedInUser) {
+      setUser(loggedInUser);
     }
     // setUser(loggedInUser);
 
-  }, [id]);
+  }, [id, user, loggedInUser]);
 
   const handleProfileSwitch = (page) => {
     setPageRender(page);
@@ -53,7 +54,7 @@ const ProfileView = () => {
         <Button onClick={() => handleProfileSwitch("profile")}> Profile</Button>
         <Button onClick={() => handleProfileSwitch("applications")}>View Applications</Button>
         <Button onClick={() => handleProfileSwitch("dogs")}>View Dogs</Button>
-        {user.breeder || user.admin && <Button onClick={() => handleProfileSwitch("litters")}>View Litters</Button>}
+        {(user.breeder || user.admin) && <Button onClick={() => handleProfileSwitch("litters")}>View Litters</Button>}
         <Button onClick={() => handleProfileSwitch("edit")}>Edit Profile</Button>
       </>
     );

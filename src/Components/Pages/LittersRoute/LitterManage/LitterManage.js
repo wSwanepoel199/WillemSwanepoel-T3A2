@@ -18,6 +18,8 @@ const LitterManage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
+
 
   const [litters, setLitters] = useState([]);
   // const waitlistLitter = litterList.find(litter => litter.id === 1);
@@ -34,24 +36,12 @@ const LitterManage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const fullscreen = useMediaQuery(theme.breakpoints.down('md'));
-
   useEffect(() => {
     if (!mounted.current) {
-      if (applicationForms.length === 0) {
-        getLitterApps()
-          .then(apps => {
-            dispatch({
-              type: "setApplicationForms",
-              data: apps
-            });
-            setOrder('asc');
-          })
-          .catch(e => console.log(e));
-      }
+      setOrder('asc');
       mounted.current = true;
     }
-  }, [mounted, dispatch, applicationForms]);
+  }, [mounted, dispatch]);
 
   useEffect(() => {
     setLitters(litterList.filter(litter => litter.id !== 1));
@@ -59,7 +49,7 @@ const LitterManage = () => {
 
   useEffect(() => {
     if (applicationForms.length > 0) {
-      setWaitList(applicationForms.filter(form => form.litter_id === 1));
+      setWaitList(applicationForms);
     }
   }, [applicationForms]);
 
@@ -88,10 +78,16 @@ const LitterManage = () => {
         .then(app => {
           console.log(app);
           if (app.status === 200) {
-            dispatch({
-              type: 'updateLitterApplications',
-              data: updateItemInArray(app.data, applicationForms)
-            });
+            getLitterApps()
+              .then(reply => {
+                dispatch({
+                  type: 'setLitterApplications',
+                  data: reply
+                });
+              })
+              .catch(e => {
+                console.log(e);
+              });
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} assigned to ${chosenLitter.lname}` } });
             setSelectedLitter({ select_litter: '' });
           }
@@ -116,11 +112,6 @@ const LitterManage = () => {
         textAlign: "center",
         p: 2
       }}>
-        {/* {console.log(litterList)}
-        {console.log(litters)}
-        {console.log(applicationForms)} */}
-        {console.log(waitList)}
-        {/* {console.log(selectedLitter)} */}
         <Typography variant="h4" component="h1">Manage Litters</Typography>
         <Box component={Paper} sx={{
           m: 2,
@@ -209,7 +200,7 @@ const LitterManage = () => {
             }
             body={
               <>
-                {litters.length > 0 && litters.sort((a, b) => {
+                {(litters.length > 0 && userList.length > 0 && dogList.length > 0) && litters.sort((a, b) => {
                   return order === 'asc'
                     ? a.orderBy - b.orderBy
                     : b.orderBy - a.orderBy;

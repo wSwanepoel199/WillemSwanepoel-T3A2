@@ -8,7 +8,7 @@ import { signIn } from "../../../services/authServices";
 import { Link } from "react-router-dom";
 
 const SignInForm = () => {
-  const { dispatch } = useGlobalState();
+  const { initialState, dispatch } = useGlobalState();
   const navigate = useNavigate();
 
   const initialFormData = {
@@ -39,18 +39,18 @@ const SignInForm = () => {
     signIn(submitForm)
       .then((user) => {
         console.log(user);
-        sessionStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
         dispatch({
-          type: "setLoggedInUser",
-          data: user
+          type: "cleanState",
+          payload: initialState
         });
         setFormData(initialFormData);
-        navigate("/");
+        navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.username}`, body: `You have successfully logged in` } });
       }
       )
       .catch(e => {
-        console.log(e.response.data.message);
-        alert(e.response.data.message);
+        console.log(e.response);
+        navigate("/", { state: { alert: true, location: '/', severity: 'error', title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}` } });
       });
   };
 

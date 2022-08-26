@@ -16,11 +16,11 @@ const SignUpForm = () => {
     email: "",
     password: "",
     password_confirmation: '',
+    phonenumber: '',
     firstname: '',
     lastname: '',
     address1: '',
     address2: '',
-    suburb: '',
     state: '',
     postcode: "",
     showPassword: false,
@@ -35,7 +35,7 @@ const SignUpForm = () => {
         ...formData,
         showPassword: !formData.showPassword
       });
-    } else if (name === "password_confirmation") {
+    } else if (name === "passwordConfirmation") {
       setFormData({
         ...formData,
         showPasswordConfirmation: !formData.showPasswordConfirmation
@@ -74,15 +74,11 @@ const SignUpForm = () => {
         .then((user) => {
           console.log(user);
           setFormData(initialFormData);
-          navigate("/user/signup/confirmation");
+          navigate("/", { state: { alert: true, location: '/', severity: 'warning', title: "Check Email", body: "Please check your emails for the account confirmation link" } });
         })
         .catch(e => {
           console.log(e.response.data.errors);
-          let errorMessage = "";
-          Object.keys(e.response.data.errors).forEach(key => {
-            errorMessage = errorMessage.concat("", `${key} ${e.response.data.errors[key]}`);
-          });
-          alert(errorMessage);
+          navigate("/", { state: { alert: true, location: '/', severity: 'error', title: `${e.response.status} Error`, body: `${e.response.data.message}` } });
         });
     } else {
       navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: "Password miss match", body: "password does not match password confirmation" } });
@@ -99,10 +95,10 @@ const SignUpForm = () => {
         mr: 'auto',
         maxWidth: "sm",
       }}>
-        <Paper sx={{ padding: 4 }}>
-          <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
-            <Grid xs={12} sx={{ mb: 3 }}>
-              <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Sign Up</Typography>
+        <Paper sx={{ px: 2 }}>
+          <Grid container spacing={2} sx={{ justifyContent: 'center', py: 2 }}>
+            <Grid xs={12}>
+              <Typography variant="h4" component="h1" sx={{ textAlign: "center", py: 2 }}>Sign Up</Typography>
             </Grid>
             <Grid xs={12}>
               <FormControl fullWidth>
@@ -114,7 +110,7 @@ const SignUpForm = () => {
                 <TextField name="email" required id="email_id" label="Email" onChange={handleInput} value={formData.name} type="email" />
               </FormControl>
             </Grid>
-            <Grid xs={12}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <TextField
                   name="password"
@@ -141,7 +137,7 @@ const SignUpForm = () => {
                 />
               </FormControl>
             </Grid>
-            <Grid xs={12}>
+            <Grid xs={12} sm={6}>
               <FormControl fullWidth>
                 <TextField
                   name="password_confirmation"
@@ -170,38 +166,43 @@ const SignUpForm = () => {
             </Grid>
             <Grid xs={12} sm={6}>
               <FormControl fullWidth>
-                <TextField name="firstname" required id="first_name_id" label="First Name" onChange={handleInput} value={formData.name} />
+                <TextField name="phonenumber" required id="phonenumber_id" label="Enter Phone Number" onChange={handleInput} value={formData.name} />
               </FormControl>
             </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="lastname" required id="last_name_id" label="Last Name" onChange={handleInput} value={formData.name} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="address1" id="address_l1_id" label="Address line 1" onChange={handleInput} value={formData.name} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="address2" id="address_l2_id" label="Address line 2" onChange={handleInput} value={formData.name} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12}>
-              <FormControl fullWidth>
-                <TextField name="suburb" required id="suburb_id" label="Suburb/Town" onChange={handleInput} value={formData.name} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="state" required id="state_id" label="State" onChange={handleInput} value={formData.name} />
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.name} type="number" />
-              </FormControl>
+            <Grid xs={12} container>
+              <Grid xs={12}>
+                <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Home Address Info</Typography>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="firstname" required id="first_name_id" label="First Name" onChange={handleInput} value={formData.name} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="lastname" required id="last_name_id" label="Last Name" onChange={handleInput} value={formData.name} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12}>
+                <FormControl fullWidth>
+                  <TextField name="address1" id="address_l1_id" label="Address line 1" onChange={handleInput} value={formData.name} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12}>
+                <FormControl fullWidth>
+                  <TextField name="address2" id="address_l2_id" label="Address line 2" onChange={handleInput} value={formData.name} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="suburb" required id="suburb_id" label="Suburb/Town" onChange={handleInput} value={formData.name} />
+                </FormControl>
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <TextField name="postcode" required id="epostcode_id" label="Postcode" onChange={handleInput} value={formData.name} type="number" />
+                </FormControl>
+              </Grid>
             </Grid>
             <Grid xs={12}>
               <Container fluid="true">

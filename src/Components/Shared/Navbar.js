@@ -27,9 +27,10 @@ const NavBar = () => {
             title="Litters"
             id={`offcanvasNavbarDropdown-expand-md`}>
             <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Litter Application</NavDropdown.Item>
+            <NavDropdown.Item eventKey="litters/browse">Browse Litters</NavDropdown.Item>
             <NavDropdown.Item eventKey="litters/showcase">Litter Showcase</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
+          {/* <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link> */}
           <Nav.Link className="nav-link" eventKey="/about">About Us</Nav.Link>
           {store.loggedInUser.admin ?
             <>
@@ -39,7 +40,6 @@ const NavBar = () => {
                 <NavDropdown.Item eventKey="/dogs/display/all" id="all-dogs">View All Dogs</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/litters/manage" id="manage-litters">Manage Litters</NavDropdown.Item>
                 <NavDropdown.Item eventKey="/dogs/manage" id="manage-dogs">Manage Dogs</NavDropdown.Item>
-                <NavDropdown.Item eventKey="/litters/applications">Manage Litter Applications</NavDropdown.Item>
               </NavDropdown>
             </>
             :
