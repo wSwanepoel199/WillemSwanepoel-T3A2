@@ -5,7 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { postDog } from "../../../services/dogsServices";
-import { colours } from "../../../utils/helpers/findOriginal";
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
 
 // TO-DO 
 // breedername comes from back, don't post breedername or ownername at all
@@ -30,34 +30,9 @@ const DogCreationForm = () => {
     colour: '',
     chipnumber: '',
   };
-  const initialHealthTestData = {
-    pra: '',
-    fn: '',
-    aon: '',
-    ams: '',
-    bss: '',
-  };
-  const healthTestValues = [
-    {
-      id: 0,
-      status: 'Unknown'
-    },
-    {
-      id: 1,
-      status: 'Clear'
-    },
-    {
-      id: 2,
-      status: 'Carrier'
-    },
-    {
-      id: 3,
-      status: 'Affected'
-    },
-  ];
   // sets form initial states
   const [formData, setFormData] = useState(initialFormData);
-  const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
+  const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
@@ -158,7 +133,7 @@ const DogCreationForm = () => {
           });
           // clears form and health test data
           setFormData(initialFormData);
-          setHealthTestData(initialHealthTestData);
+          setHealthTestData(healthTestKeys);
           // routes user back to dogs manage and alerts them to successful creation
           navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.dog.callname} Created` } });
         }

@@ -36,3 +36,30 @@ export const colours = [
   { id: 12, colour: "Liver Roan" },
   { id: 13, colour: "Liver Roan and Tan" }
 ];
+
+export const healthTestKeys = {
+  pra: '',
+  fn: '',
+  aon: '',
+  ams: '',
+  bss: '',
+};
+
+export const healthTestValues = [
+  {
+    id: 0,
+    status: 'Unknown'
+  },
+  {
+    id: 1,
+    status: 'Clear'
+  },
+  {
+    id: 2,
+    status: 'Carrier'
+  },
+  {
+    id: 3,
+    status: 'Affected'
+  },
+];

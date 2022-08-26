@@ -5,7 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getDog, patchDog, getDogs } from "../../../services/dogsServices";
-import { colours } from "../../../utils/helpers/findOriginal";
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
 
 // can't update litter of dog due to to lack of support from back
 
@@ -28,35 +28,10 @@ const DogUpdateForm = () => {
     colour: '',
     chipnumber: '',
   };
-  const initialHealthTestData = {
-    pra: '',
-    fn: '',
-    aon: '',
-    ams: '',
-    bss: ''
-  };
-  const healthTestValues = [
-    {
-      id: 0,
-      status: 'Unknown'
-    },
-    {
-      id: 1,
-      status: 'Clear'
-    },
-    {
-      id: 2,
-      status: 'Carrier'
-    },
-    {
-      id: 3,
-      status: 'Affected'
-    },
-  ];
   // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
   const [dog, setDog] = useState({});
-  const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
+  const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
@@ -161,7 +136,9 @@ const DogUpdateForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    let dog;
+    let dog = {
+      healthtest: { ...healthTestData }
+    };
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
@@ -188,7 +165,7 @@ const DogUpdateForm = () => {
             .catch(e => console.log(e));
           // resets form values
           setFormData(initialFormData);
-          setHealthTestData(initialHealthTestData);
+          setHealthTestData(healthTestKeys);
           // navigates back to dogs manage and alerts user of successful creation
           navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.callname} Updated` } });
         }

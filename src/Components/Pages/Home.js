@@ -24,16 +24,16 @@ const Home = () => {
     //   .catch(e => {
     //     console.log(e);
     //   });
-    getBest()
-      .then(reply => {
-        console.log(reply);
-        if (reply.status === 200) {
-          setShowCase(reply.data.images.filter((image, index) => index < 5));
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    // getBest()
+    //   .then(reply => {
+    //     console.log(reply);
+    //     if (reply.status === 200) {
+    //       setShowCase(reply.data.images.filter((image, index) => index < 5));
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
   }, []);
 
   return (
@@ -63,7 +63,7 @@ const Home = () => {
             )}
           </Grid>
         </Box>
-        <Box>
+        {/* <Box>
           <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Litter</Typography>
           <Grid container justifyContent="center">
             {showCase.map((image, index) =>
@@ -73,7 +73,7 @@ const Home = () => {
               </Grid>
             )}
           </Grid>
-        </Box>
+        </Box> */}
       </Container>
     </>
   );

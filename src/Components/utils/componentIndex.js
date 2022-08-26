@@ -17,6 +17,7 @@ import DogsManage from '../Pages/DogsRoute/DogsManage/DogsManage';
 import DogCreationForm from '../Pages/DogsRoute/DogsCreate/DogsCreate';
 import DogUpdateForm from '../Pages/DogsRoute/DogsUpdate/DogsUpdate';
 import DogDetails from '../Pages/DogsRoute/DogDetails/DogDetails';
+import ViewPedigree from '../Pages/DogsRoute/DogPedigree/DogPedigree';
 import DisplayDogs from '../Pages/DogsRoute/DogsDisplay/DogsDisplay';
 import NotFound from '../Pages/NotFound';
 import LitterIndex from '../Pages/LittersRoute/LitterIndex';
@@ -71,6 +72,7 @@ export {
   DogCreationForm,
   DogUpdateForm,
   DogDetails,
+  ViewPedigree,
   DisplayDogs,
   LitterIndex,
   LitterApplication,

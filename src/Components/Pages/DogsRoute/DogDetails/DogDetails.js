@@ -1,23 +1,26 @@
-import { Box, Paper, Typography, Button } from '@mui/material';
+import { Box, Button, Collapse, Paper, Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getDog } from "../../../services/dogsServices";
 import moment from 'moment';
 import { useGlobalState } from '../../../utils/stateContext';
 import DogCard from '../Dogcard/DogCard';
+import { healthTestKeys, healthTestValues } from '../../../utils/helpers/findOriginal';
+import ViewPedigree from '../DogPedigree/DogPedigree';
 
 const DogDetails = () => {
   const { store } = useGlobalState();
-  const { dogList } = store;
+  const { dogList, loggedInUser } = store;
   const params = useParams();
-  const navigate = useNavigate();
 
   const [dogDetails, setDogDetails] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [healthtest, setHealthtest] = useState([]);
   const [litter, setLittter] = useState([]);
   const [litters, setLitters] = useState([]);
+
+  const [viewPedigree, setViewPedigree] = useState(false);
 
   useEffect(() => {
     console.log(params);
@@ -33,6 +36,10 @@ const DogDetails = () => {
       })
       .catch(e => console.log(e));
   }, [params]);
+
+  const healthTestAnalizer = (test) => {
+    return healthTestValues.find(result => test === result.id).status;
+  };
 
   return (
     <>
@@ -62,11 +69,36 @@ const DogDetails = () => {
               Sex: {(dogDetails.sex === 1 && "Male") || (dogDetails.sex === 2 && "Female")}
             </Typography>
           </Grid>
-          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
             <Box sx={{ width: { xs: '100&', sm: '75%', md: '50%' } }}>
               <Box component='img' src={dogDetails.main_image} sx={{ width: '100%', objectFit: 'contain' }} />
             </Box>
           </Grid>
+          <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button variant="contained" onClick={() => { setViewPedigree(!viewPedigree); }}>View Pedigree Breakdown</Button>
+          </Grid>
+          <Collapse in={viewPedigree} unmountOnExit>
+            <Grid xs={12} sx={{ py: 2 }}>
+              <ViewPedigree dog={dogDetails} tier={3} />
+            </Grid>
+          </Collapse>
+          {(healthtest.length !== 0 && (loggedInUser.admin || loggedInUser.id === litter.breeder_id))
+            && <Grid xs={12} container component={Paper} sx={{ py: 2 }}>
+              <Grid xs={12}>
+                <Typography variant="h4" sx={{ textAlign: 'center', py: 2 }} component={Paper}>Health Test</Typography>
+              </Grid>
+              <Grid xs={12} container sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+                {Object.entries(healthTestKeys).map((key, index) => {
+                  const testResult = Object.entries(healthtest).find(test => test[0] === key[0]);
+                  return (
+                    <Grid key={index} xs={12} sm={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', p: 2 }}>
+                      <Typography variant='h6'>{`${testResult[0].toUpperCase()}: `}&nbsp;</Typography>
+                      <Typography variant='body1'>{healthTestAnalizer(testResult[1])}</Typography>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Grid>}
           {litter.length !== 0
             && <Grid xs={12} container component={Paper} sx={{ display: 'flex', justifyContent: 'space-evenly', py: 2 }}>
               <Grid xs={12}>

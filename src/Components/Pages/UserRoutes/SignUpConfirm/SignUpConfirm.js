@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { getConfirm, signIn } from "../../../services/authServices";
+import { getConfirm } from "../../../services/authServices";
 
 const SignUpConfirm = () => {
   const location = useLocation();
@@ -12,7 +12,7 @@ const SignUpConfirm = () => {
     if (confirmation.length === 0) {
       setConfirmation(location.search);
     }
-  }, [location]);
+  }, [location, confirmation]);
 
   useEffect(() => {
     if (confirmation.length !== 0) {
@@ -28,13 +28,7 @@ const SignUpConfirm = () => {
           navigate('/', { state: { alert: true, location: '/', severity: 'error', title: 'Unknown Error', body: 'Something went wrong and your account could not be confirmed' } });
         });
     }
-  }, [confirmation]);
-
-  return (
-    <>
-      {console.log(confirmation)}
-    </>
-  );
+  }, [confirmation, navigate]);
 };
 
 export default SignUpConfirm;

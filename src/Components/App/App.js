@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // imports required services for dispatch
 import { getDogs } from '../services/dogsServices';
-import { getLitters } from '../services/litterServices';
-import { getUsers } from '../services/authServices';
 // centralises all majour imports into one index file
 import {
   // shared components
@@ -59,7 +57,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { loggedInUser, dogList } = store;
+  const { dogList } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -100,14 +98,14 @@ const App = () => {
     //     })
     //     .catch(e => console.log(e));
     // }
-  }, [dogList]);
+  }, [dogList, dispatch]);
 
 
 
   return (
     <>
       {console.log("store:", store)}
-      {console.log("list of dogs:", store.dogList)}
+      {/* {console.log("list of dogs:", store.dogList)} */}
       {/* {console.log("list of litters:", store.litterList)} */}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
@@ -258,11 +256,11 @@ const App = () => {
                 <Route index element={<SignUpForm />} />
                 <Route path="redirect" element={<SignUpRedirect />} />
               </Route>
-              <Route path="confirmation" element={<SignUpConfirm />} />
               <Route path="signOut" element={
                 <SignOut />
               } />
             </Route>
+            <Route path="users/confirmation" element={<SignUpConfirm />} />
             {/* sets path to render 404 page when attempting to access a route that does not exist */}
             <Route path="*" element={<NotFound />} />
           </Routes>
