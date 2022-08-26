@@ -40,9 +40,9 @@ const DogsReorder = () => {
   // const [updatedPositions, setUpdatedPositions] = useState({}); // <= stores the ids and new positions of each dog to be patched to backend
   const [filter, setFilter] = useState('all');
 
-  const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12);
-  const [pageCount, setPageCount] = useState(1);
+  // const [page, setPage] = useState(1);
+  // const [itemsPerPage, setItemsPerPage] = useState(12);
+  // const [pageCount, setPageCount] = useState(1);
 
 
   // controls component mount via mounted constant variable
@@ -50,8 +50,8 @@ const DogsReorder = () => {
     // if mounted.current is false sets to true, run other inital mount functions here
     if (dogList.length > 0) {
       setDogs(dogList.sort((a, b) => a.position - b.position));
-      setItemsPerPage(12);
-      setPageCount(Math.ceil(dogList.length / 12));
+      // setItemsPerPage(12);
+      // setPageCount(Math.ceil(dogList.length / 12));
     }
   }, [dogList]);
 
@@ -59,12 +59,12 @@ const DogsReorder = () => {
     if (filter !== 'all') {
       const newDogs = handleSex(filter, dogList);
       setDogs(newDogs);
-      setPageCount(Math.ceil(newDogs.length / 12));
-      setPage(1);
+      // setPageCount(Math.ceil(newDogs.length / 12));
+      // setPage(1);
     } else {
       setDogs(dogList);
-      setPageCount(Math.ceil(dogList.length / 12));
-      setPage(1);
+      // setPageCount(Math.ceil(dogList.length / 12));
+      // setPage(1);
     }
   }, [filter, dogList]);
 
@@ -149,13 +149,13 @@ const DogsReorder = () => {
     }
   };
 
-  const handleFilter = (status) => {
-    if (status === filter) {
-      setFilter('all');
-    } else {
-      setFilter(status);
-    }
-  };
+  // const handleFilter = (status) => {
+  //   if (status === filter) {
+  //     setFilter('all');
+  //   } else {
+  //     setFilter(status);
+  //   }
+  // };
 
   const handleSave = () => {
     const finalList = { dogs: [] };
@@ -187,9 +187,9 @@ const DogsReorder = () => {
       .catch(e => console.log(e));
   };
 
-  const handleChangePage = (e, newPage) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (e, newPage) => {
+  //   setPage(newPage);
+  // };
 
   // defines sensores drag and drop will use with their applicable constraints
   const sensors = useSensors(
@@ -240,6 +240,8 @@ const DogsReorder = () => {
     });
   };
 
+  // .slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
+
   return (
     <Box>
       {console.log("local state dogs:", dogs)}
@@ -249,11 +251,11 @@ const DogsReorder = () => {
       <Button onClick={() => navigate('..')}>Cancel</Button>
       <Box sx={{ py: 2, textAlign: 'center' }}>
         <Typography variant="h2" >Reorder Dogs</Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+        {/* <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
           <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('male')}>Male</Button>
           <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('female')}>Female</Button>
           <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('retired')}>Retired</Button>
-        </Box>
+        </Box> */}
       </Box>
       <Box component={Paper} sx={{ px: 2 }}>
         <Grid
@@ -268,16 +270,15 @@ const DogsReorder = () => {
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={dogs} strategy={rectSortingStrategy}>
-              {dogs.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
-                .map((dog, index) =>
-                  <Grid
-                    key={index}
-                    xs={12} sm={6} md={4} lg={3}
-                    sx={{ maxHeight: '550px' }}
-                  >
-                    <SortableItem id={dog.id} component={"div"} item={<DogCard dog={dog} />} />
-                  </Grid>
-                )}
+              {dogs.map((dog, index) =>
+                <Grid
+                  key={index}
+                  xs={12} sm={6} md={4} lg={3}
+                  sx={{ maxHeight: '550px' }}
+                >
+                  <SortableItem id={dog.id} component={"div"} item={<DogCard dog={dog} />} />
+                </Grid>
+              )}
             </SortableContext>
             <DragOverlay>{activeId ?
               <>
@@ -288,7 +289,7 @@ const DogsReorder = () => {
             }</DragOverlay>
           </DndContext>
         </Grid>
-        <Pagination count={pageCount} page={page} onChange={handleChangePage} />
+        {/* <Pagination count={pageCount} page={page} onChange={handleChangePage} /> */}
       </Box>
     </Box>
   );

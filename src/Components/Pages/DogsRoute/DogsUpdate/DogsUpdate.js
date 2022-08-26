@@ -26,14 +26,12 @@ const DogUpdateForm = () => {
     description: '',
     colour: '',
     chipnumber: '',
-    litter: {
-      litter_id: ''
-    },
   };
   // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
   const [dog, setDog] = useState({});
   const [healthTestData, setHealthTestData] = useState(healthTestKeys);
+  const [litterData, setLitterData] = useState({ litter_id: '' });
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
@@ -58,9 +56,6 @@ const DogUpdateForm = () => {
             description: data.dog.description || '',
             colour: dogColour,
             chipnumber: data.dog.chipnumber || '',
-            litter: {
-              litter_id: data.litter.id
-            }
           });
           setHealthTestData({
             ...healthTestData,
@@ -70,10 +65,15 @@ const DogUpdateForm = () => {
             ams: data.healthtest.ams,
             bss: data.healthtest.bss,
           });
-          setValidLitterList([
-            data.litter,
-            ...litterList.filter(litter => litter.status === 3)
-          ]);
+          if (data.litter) {
+            setValidLitterList([
+              data.litter,
+              ...litterList.filter(litter => litter.status === 3)
+            ]);
+            setLitterData({ litter_id: data.litter.id });
+          } else {
+            setValidLitterList(litterList.filter(litter => litter.status === 3));
+          }
         }
       })
       .catch(e => console.log(e));
@@ -95,6 +95,7 @@ const DogUpdateForm = () => {
         [name]: parseInt(value)
       });
     } else if (name === 'litter_id') {
+      setLitterData({ [name]: value });
       setFormData({
         ...formData,
         litter: {
@@ -196,7 +197,7 @@ const DogUpdateForm = () => {
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
-            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>{dog.dog && `Updated ${dog.dog.callname}`}</Typography>
+            <Typography variant="h3" component="h1" sx={{ textAlign: "center" }}>{dog.dog && `Update ${dog.dog.callname}`}</Typography>
           </Grid>
           <Grid xs={12} sm={6}>
             <TextField name="realname" required fullWidth id="realname" label="Dog's Real Name" autoFocus onChange={handleInput} value={formData.realname} />
@@ -247,7 +248,7 @@ const DogUpdateForm = () => {
                 id="litter_id"
                 label="Add to Notional Litter"
                 onChange={handleInput}
-                value={formData.litter.litter_id}
+                value={litterData.litter_id}
               >
                 {validLitterList.length > 0 && validLitterList.map((litter, index) => {
                   return (

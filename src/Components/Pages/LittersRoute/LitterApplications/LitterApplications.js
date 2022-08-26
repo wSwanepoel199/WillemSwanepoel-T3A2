@@ -34,8 +34,8 @@ const LitterApplications = () => {
         if (litter.litterApplications) {
           setLitterApplications(litter.litterApplications);
         }
-        if (litter.puppies) {
-          setAvailablePups(litter.puppies);
+        if (litter.puppies && litter.unassigned.length > 0) {
+          setAvailablePups(litter.puppies.filter(puppy => litter.unassigned.includes(puppy.id)));
         }
       })
       .catch(e => console.log(e));
@@ -77,6 +77,7 @@ const LitterApplications = () => {
           }}>
             {console.log(litterDetail)}
             {console.log(litterApplications)}
+            {console.log(availablePuppies)}
             <Grid xs={12} >
               <Typography variant="h3" align="center">
                 {litterDetail.lname} Applications
@@ -88,7 +89,7 @@ const LitterApplications = () => {
                 <List component={Paper}>
                   {availablePuppies.map((puppy, index) => {
                     return (
-                      <ListItem key={index}>
+                      <ListItem key={index} sx={{ justifyContent: 'center' }}>
                         <Typography >{puppy.realname}</Typography>
                       </ListItem>
                     );

@@ -14,7 +14,7 @@ import { getUser } from "../../../services/authServices";
 // impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
 const LitterApplication = (props) => {
-  const { app, user, puppies } = props;
+  const { app, user } = props;
   const { store, dispatch } = useGlobalState();
   const { applicationForms, loggedInUser } = store;
   const navigate = useNavigate();
@@ -97,6 +97,9 @@ const LitterApplication = (props) => {
             });
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Success`, body: `${reply.data.message}` } });
           setOpen(!open);
+          setPuppySelect({
+            selected_puppy_id: ''
+          });
         }
       })
       .catch(e => {
@@ -165,7 +168,7 @@ const LitterApplication = (props) => {
                           <>
                             {app.fulfillstate === 2 ? //rejected
                               <TableCell align="left" size="small">
-                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "aproved")}>
+                                <Button variant="contained" color="info" onClick={() => handleAcceptOrReject(1, "approved")}>
                                   Approve
                                 </Button>
                               </TableCell>
@@ -219,7 +222,7 @@ const LitterApplication = (props) => {
                                     onChange={handlePuppySelect}
                                     value={puppySelect.selected_puppy_id}
                                   >
-                                    {puppies.map((puppy, index) => {
+                                    {props.puppies && props.puppies.map((puppy, index) => {
                                       return (
                                         <MenuItem key={index} value={puppy.id}>{puppy.realname}</MenuItem>
                                       );

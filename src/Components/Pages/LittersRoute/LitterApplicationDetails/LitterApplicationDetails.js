@@ -34,7 +34,6 @@ const LitterApplicationDetails = (props) => {
                 ? data.litterApplication.colour_preference
                 : colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
               : colours[0].colour;
-            console.log(typeOf(data.litterApplication.colour_preference, 'string'));
             const filledLitterApp = {
               ...data.litterApplication,
               sex_preference: sexPref,

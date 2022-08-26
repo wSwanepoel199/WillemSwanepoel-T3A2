@@ -124,10 +124,12 @@ const App = () => {
         {state && state.alert ?
           <>
             {/* ensures alert is rendered absolutely so it appears ontop of application */}
-            <Box sx={{ width: '100%', position: 'absolute', top: 0, zIndex: '2' }}>
+            <Box sx={{ width: '100%', position: 'sticky', top: 0, zIndex: '2' }}>
               {console.log("alert triggered")}
               {/* custom alert component that uses material ui's alert components to display a user friendly alert, fills fields with values passed through location.state */}
-              <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+              <Box sx={{ position: 'absolute', width: '100%' }}>
+                <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
+              </Box>
             </Box>
           </>
           :
@@ -207,11 +209,11 @@ const App = () => {
                 <SecuredRoute>
                   <LitterApplicationForm />
                 </SecuredRoute>} />
-              <Route path="applications" element={
+              {/* <Route path="applications" element={
                 <AdminRoute>
                   <LitterApplicationManage />
                 </AdminRoute>
-              } />
+              } /> */}
               <Route path="showcase" element={<ShowCase />} />
               <Route path="gallery" element={<LitterGallery />} />
               {/* sets path to access LitterDetails to a non absolute path */}
@@ -235,16 +237,6 @@ const App = () => {
                 <Route index element={
                   <AdminRoute>
                     <LitterApplications />
-                  </AdminRoute>
-                } />
-                <Route path=":id" element={
-                  <AdminRoute>
-                    <LitterApplicationDetails />
-                  </AdminRoute>
-                } />
-                <Route path=":id/manage" element={
-                  <AdminRoute>
-                    <LitterApplicationManage />
                   </AdminRoute>
                 } />
               </Route>
