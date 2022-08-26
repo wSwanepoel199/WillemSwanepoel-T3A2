@@ -19,3 +19,8 @@ export async function getUser(id) {
   const response = await backEndAPI.get(`/users/${id}`);
   return response;
 }
+
+export async function getConfirm(confirmToken) {
+  const response = await backEndAPI.get(`/users/confirmation${confirmToken}`);
+  return response;
+}

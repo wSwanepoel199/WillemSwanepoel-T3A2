@@ -28,6 +28,7 @@ const NavBar = () => {
             id={`offcanvasNavbarDropdown-expand-md`}>
             <NavDropdown.Item eventKey="/litters/apply" id="litter-application">Litter Application</NavDropdown.Item>
             <NavDropdown.Item eventKey="litters/showcase">Litter Showcase</NavDropdown.Item>
+            <NavDropdown.Item eventKey="litters/gallery">Gallery</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link className="nav-link" eventKey="/shows">Shows</Nav.Link>
           <Nav.Link className="nav-link" eventKey="/about">About Us</Nav.Link>

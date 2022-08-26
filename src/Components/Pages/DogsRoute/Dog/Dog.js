@@ -6,6 +6,7 @@ import moment from "moment";
 import { useState } from "react";
 import { useGlobalState } from "../../../utils/stateContext";
 import { patchDog } from "../../../services/dogsServices";
+import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 
 const Dog = (props) => {
   const { dog } = props;
@@ -13,30 +14,44 @@ const Dog = (props) => {
   const { dogList, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
+
   const [open, setOpen] = useState(false);
 
-  const handleRetire = () => {
-    // new object with updated dog information
-    const newDog = {
-      ...dog,
-      retired: !dog.retired
+  const handleUpdateDog = (action) => {
+    let newDog;
+    switch (action) {
+      case "retire": {
+        newDog = {
+          ...dog,
+          retired: !dog.retired
+        };
+        break;
+      }
+      case "hide": {
+        newDog = {
+          ...dog,
+          display: !dog.display
+        };
+        break;
+      }
+      default: {
+        newDog = {
+          ...dog
+        };
+      }
     };
+    console.log(newDog);
     const { main_image, ...newestDog } = newDog;
     console.log(newestDog);
-    // locates original dog from dogList
-    const originalDog = dogList.find(pup => pup.id === dog.id);
-    // spreads dogList into new array inorder to mutate values
-    let newDogList = [...dogList];
-    // splices new dog object into mutable dogList using index of its position found in original dogList
-    newDogList.splice(dogList.indexOf(originalDog), 1, newDog);
     // makes patch request to update dog on back end
     patchDog(dog.id, newestDog)
       .then(dog => {
+        console.log(dog);
         // on status 200 updates local dogList with newDogList containing changed dog
         if (dog.status === 200) {
           dispatch({
-            type: 'updateDogList',
-            data: newDogList
+            type: 'setDogList',
+            data: updateItemInArray(newDog, dogList)
           });
         }
       })
@@ -49,7 +64,7 @@ const Dog = (props) => {
 
   return (
     <>
-      <TableRow>
+      <TableRow onClick={() => setOpen(!open)}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -86,9 +101,18 @@ const Dog = (props) => {
           }
         </TableCell>
         {loggedInUser.admin
-          && <TableCell align="center" padding="none">
-            {dog.position}
-          </TableCell>}
+          && <>
+            <TableCell align="center" padding="none">
+              {dog.display ?
+                "Displaying"
+                :
+                "Hidden"
+              }
+            </TableCell>
+            <TableCell align="center">
+              {dog.position}
+            </TableCell>
+          </>}
       </TableRow>
       <TableRow>
         <TableCell sx={{ pb: 0, pt: 0 }} colSpan={8}>
@@ -113,14 +137,19 @@ const Dog = (props) => {
                             </Button>
                           </Link>
                         </TableCell>
-                        <TableCell align="left" size="small">
+                        {/* <TableCell align="left" size="small">
                           <Button variant="contained" color="error">
                             Delete
                           </Button>
+                        </TableCell> */}
+                        <TableCell align="left" size="small">
+                          <Button variant="contained" color="primary" onClick={() => handleUpdateDog("retire")}>
+                            {dog.retired ? "Unretire Dog" : "Retire Dog"}
+                          </Button>
                         </TableCell>
                         <TableCell align="left" size="small">
-                          <Button variant="contained" color="primary" onClick={handleRetire}>
-                            {dog.retired ? "Unretire Dog" : "Retire Dog"}
+                          <Button variant="contained" color="primary" onClick={() => handleUpdateDog("hide")}>
+                            {dog.display ? "Hide Dog" : "Unhide Dog"}
                           </Button>
                         </TableCell>
                       </>}

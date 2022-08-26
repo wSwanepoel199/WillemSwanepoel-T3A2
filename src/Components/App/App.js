@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 // imports required services for dispatch
 import { getDogs } from '../services/dogsServices';
-import { getLitters } from '../services/litterServices';
-import { getUsers } from '../services/authServices';
 // centralises all majour imports into one index file
 import {
   // shared components
@@ -37,6 +35,10 @@ import {
   SignOut,
   ProfileView,
   ShowCase,
+  DogIndex,
+  LitterIndex,
+  LitterGallery,
+  SignUpConfirm,
 } from '../utils/componentIndex';
 // Custom components which blocks unautherised acces to its chilren. Any unautherised access is rerouted to '/'. AdminRoute blocks any user which isn't an admin and SecuredRoute blocks any user that isn't signed in
 import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
@@ -55,6 +57,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
+  const { dogList, loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -63,7 +66,8 @@ const App = () => {
   // Function: if not already stored, makes get requestss to back, and uses dispatch to assign response to session storage and global state
   // Used for: ensures all of the most basic info is available to be displayed to all users
   useEffect(() => {
-    if (sessionStorage.getItem("dogList") === null) {
+    // if (sessionStorage.getItem("dogList") === null) {
+    if (dogList.length === 0) {
       getDogs()
         .then(dogs => {
           dispatch({
@@ -73,40 +77,46 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (sessionStorage.getItem("litterList") === null) {
-      getLitters()
-        .then(litter => {
-          dispatch({
-            type: "setLitterList",
-            data: litter
-          });
-        })
-        .catch(e => console.log(e));
+    if (loggedInUser.length === 0 && Boolean(localStorage.getItem('user'))) {
+      dispatch({
+        type: 'setLoggedInUser',
+        data: JSON.parse(localStorage.getItem('user'))
+      });
     }
-    if (sessionStorage.getItem("userList") === null) {
-      getUsers()
-        .then(users => {
-          dispatch({
-            type: "setUserList",
-            data: users
-          });
-        })
-        .catch(e => console.log(e));
-    }
-  }, [dispatch]);
+    // }
+    // if (sessionStorage.getItem("litterList") === null) {
+    //   getLitters()
+    //     .then(litter => {
+    //       dispatch({
+    //         type: "setLitterList",
+    //         data: litter
+    //       });
+    //     })
+    //     .catch(e => console.log(e));
+    // }
+    // if (loggedInUser.admin === true) {
+    //   getUsers()
+    //     .then(users => {
+    //       dispatch({
+    //         type: "setUserList",
+    //         data: users
+    //       });
+    //     })
+    //     .catch(e => console.log(e));
+    // }
+  }, [dogList, dispatch, loggedInUser]);
 
 
 
   return (
     <>
-      {/* {console.log("store:", store)} */}
+      {console.log("store:", store)}
       {/* {console.log("list of dogs:", store.dogList)} */}
       {/* {console.log("list of litters:", store.litterList)} */}
       {/* {console.log("logged in user:", store.loggedInUser)} */}
       {/* {console.log("token", store.token)} */}
       {/* {console.log("list of contact attempts:", store.contactFormList)} */}
       {/* {console.log("user list:", store.userList)} */}
-      {console.log(process.env)}
 
       {/* wraps whole application in a box that ensures its always the width of the window */}
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -135,7 +145,7 @@ const App = () => {
             {/* sets the route that renders the About component */}
             <Route path="about" element={<About />} />
             {/* sets the route dogs */}
-            <Route path="dogs" >
+            <Route path="dogs" element={<DogIndex />} >
               {/* routes anyone who tries to access dogs to dogs/mange */}
               <Route index element={<Navigate to={'manage'} replace={true} />} />
               {/* sets the route that renders the DogsManage component */}
@@ -178,7 +188,7 @@ const App = () => {
               <Route path="display/:id" element={<DogDetails />} />
             </Route>
             {/* sets default path for litters */}
-            <Route path="litters" >
+            <Route path="litters" element={<LitterIndex />}>
               {/* automatically routes path: "/litters" to "/litters/apply" */}
               <Route index element={<Navigate to={'/litters/manage'} replace={true} />} />
               {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
@@ -203,6 +213,7 @@ const App = () => {
                 </AdminRoute>
               } />
               <Route path="showcase" element={<ShowCase />} />
+              <Route path="gallery" element={<LitterGallery />} />
               {/* sets path to access LitterDetails to a non absolute path */}
               <Route path=":id" element={
                 <LitterDetails />
@@ -246,17 +257,16 @@ const App = () => {
                   <ProfileView />
                 </SecuredRoute>
               } />
-              <Route path="signIn" element={<SignInForm />} />
-              <Route path="signUp" >
+              <Route path="signin" element={<SignInForm />} />
+              <Route path="signup" >
                 <Route index element={<SignUpForm />} />
-                <Route path="confirmation" element={<SignUpRedirect />} />
+                <Route path="redirect" element={<SignUpRedirect />} />
               </Route>
               <Route path="signOut" element={
-                <SecuredRoute>
-                  <SignOut />
-                </SecuredRoute>
+                <SignOut />
               } />
             </Route>
+            <Route path="users/confirmation" element={<SignUpConfirm />} />
             {/* sets path to render 404 page when attempting to access a route that does not exist */}
             <Route path="*" element={<NotFound />} />
           </Routes>

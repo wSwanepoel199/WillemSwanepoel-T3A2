@@ -5,28 +5,20 @@ export const init = (initialState) => {
 export const reducer = (state, action) => {
   switch (action.type) {
     case "cleanState": {
-      return init();
+      return init(action.payload);
     }
     case "setDogList": {
-      // updates the dogList value
-      sessionStorage.setItem("dogList", JSON.stringify(action.data));
-      console.log(action.data);
+      // fills ini
+      // sessionStorage.setItem("dogList", JSON.stringify(action.data));
+      // console.log(action.data);
       return {
         ...state,
         dogList: action.data
       };
     }
-    case "setFilledForms": {
-      // updates the contactFormList value
-      sessionStorage.setItem("filledContactForms", JSON.stringify(action.data));
-      return {
-        ...state,
-        contactFormList: action.data
-      };
-    }
     case "setLitterList": {
       // updates the litterList value
-      sessionStorage.setItem("litterList", JSON.stringify(action.data));
+      //sessionStorage.setItem("litterList", JSON.stringify(action.data));
       return {
         ...state,
         litterList: action.data
@@ -34,7 +26,7 @@ export const reducer = (state, action) => {
     }
     case "setUserList": {
       // updates the userList value
-      sessionStorage.setItem("userList", JSON.stringify(action.data));
+      //sessionStorage.setItem("userList", JSON.stringify(action.data));
       return {
         ...state,
         userList: action.data
@@ -49,12 +41,11 @@ export const reducer = (state, action) => {
       };
     }
     case "signOutUser": {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
-      return {
-        ...state,
-        loggedInUser: {}
-      };
+      return init({
+        ...action.payload,
+        loggedInUser: [],
+        token: null
+      });
     }
     case "setToken": {
       //updates the token value
@@ -69,23 +60,8 @@ export const reducer = (state, action) => {
         applicationForms: action.data
       };
     }
-    case "updateContactForm": {
-      console.log(action.data);
-      return {
-        ...state,
-        contactForm: action.data
-      };
-    }
-    // updates dogList by assigning new list
-    case "updateDogList": {
-      sessionStorage.setItem("dogList", JSON.stringify(action.data));
-      return {
-        ...state,
-        dogList: action.data
-      };
-    }
     case "updateLitterList": {
-      sessionStorage.setItem("litterList", JSON.stringify(action.data));
+      //sessionStorage.setItem("litterList", JSON.stringify(action.data));
       return {
         ...state,
         litterList: action.data

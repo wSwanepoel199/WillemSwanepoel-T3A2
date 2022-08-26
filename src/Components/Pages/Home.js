@@ -5,24 +5,35 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { DogCard, useGlobalState } from '../utils/componentIndex';
 import { useEffect, useState } from 'react';
 import { getBest } from '../services/litterServices';
+import { getDogs } from '../services/dogsServices';
 
 const Home = () => {
-  const { store } = useGlobalState();
+  const { store, dispatch } = useGlobalState();
   const { dogList } = store;
 
   const [showCase, setShowCase] = useState([]);
 
   useEffect(() => {
-    getBest()
-      .then(reply => {
-        console.log(reply);
-        if (reply.status === 200) {
-          setShowCase(reply.data.images.filter((image, index) => index < 5));
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    // getDogs()
+    //   .then(reply => {
+    //     dispatch({
+    //       type: "setDogList",
+    //       data: reply.filter(dog => dog.display === true)
+    //     });
+    //   })
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
+    // getBest()
+    //   .then(reply => {
+    //     console.log(reply);
+    //     if (reply.status === 200) {
+    //       setShowCase(reply.data.images.filter((image, index) => index < 5));
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
   }, []);
 
   return (
@@ -52,7 +63,7 @@ const Home = () => {
             )}
           </Grid>
         </Box>
-        <Box>
+        {/* <Box>
           <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Litter</Typography>
           <Grid container justifyContent="center">
             {showCase.map((image, index) =>
@@ -62,7 +73,7 @@ const Home = () => {
               </Grid>
             )}
           </Grid>
-        </Box>
+        </Box> */}
       </Container>
     </>
   );

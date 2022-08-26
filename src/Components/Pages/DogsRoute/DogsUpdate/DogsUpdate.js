@@ -5,7 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getDog, patchDog, getDogs } from "../../../services/dogsServices";
-import { colours } from "../../../utils/helpers/findOriginal";
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
 
 // can't update litter of dog due to to lack of support from back
 
@@ -23,22 +23,17 @@ const DogUpdateForm = () => {
     realname: "",
     // retired: false,
     sex: '',
-    litter_id: '',
     description: '',
     colour: '',
     chipnumber: '',
-  };
-  const initialHealthTestData = {
-    pra: '',
-    fn: '',
-    aon: '',
-    ams: '',
-    bss: ''
+    litter: {
+      litter_id: ''
+    },
   };
   // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
   const [dog, setDog] = useState({});
-  const [healthTestData, setHealthTestData] = useState(initialHealthTestData);
+  const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
@@ -50,21 +45,43 @@ const DogUpdateForm = () => {
         if (dog.status === 200) {
           const { data } = dog;
           setDog(data);
+          let dogColour = data.dog.colour;
+          if (dogColour === 0) {
+            dogColour = '';
+          }
           setFormData({
+            ...formData,
             id: data.dog.id,
             realname: data.dog.realname,
             callname: data.dog.callname,
             sex: data.dog.sex,
             description: data.dog.description,
-            colour: data.dog.colour
+            colour: dogColour,
+            chipnumber: data.dog.chipnumber,
+            litter: {
+              litter_id: data.litter.id
+            }
           });
+          setHealthTestData({
+            ...healthTestData,
+            pra: data.healthtest.pra,
+            fn: data.healthtest.fn,
+            aon: data.healthtest.aon,
+            ams: data.healthtest.ams,
+            bss: data.healthtest.bss,
+          });
+          setValidLitterList([
+            data.litter,
+            ...litterList.filter(litter => litter.status === 3)
+          ]);
         }
       })
       .catch(e => console.log(e));
     // finds litters with a status of 3, meaning they are nomial
-    setValidLitterList(
-      litterList.filter(litter => litter.status === 3)
-    );
+    // setValidLitterList([
+    //   ...validLitterList,
+    //   ...litterList.filter(litter => litter.status === 3)
+    // ]);
     setDogColours(colours);
   }, [litterList, params.id]);
 
@@ -72,25 +89,17 @@ const DogUpdateForm = () => {
   const handleInput = (e) => {
     const { name, value } = e.target;
     console.log(name, ":", value);
-    if (name === "esize") {
-      let fixedValue = 1;
-      if (Boolean(parseInt(e.target.value))) {
-        fixedValue = parseInt(e.target.value);
-      } else {
-        fixedValue = 1;
-      }
-      console.log(fixedValue);
-      if (fixedValue > 24) fixedValue = 24;
-      if (fixedValue < 1) fixedValue = 1;
-
-      setFormData({
-        ...formData,
-        [name]: fixedValue,
-      });
-    } else if (name === 'sex') {
+    if (name === 'sex') {
       setFormData({
         ...formData,
         [name]: parseInt(value)
+      });
+    } else if (name === 'litter_id') {
+      setFormData({
+        ...formData,
+        litter: {
+          [name]: value
+        }
       });
     }
     else {
@@ -133,7 +142,9 @@ const DogUpdateForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    let dog;
+    let dog = {
+      healthtest: { ...healthTestData }
+    };
     Object.entries(formData).forEach((item) => {
       console.log(item);
       if (item[1] === '') {
@@ -153,14 +164,14 @@ const DogUpdateForm = () => {
           getDogs()
             .then(dogs => {
               dispatch({
-                type: 'updateDogList',
+                type: 'setDogList',
                 data: dogs
               });
             })
             .catch(e => console.log(e));
           // resets form values
           setFormData(initialFormData);
-          setHealthTestData(initialHealthTestData);
+          setHealthTestData(healthTestKeys);
           // navigates back to dogs manage and alerts user of successful creation
           navigate('/dogs/manage', { state: { alert: true, location: "/dogs/manage", severity: "success", title: `${dog.status} Success`, body: `${dog.data.callname} Updated` } });
         }
@@ -181,6 +192,7 @@ const DogUpdateForm = () => {
     }}>
       {console.log(dog)}
       {console.log(formData)}
+      {console.log(validLitterList)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -248,17 +260,17 @@ const DogUpdateForm = () => {
           </Grid> */}
           <Grid xs={12} sm={6}>
             <FormControl fullWidth>
-              <InputLabel id="litter_label">Select Dog's Litter</InputLabel>
+              <InputLabel id="litter_label">Add to Notional Litter</InputLabel>
               <Select
                 name="litter_id"
                 id="litter_id"
-                label="Select Dog's Litter"
+                label="Add to Notional Litter"
                 onChange={handleInput}
-                value={formData.litter_id}
+                value={formData.litter.litter_id}
               >
                 {validLitterList.length > 0 && validLitterList.map((litter, index) => {
                   return (
-                    <MenuItem key={index} value={litter.id}>{litter.lname}</MenuItem>
+                    <MenuItem key={index} value={litter.id}>{litter.lname} {litter.status !== 3 && "(Non Notional)"}</MenuItem>
                   );
                 })}
               </Select>
@@ -273,21 +285,29 @@ const DogUpdateForm = () => {
           <Grid xs={12}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="pra" id="pra_id" label="PRA" fullWidth onChange={handleHealthTestInput} value={healthTestData.pra} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="fn" id="fn_id" label="FN" fullWidth onChange={handleHealthTestInput} value={healthTestData.fn} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="aon" id="aon_id" label="AON" fullWidth onChange={handleHealthTestInput} value={healthTestData.aon} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="ams" id="ams_id" label="AMS" fullWidth onChange={handleHealthTestInput} value={healthTestData.ams} />
-          </Grid>
-          <Grid xs={12} sm={4}>
-            <TextField name="bss" id="bss_id" label="BSS" fullWidth onChange={handleHealthTestInput} value={healthTestData.bss} />
-          </Grid>
+          {Object.entries(healthTestData).map((healthTest, index) => {
+            console.log(healthTest);
+            return (
+              <Grid key={index} xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor={`${healthTest[0]}_id`}>{healthTest[0].toUpperCase()}</InputLabel>
+                  <Select
+                    name={healthTest[0]}
+                    id={`${healthTest[0]}_id`}
+                    label={healthTest[0]}
+                    onChange={handleHealthTestInput}
+                    value={healthTest[1]}
+                  >
+                    {healthTestValues.map((test, index) => {
+                      return (
+                        <MenuItem key={index} value={test.id}>{test.status}</MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          })}
           <Grid xs={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Button variant="contained" component="label">
               Upload Main Image
