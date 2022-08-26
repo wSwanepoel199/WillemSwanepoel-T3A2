@@ -66,58 +66,61 @@ const LitterUpdateForm = () => {
 
   // on page mount makes get request for specified litter
   useEffect(() => {
-    if (params.id === '1') {
-      navigate('..', { state: { alert: true, location: '.', severity: "warning", title: "Inaccessable", body: `This litter is not accessable` } });
-    } else if (userList.length > 0 && dogList.length > 0) {
-      getLitter(params.id)
-        .then(litter => {
-          console.log("litter", litter);
-          // spreads litter into a new object to make it mutable
-          let updatingLitter = {
-            ...litter,
-            breeder: userList.find(user => user.id === litter.breeder_id),
-            sire: dogList.find(dog => dog.id === litter.sire_id),
-            bitch: dogList.find(dog => dog.id === litter.bitch_id)
-          };
-          // // clears out null values and replaces them with an empty string
-          Object.keys(updatingLitter).forEach((key) => {
-            if (updatingLitter[key] === null) {
-              updatingLitter[key] = '';
+    if (!mounted.current) {
+      if (params.id === '1') {
+        navigate('..', { state: { alert: true, location: '.', severity: "warning", title: "Inaccessable", body: `This litter is not accessable` } });
+      } else if (userList.length > 0 && dogList.length > 0) {
+        getLitter(params.id)
+          .then(litter => {
+            console.log("litter", litter);
+            // spreads litter into a new object to make it mutable
+            let updatingLitter = {
+              ...litter,
+              breeder: userList.find(user => user.id === litter.breeder_id),
+              sire: dogList.find(dog => dog.id === litter.sire_id),
+              bitch: dogList.find(dog => dog.id === litter.bitch_id)
+            };
+            // // clears out null values and replaces them with an empty string
+            Object.keys(updatingLitter).forEach((key) => {
+              if (updatingLitter[key] === null) {
+                updatingLitter[key] = '';
+              }
+            });
+            console.log(updatingLitter);
+            // assigns newly mutated object to formData
+            setFormData({
+              ...updatingLitter,
+            });
+            // checks if puppies where attached, if so assigns them to puppyData
+            if (litter.puppies) {
+              setPuppyData([...litter.puppies]);
             }
+            if (litter.status === 3) {
+              setNotional(!notional);
+            }
+            // write if to check if litter breeder is no longer valid and add them back in
+            setValidBreeders([...userList.filter(user => user)]);
+            // if to check if litter sire is retired, if true add back in
+            if (updatingLitter.sire.retired === true) {
+              setValidSires([...dogList.filter(dog => dog.sex === 1 && dog.retired === false), updatingLitter.sire]);
+            } else {
+              setValidSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
+            }
+            if (updatingLitter.bitch.retired === true) {
+              setValidBitches([...dogList.filter(dog => dog.sex === 2 && dog.retired === false), updatingLitter.bitch]);
+            } else {
+              setValidBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
+            }
+            mounted.current = true;
+          })
+          .catch(e => {
+            console.log(e);
+            // navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
           });
-          console.log(updatingLitter);
-          // assigns newly mutated object to formData
-          setFormData({
-            ...updatingLitter,
-          });
-          // checks if puppies where attached, if so assigns them to puppyData
-          if (litter.puppies) {
-            setPuppyData([...litter.puppies]);
-          }
-          if (litter.status === 3) {
-            setNotional(!notional);
-          }
-          // write if to check if litter breeder is no longer valid and add them back in
-          setValidBreeders([...userList.filter(user => user)]);
-          // if to check if litter sire is retired, if true add back in
-          if (updatingLitter.sire.retired === true) {
-            setValidSires([...dogList.filter(dog => dog.sex === 1 && dog.retired === false), updatingLitter.sire]);
-          } else {
-            setValidSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
-          }
-          if (updatingLitter.bitch.retired === true) {
-            setValidBitches([...dogList.filter(dog => dog.sex === 2 && dog.retired === false), updatingLitter.bitch]);
-          } else {
-            setValidBitches(dogList.filter(dog => dog.sex === 2 && dog.retired === false));
-          }
-        })
-        .catch(e => {
-          console.log(e);
-          // navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
-        });
+      }
     }
 
-  }, [params, dogList, navigate, notional, userList]);
+  }, [mounted, params, dogList, navigate, notional, userList]);
 
   useEffect(() => {
     if (dogColours.length === 0) {

@@ -57,7 +57,7 @@ import { Box, Container } from '@mui/material';
 
 const App = () => {
   const { store, dispatch } = useGlobalState();
-  const { dogList } = store;
+  const { dogList, loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
@@ -76,6 +76,12 @@ const App = () => {
           });
         })
         .catch(e => console.log(e));
+    }
+    if (loggedInUser.length === 0 && Boolean(localStorage.getItem('user'))) {
+      dispatch({
+        type: 'setLoggedInUser',
+        data: JSON.parse(localStorage.getItem('user'))
+      });
     }
     // }
     // if (sessionStorage.getItem("litterList") === null) {
@@ -98,7 +104,7 @@ const App = () => {
     //     })
     //     .catch(e => console.log(e));
     // }
-  }, [dogList, dispatch]);
+  }, [dogList, dispatch, loggedInUser]);
 
 
 
