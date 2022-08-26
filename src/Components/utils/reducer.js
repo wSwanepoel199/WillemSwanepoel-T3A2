@@ -5,7 +5,7 @@ export const init = (initialState) => {
 export const reducer = (state, action) => {
   switch (action.type) {
     case "cleanState": {
-      return init();
+      return init(action.payload);
     }
     case "setDogList": {
       // fills ini

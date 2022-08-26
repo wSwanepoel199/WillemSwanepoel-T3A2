@@ -38,11 +38,11 @@ export const colours = [
 ];
 
 export const healthTestKeys = {
-  pra: '',
-  fn: '',
-  aon: '',
-  ams: '',
-  bss: '',
+  pra: 0,
+  fn: 0,
+  aon: 0,
+  ams: 0,
+  bss: 0,
 };
 
 export const healthTestValues = [

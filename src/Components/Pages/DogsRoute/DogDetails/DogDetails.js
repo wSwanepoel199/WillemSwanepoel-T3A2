@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, Paper, Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDog } from "../../../services/dogsServices";
 import moment from 'moment';
 import { useGlobalState } from '../../../utils/stateContext';
@@ -13,6 +13,7 @@ const DogDetails = () => {
   const { store } = useGlobalState();
   const { dogList, loggedInUser } = store;
   const params = useParams();
+  const mounted = useRef();
 
   const [dogDetails, setDogDetails] = useState([]);
   const [gallery, setGallery] = useState([]);
@@ -24,21 +25,24 @@ const DogDetails = () => {
 
   useEffect(() => {
     console.log(params);
-    getDog(params.id)
-      .then(res => {
-        console.log(res);
-        const { data } = res;
-        setDogDetails(data.dog);
-        setHealthtest(data.healthtest || []);
-        setLitters(data.litters || []);
-        setLittter(data.litter || []);
-        setGallery(data.gallery_images || []);
-      })
-      .catch(e => console.log(e));
-  }, [params]);
+    if (!mounted.current) {
+      getDog(params.id)
+        .then(res => {
+          console.log(res);
+          const { data } = res;
+          setDogDetails(data.dog);
+          setHealthtest(data.healthtest || []);
+          setLitters(data.litters || []);
+          setLittter(data.litter || []);
+          setGallery(data.gallery_images || []);
+          mounted.current = true;
+        })
+        .catch(e => console.log(e));
+    }
+  }, [mounted, params]);
 
   const healthTestAnalizer = (test) => {
-    return healthTestValues.find(result => test === result.id).status;
+    return test !== null ? healthTestValues.find(result => test === result.id).status : "Unknown";
   };
 
   return (
@@ -82,7 +86,7 @@ const DogDetails = () => {
               <ViewPedigree dog={dogDetails} tier={3} />
             </Grid>
           </Collapse>
-          {(healthtest.length !== 0 && (loggedInUser.admin || loggedInUser.id === litter.breeder_id))
+          {healthtest.length !== 0
             && <Grid xs={12} container component={Paper} sx={{ py: 2 }}>
               <Grid xs={12}>
                 <Typography variant="h4" sx={{ textAlign: 'center', py: 2 }} component={Paper}>Health Test</Typography>
