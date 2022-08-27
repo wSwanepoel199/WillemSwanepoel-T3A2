@@ -27,8 +27,8 @@ const SignUpForm = () => {
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  // controls if passords are visibile or not
   const handleShowPassword = (name) => {
-    console.log(name);
     if (name === "password") {
       setFormData({
         ...formData,
@@ -40,27 +40,27 @@ const SignUpForm = () => {
         showPasswordConfirmation: !formData.showPasswordConfirmation
       });
     }
-
-    console.log(formData);
   };
 
+  // prevents coping of password
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  // manages form input by saving input values to state
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name, ":", value);
     setFormData({
       ...formData,
       [name]: value,
     });
-    console.log("form:", formData);
   };
 
+  // on form submit checks if password and passord_confirmation match
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.password === formData.password_confirmation) {
+      // if true removes show controls and saves rest to user object to be submitted
       delete formData.showPassword;
       delete formData.showPasswordConfirmation;
       const submitForm = {
@@ -68,10 +68,9 @@ const SignUpForm = () => {
           ...formData
         }
       };
-      console.log(submitForm);
+      // makes post to /users/ with submitForm as data then resets form and navigates to root with alert
       signUp(submitForm)
         .then((user) => {
-          console.log(user);
           setFormData(initialFormData);
           navigate("/", { state: { alert: true, location: '/', severity: 'warning', title: "Check Email", body: "Please check your emails for the account confirmation link" } });
         })

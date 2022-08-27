@@ -6,25 +6,21 @@ const SignUpConfirm = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [confirmation, setConfirmation] = useState([]);
+  const [confirmation] = useState(location.search);
 
-  useEffect(() => {
-    if (confirmation.length === 0) {
-      setConfirmation(location.search);
-    }
-  }, [location, confirmation]);
-
+  // on component mount checks if confirmation is not empty, if true makes get to /users/confirmation appending confirmation at the end of the route.
   useEffect(() => {
     if (confirmation.length !== 0) {
       getConfirm(confirmation)
         .then(reply => {
-          console.log(reply);
+          // if reply.status === 200 navigates to signin and alerts user
           if (reply.status === 200) {
             navigate('/user/signin', { state: { alert: true, location: '/user/signin', severity: 'success', title: 'Account Confirmed', body: 'Your account has been confirmed and you are able to sign in with it' } });
           }
         })
         .catch(e => {
           console.log(e);
+          // else navigates to root and alerts user
           navigate('/', { state: { alert: true, location: '/', severity: 'error', title: 'Unknown Error', body: 'Something went wrong and your account could not be confirmed' } });
         });
     }

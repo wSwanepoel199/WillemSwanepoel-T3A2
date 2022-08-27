@@ -169,7 +169,7 @@ const DogDetails = () => {
               <Grid xs={12}>
                 <Typography variant="h6" sx={{ textAlign: "center", py: 2 }} component={Paper}>Dog's Gallery</Typography>
               </Grid>
-              {console.log(gallery)}
+              {/* {console.log(gallery)} */}
               {gallery.map((image, index) => {
                 return (
                   <Grid xs={12} sm={4} key={index} sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', overflow: 'hidden', p: 1, m: 2 }}>

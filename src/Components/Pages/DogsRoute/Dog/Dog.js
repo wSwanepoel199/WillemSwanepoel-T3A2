@@ -114,7 +114,7 @@ const Dog = (props) => {
           {dog.callname}
         </TableCell>
         <TableCell align="center" padding="none">
-          {dog.ownername ? dog.ownername : `Not Provided`}
+          {dog.owner_id ? dog.ownername : `Not Provided`}
         </TableCell>
         <TableCell align="center" padding="none">
           {dog.breedername ? dog.breedername : "Not Provided"}

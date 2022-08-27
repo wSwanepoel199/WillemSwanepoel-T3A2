@@ -1,6 +1,4 @@
 import { Box, Typography, Stack, Paper, Button } from "@mui/material";
-// import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-// import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getShowCase } from "../../../services/litterServices";
@@ -15,13 +13,11 @@ const LitterShowItem = ({ litter }) => {
   const [showBitch, setShowBitch] = useState([]);
   const [showPuppies, setShowPuppies] = useState([]);
 
-  // const [open, setOpen] = useState(false);
-
+  // on component mount and when litter updates checks if litter is present and makes get to litter showcase/:id usng litter.id as :id, then populates state with response
   useEffect(() => {
     if (litter) {
       getShowCase(litter.id)
         .then(reply => {
-          console.log(reply);
           if (reply.status === 200) {
             setShowItem(reply.data.litter || []);
             setShowImages(reply.data.images || []);
@@ -45,7 +41,8 @@ const LitterShowItem = ({ litter }) => {
         mr: 'auto',
         maxWidth: "md",
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '100%'
       }}
     >
       <Box>

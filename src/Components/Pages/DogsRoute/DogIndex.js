@@ -6,6 +6,7 @@ import { useGlobalState } from "../../utils/stateContext";
 const DogIndex = () => {
   const { dispatch } = useGlobalState();
 
+  // on component mount and when dispatch updates makes get to back for litterList and saves to global State
   useEffect(() => {
     getLitters()
       .then(reply => {

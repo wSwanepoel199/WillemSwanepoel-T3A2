@@ -11,9 +11,6 @@ import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppy } from "../../../services/litterServices";
 import { getDogs, patchDog } from "../../../services/dogsServices";
 import { colours, updateItemInArray } from "../../../utils/helpers/generalTools";
-
-// TODO, include link to full dogs edit page
-
 const LitterUpdateForm = () => {
   const params = useParams();
   const { store, dispatch } = useGlobalState();
@@ -64,7 +61,8 @@ const LitterUpdateForm = () => {
 
   const [dogColours, setDogColours] = useState([]);
 
-  // on page mount makes get request for specified litter
+  // on page mount or if mounted, params, dogList, navigate, notional or userList updates, checks if mounted.current is falsy, if ture checks params.id, if 1 redirects to previous page and trigger alert, else checks if userList and dogList have any value, if they do then makes get request to '/litters/:id' where :id is params.id.
+  // populates component state with response
   useEffect(() => {
     if (!mounted.current) {
       if (params.id === '1') {
@@ -72,7 +70,6 @@ const LitterUpdateForm = () => {
       } else if (userList.length > 0 && dogList.length > 0) {
         getLitter(params.id)
           .then(litter => {
-            console.log("litter", litter);
             // spreads litter into a new object to make it mutable
             let updatingLitter = {
               ...litter,
@@ -86,7 +83,6 @@ const LitterUpdateForm = () => {
                 updatingLitter[key] = '';
               }
             });
-            console.log(updatingLitter);
             // assigns newly mutated object to formData
             setFormData({
               ...updatingLitter,
@@ -105,7 +101,7 @@ const LitterUpdateForm = () => {
               setValidSires([...dogList.filter(dog => dog.sex === 1 && dog.retired === false), updatingLitter.sire]);
             } else {
               setValidSires(dogList.filter(dog => dog.sex === 1 && dog.retired === false));
-            }
+            } // if to check if litter bitch is retired, if true add back in
             if (updatingLitter.bitch.retired === true) {
               setValidBitches([...dogList.filter(dog => dog.sex === 2 && dog.retired === false), updatingLitter.bitch]);
             } else {
@@ -115,28 +111,28 @@ const LitterUpdateForm = () => {
           })
           .catch(e => {
             console.log(e);
-            // navigate('/litters/manage', { state: { alert: true, location: '/litters/manage', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
+            // navigate('..', { state: { alert: true, location: '..', severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
           });
       }
     }
 
   }, [mounted, params, dogList, navigate, notional, userList]);
 
+  // poppulates dogColours state
   useEffect(() => {
     if (dogColours.length === 0) {
       setDogColours(colours);
     }
   }, [dogColours]);
 
-  // triggers when the newpuppy state is changed
+  // triggers when newPuppyData recieves new data
   useEffect(() => {
     // checks if there is new data in the puppy state, is yes runs
     if (newPuppyData.length > 0) {
       // itters over the newpuppy state
       newPuppyData.forEach(puppy => {
-        console.log(puppy);
+        // assigns output of updateItemInArray to newPuppies variable
         const newPuppies = updateItemInArray(puppy, puppyData, "newPuppy");
-        console.log(newPuppies);
         // sets the new puppy list to the puppy and form state
         setPuppyData(newPuppies);
         setFormData({
@@ -165,8 +161,6 @@ const LitterUpdateForm = () => {
   const handleAddPuppy = () => {
     setPuppyData([...puppyData, { ...initialPuppyData }]);
   };
-
-  // TO-DO introduce delete option
 
   // handles the input for puppies
   const handlePuppyInput = (e, index) => {
@@ -361,7 +355,6 @@ const LitterUpdateForm = () => {
         console.log(e.toJSON());
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
       });
-    // todo, add redirect if patch is successful
   };
 
   return (

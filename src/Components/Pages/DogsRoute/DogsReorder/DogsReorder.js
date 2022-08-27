@@ -22,10 +22,6 @@ import {
 import { getDogs, pushNewPositions } from "../../../services/dogsServices";
 import { useNavigate } from "react-router";
 
-// known issues; patching to often, patching with to much data(not sure if avoidable)
-// honestly whole page needs rework
-// https://overreacted.io/how-are-function-components-different-from-classes/ worth using either class or implimented another use of useRef for dogs
-
 const DogsReorder = () => {
   // initalises store from global state
   const { store, dispatch } = useGlobalState();

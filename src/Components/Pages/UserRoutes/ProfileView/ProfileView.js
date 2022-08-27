@@ -24,11 +24,11 @@ const ProfileView = () => {
   const [pageRender, setPageRender] = useState("profile");
   const [open, setOpen] = useState(false);
 
+  // on component mount and when user, loggegInUser and naviage updates, checks if user has any values, if it doesn't makes get to '/users/:id' using id as id and populates state with response
   useEffect(() => {
     if (user.length === 0) {
       getUser(id)
         .then(reply => {
-          console.log(reply);
           if (reply.status === 200) {
             setUser(reply.data.user);
             setApplications(reply.data.applications);
@@ -38,20 +38,23 @@ const ProfileView = () => {
         })
         .catch(e => {
           console.log(e);
+          // navigates to 404 if any errors
           navigate('/404');
         });
+      // alternatively if user has values it checks if it is the same as loggedInUser, if not assigns loggedInUser to user state
     } else if (user !== [] && user !== loggedInUser) {
       setUser(loggedInUser);
     }
-    // setUser(loggedInUser);
 
   }, [id, user, loggedInUser, navigate]);
 
+  // handles profile switching by taking in a string and setting setOpen to the opposite of its current value (almost always switching true to false)
   const handleProfileSwitch = (page) => {
     setPageRender(page);
     setOpen(!open);
   };
 
+  // list of profile buttons to be rendered inorder to avoid retyping the same code, also trigger above function on click
   const ProfileButtons = () => {
     return (
       <>
@@ -68,7 +71,6 @@ const ProfileView = () => {
     <>
       <Box component={Paper}>
         <Grid container>
-          {/* {console.log(mobile)} */}
           {mobile
             ? <>
               <Collapse in={open} >
@@ -88,6 +90,7 @@ const ProfileView = () => {
             {mobile && <IconButton onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUp /> : <KeyboardArrowRight />}
             </IconButton>}
+            {/* switch that controls the current rendered page basd on pageRender state */}
             {(() => {
               switch (pageRender) {
                 case "profile": return <Profile user={user} />;

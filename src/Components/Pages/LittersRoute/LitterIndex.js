@@ -8,6 +8,8 @@ const LitterIndex = () => {
   const { store, dispatch } = useGlobalState();
   const { loggedInUser } = store;
 
+  // on component mount and hen loggedInUser or dispatch updates, makes get requests to /litters/, will only make get to /waitlisted and /userlist/ if loggedInUser is admin
+  // saves responses to state
   useEffect(() => {
     getLitters()
       .then(reply => {

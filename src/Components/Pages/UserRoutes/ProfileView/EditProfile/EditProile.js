@@ -1,10 +1,7 @@
-import { Container, Box, Paper, Typography, TextField, FormControl, Button, InputAdornment, IconButton } from "@mui/material";
+import { Container, Box, Typography, TextField, FormControl, Button, } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useLocation, useNavigate } from "react-router";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { updateUser } from "../../../../services/authServices";
 import { useGlobalState } from "../../../../utils/stateContext";
 
@@ -12,12 +9,11 @@ const EditForm = ({ user, handleProfileSwitch }) => {
   const { dispatch } = useGlobalState();
   const navigate = useNavigate();
   const location = useLocation();
+  const mounted = useRef();
 
   const initialFormData = {
     username: "",
     email: "",
-    password: "",
-    password_confirmation: '',
     firstname: '',
     lastname: '',
     address1: '',
@@ -25,105 +21,67 @@ const EditForm = ({ user, handleProfileSwitch }) => {
     suburb: '',
     phonenumber: '',
     postcode: "",
-    showPassword: false,
-    showPasswordConfirmation: false
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  // on component mount and when mounted, formData or user updates, checks if mounted.current is falsy, if true maps values of user object to formData
   useEffect(() => {
-    let filteredUser = { ...formData };
-    Object.entries(user).map(user => {
-      if (user[1] === null) {
-        return filteredUser = {
-          ...filteredUser,
-          [user[0]]: ''
-        };
-      } else {
-        return filteredUser = {
-          ...filteredUser,
-          [user[0]]: user[1]
-        };
-      }
-    });
-    setFormData(filteredUser);
-  }, []);
-
-  const handleShowPassword = (name) => {
-    console.log(name);
-    if (name === "password") {
-      setFormData({
-        ...formData,
-        showPassword: !formData.showPassword
+    if (!mounted.current) {
+      let filteredUser = { ...formData };
+      Object.entries(user).map(user => {
+        if (user[1] === null) {
+          return filteredUser = {
+            ...filteredUser,
+            [user[0]]: ''
+          };
+        } else {
+          return filteredUser = {
+            ...filteredUser,
+            [user[0]]: user[1]
+          };
+        }
       });
-    } else if (name === "password_confirmation") {
-      setFormData({
-        ...formData,
-        showPasswordConfirmation: !formData.showPasswordConfirmation
-      });
+      setFormData(filteredUser);
+      mounted.current = true;
     }
+  }, [mounted, formData, user]);
 
-    console.log(formData);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
+  // handles inputs by assigning passed values to formData
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name, ":", value);
     setFormData({
       ...formData,
       [name]: value,
     });
-    console.log("form:", formData);
   };
 
+  // on form submit, spreads formData into user oject and makes patch request to '/users/:id' using formData.id as id and submitForm, which contains the user object, as data.
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password === formData.password_confirmation) {
-      delete formData.showPassword;
-      delete formData.showPasswordConfirmation;
-      const submitForm = {
-        user: {
-          ...formData
+    const submitForm = {
+      user: {
+        ...formData
+      }
+    };
+    updateUser(formData.id, submitForm)
+      .then(reply => {
+        if (reply.status === 200) {
+          // on status 200 updates sessionStorage and loggedInUser state with new data
+          sessionStorage.setItem('user', JSON.stringify(reply.data));
+          dispatch({
+            type: "setLoggedInUser",
+            data: reply.data
+          });
+          // returns back to main profile page and triggers alert via navigate
+          handleProfileSwitch('profile');
+          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `Success`, body: "Your details have been updated" } });
         }
-      };
-      console.log(submitForm);
-      updateUser(formData.id, submitForm)
-        .then(reply => {
-          console.log(reply);
-          if (reply.status === 200) {
-            sessionStorage.setItem('user', JSON.stringify(reply.data));
-            dispatch({
-              type: "setLoggedInUser",
-              data: reply.data
-            });
-            navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `Success`, body: "Your details have been updated" } });
-          }
-        })
-        .catch(e => {
-          console.log(e);
-          navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `Error`, body: "Your details could not be updated" } });
-        });
-      // signUp(submitForm)
-      //   .then((user) => {
-      //     console.log(user);
-      //     setFormData(initialFormData);
-      //     navigate("/user/signup/confirmation");
-      //   })
-      //   .catch(e => {
-      //     console.log(e.response.data.errors);
-      //     let errorMessage = "";
-      //     Object.keys(e.response.data.errors).forEach(key => {
-      //       errorMessage = errorMessage.concat("", `${key} ${e.response.data.errors[key]}`);
-      //     });
-      //     alert(errorMessage);
-      //   });
-      handleProfileSwitch('profile');
-    } else {
-      navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: "Password miss match", body: "password does not match password confirmation" } });
-    }
+      })
+      .catch(e => {
+        console.log(e);
+        // if any errors triggers alert by navigating to current path
+        navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `Error`, body: "Your details could not be updated" } });
+      });
   };
 
   return (

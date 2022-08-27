@@ -108,7 +108,7 @@ const App = () => {
           <>
             {/* ensures alert is rendered absolutely so it appears ontop of application */}
             <Box sx={{ width: '100%', position: 'sticky', top: 0, zIndex: '2' }}>
-              {console.log("alert triggered")}
+              {/* {console.log("alert triggered")} */}
               {/* custom alert component that uses material ui's alert components to display a user friendly alert, fills fields with values passed through location.state */}
               <Box sx={{ position: 'absolute', width: '100%' }}>
                 <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />

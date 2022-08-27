@@ -1,8 +1,10 @@
 import { backEndAPI } from "../utils/componentIndex";
 
+// collection of functions each making a request to a route and returning the response
+
 export async function signUp(data) {
   const response = await backEndAPI.post('/users', data);
-  return response.data;
+  return response;
 }
 
 export async function signIn(data) {

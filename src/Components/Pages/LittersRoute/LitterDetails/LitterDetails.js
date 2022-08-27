@@ -8,15 +8,18 @@ import DogCard from "../../DogsRoute/Dogcard/DogCard";
 
 
 const LitterDetails = () => {
+  // sets up needed hooks
   const params = useParams();
   const navigate = useNavigate();
 
+  // sets up page state
   const [litter, setLitter] = useState([]);
   const [images, setImages] = useState([]);
   const [sire, setSire] = useState([]);
   const [bitch, setBitch] = useState([]);
   const [puppies, setPuppies] = useState([]);
 
+  // makes get to '/showcase/id' using params.id as id on component mount and when params and navigate updates, then if reply.status is 200 assigns returned data to states
   useEffect(() => {
     getShowCase(params.id)
       .then(reply => {
@@ -31,7 +34,8 @@ const LitterDetails = () => {
       })
       .catch(e => {
         console.log(e);
-        navigate('/404');
+        // if errors just redirects to 404, didn't have time figure out proper solution
+        navigate('404');
       });
   }, [params, navigate]);
 

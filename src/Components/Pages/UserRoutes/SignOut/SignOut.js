@@ -6,6 +6,7 @@ const SignOut = () => {
   const { initialState, dispatch } = useGlobalState();
   const navigate = useNavigate();
 
+  // on component mounts clears session storage and state before reditecting back to root with alert
   useEffect(() => {
     sessionStorage.clear();
     dispatch({
