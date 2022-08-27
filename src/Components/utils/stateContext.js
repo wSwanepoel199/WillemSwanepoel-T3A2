@@ -11,8 +11,8 @@ export const StateProvider = ({ children }) => {
   const initialState = {
     dogList: [],
     litterList: [],
-    loggedInUser: JSON.parse(localStorage.getItem("user")) || [],
-    token: localStorage.getItem("token") || null,
+    loggedInUser: JSON.parse(sessionStorage.getItem("user")) || [],
+    token: sessionStorage.getItem("token") || null,
     userList: [],
     mergedLitterList: {},
     breeders: {},

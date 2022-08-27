@@ -2,19 +2,14 @@ import { Box, Paper, Typography, Container, TableRow, TableCell, Collapse, Butto
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState, Litter, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
 import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { updateItemInArray } from "../../../utils/helpers/findOriginal";
-
-// impliment application filtering out from waitlist to open litters
-// impliment ability to reject litters in waitlist
 
 const LitterManage = () => {
   const { store, dispatch } = useGlobalState();
   const { litterList, applicationForms, userList, dogList, updatingApp } = store;
-  const mounted = useRef();
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,46 +17,40 @@ const LitterManage = () => {
 
 
   const [litters, setLitters] = useState([]);
-  // const waitlistLitter = litterList.find(litter => litter.id === 1);
   const [waitList, setWaitList] = useState([]);
   const [selectedLitter, setSelectedLitter] = useState({ select_litter: '' });
-
-  // applicationForms.filter(form => form.litter_id !== 1)
 
   const [openApp, setOpenApp] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 
-  const [order, setOrder] = useState('asc');
-  // const [orderBy, setOrderBy] = useState('id');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  useEffect(() => {
-    if (!mounted.current) {
-      setOrder('asc');
-      mounted.current = true;
-    }
-  }, [mounted, dispatch]);
 
+  // on mount or when litterList updates, assigns all litters without id of 1 to litters state
   useEffect(() => {
     setLitters(litterList.filter(litter => litter.id !== 1));
   }, [litterList]);
 
+  // on component mount or when applicationForms updates, checks if applicationForms has any values and assignes them to waitList if true
   useEffect(() => {
     if (applicationForms.length > 0) {
       setWaitList(applicationForms);
     }
   }, [applicationForms]);
 
+  // allows for scrolling through paginated table
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
 
+  // allows for increasing the number of rows allowed in paginated table
   const handleChangeRowsPerPage = (e) => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
 
+  // sets id of selected litter to selectedLitter state
   const handleSelect = (e) => {
     const { name, value } = e.target;
     console.log(e);
@@ -70,14 +59,16 @@ const LitterManage = () => {
     });
   };
 
-  const handleOpenDialog = (open) => {
-    setOpenDialog(open);
+  // finds selected litter via selected_litter in selectedLitter state, then checks if updatingApp exists in global State and that selectedLitter has selected_litter value.
+  const handleLitterSelect = () => {
     const chosenLitter = litters.find(litter => litter.id === selectedLitter.select_litter);
     if (updatingApp && selectedLitter.select_litter) {
+      // makes patch request to '/litter_applications/:id' where updatingApp.id is the :id and the data consits of the updatingApp object, a litter_id key which the id from selectedLitter and a fulfillstate update to 1
       patchLitterApp(updatingApp.id, { ...updatingApp, litter_id: selectedLitter.select_litter, fulfillstate: 1 })
         .then(app => {
           console.log(app);
           if (app.status === 200) {
+            // if response.status === 200 makes get request to back for updated litter applications and refreshes global state
             getLitterApps()
               .then(reply => {
                 dispatch({
@@ -88,7 +79,11 @@ const LitterManage = () => {
               .catch(e => {
                 console.log(e);
               });
+            // closes dialog
+            setOpenDialog(!openDialog);
+            // navigates to current path and triggers alert
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} assigned to ${chosenLitter.lname}` } });
+            // clears selectedLitter state
             setSelectedLitter({ select_litter: '' });
           }
         })
@@ -96,12 +91,10 @@ const LitterManage = () => {
     }
   };
 
+  // closes dialog
   const handleCancel = () => {
     setOpenDialog(!openDialog);
   };
-
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - list.length) : 0;
 
   return (
     <>
@@ -122,7 +115,7 @@ const LitterManage = () => {
           <Collapse
             in={openApp}
             unmountOnExit>
-            <LitterApplicationManage handleOpenDialog={handleOpenDialog} openDialog={openDialog} litterApps={waitList} />
+            <LitterApplicationManage handleOpenDialog={setOpenDialog} openDialog={openDialog} litterApps={waitList} />
           </Collapse>
 
         </Box>
@@ -163,7 +156,7 @@ const LitterManage = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleOpenDialog(!openDialog)}>Approve Application</Button>
+            <Button onClick={() => handleLitterSelect()}>Approve Application</Button>
             <Button onClick={() => handleCancel()}>Cancel</Button>
           </DialogActions>
         </Dialog>
@@ -200,11 +193,7 @@ const LitterManage = () => {
             }
             body={
               <>
-                {(litters.length > 0 && userList.length > 0 && dogList.length > 0) && litters.sort((a, b) => {
-                  return order === 'asc'
-                    ? a.orderBy - b.orderBy
-                    : b.orderBy - a.orderBy;
-                })
+                {(litters.length > 0 && userList.length > 0 && dogList.length > 0) && litters.sort((a, b) => a.id - b.id)
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((litter, index) => {
                     const breeder = Object.values(userList).find(breeder => breeder.id === litter.breeder_id);
@@ -222,20 +211,18 @@ const LitterManage = () => {
             }
             footer={
               <>
-                {litters.length > rowsPerPage
-                  && <TableRow>
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      colSpan={8}
-                      count={litters.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      sx={{ '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': { m: 0 } }}
-                    />
-                  </TableRow>
-                }
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    colSpan={8}
+                    count={litters.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    sx={{ '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': { m: 0 } }}
+                  />
+                </TableRow>
               </>
             }
           />

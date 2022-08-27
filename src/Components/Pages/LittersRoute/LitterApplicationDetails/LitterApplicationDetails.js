@@ -3,9 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2/";
 import { useEffect, useState } from "react";
 import { getLitterApp } from "../../../services/litterServices";
 import { CustomTable, DogCard, useGlobalState } from "../../../utils/componentIndex";
-import { colours } from "../../../utils/helpers/findOriginal";
-
-// include assigned puppy
+import { colours } from "../../../utils/helpers/generalTools";
 
 const LitterApplicationDetails = (props) => {
   const { store } = useGlobalState();
@@ -16,32 +14,32 @@ const LitterApplicationDetails = (props) => {
   const [children, setChildren] = useState([]);
   const [pets, setPets] = useState([]);
 
+  // on component mount, or props, applicationDetails, litterList and userList update, checks if props.id matches the applicationDetails id, if it doesn't makes get to back with id and fills state on status 200
   useEffect(() => {
     if (props.id !== applicationDetails.id) {
       getLitterApp(props.id)
         .then(litterApp => {
-          console.log(litterApp);
+          // console.log(litterApp);
           if (litterApp.status === 200) {
             const { data } = litterApp;
+            // checks for sex preferance and provides strings accordingly
             const sexPref = data.litterApplication.sex_preference === 1
               ? "Male"
               : data.litterApplication.sex_preference === 2
                 ? "Female"
                 :
                 "No Preferance";
+            // checks for collour preferance, and assings values accordingly
             const colourPref = data.litterApplication.colour_preference !== null
-              ? typeOf(data.litterApplication.colour_preference, 'string')
-                ? data.litterApplication.colour_preference
-                : colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
+              ? colours.find(colour => colour.id === data.litterApplication.colour_preference).colour
               : colours[0].colour;
-            const filledLitterApp = {
+            setApplicationDetais({
               ...data.litterApplication,
               sex_preference: sexPref,
               colour_preference: colourPref,
               litter: litterList.find(litter => litter.id === data.litterApplication.litter_id),
               user: userList.find(user => user.id === data.litterApplication.user_id)
-            };
-            setApplicationDetais(filledLitterApp);
+            });
             setChildren(data.litterApplication.children || []);
             setPets(data.litterApplication.pets || []);
             setAllocatedPuppy(data.allocatedPuppy || []);
@@ -51,10 +49,6 @@ const LitterApplicationDetails = (props) => {
     }
 
   }, [props, applicationDetails, litterList, userList]);
-
-  const typeOf = (item, type) => {
-    return typeof item === type ? true : false;
-  };
 
   return (
     <>

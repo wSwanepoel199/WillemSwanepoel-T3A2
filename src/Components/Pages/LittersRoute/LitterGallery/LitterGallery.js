@@ -1,19 +1,17 @@
-import { Box, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
 import { getBest } from "../../../services/litterServices";
 
 const LitterGallery = () => {
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-
+  // sets state for component
   const [imageList, setImageList] = useState([]);
 
+  // on mount or on imageList update makes get to '/best/' and assigns response to imageList state
   useEffect(() => {
     if (imageList.length === 0) {
       getBest()
         .then(reply => {
-          console.log(reply);
           setImageList(reply.data.images);
         })
         .catch(e => console.log(e));

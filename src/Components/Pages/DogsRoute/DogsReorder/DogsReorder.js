@@ -1,6 +1,6 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { SortableItem } from '../../SortableItem';
-import { Box, Typography, Paper, Button, Pagination } from "@mui/material";
+import { Box, Typography, Paper, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
 import {
@@ -22,10 +22,6 @@ import {
 import { getDogs, pushNewPositions } from "../../../services/dogsServices";
 import { useNavigate } from "react-router";
 
-// known issues; patching to often, patching with to much data(not sure if avoidable)
-// honestly whole page needs rework
-// https://overreacted.io/how-are-function-components-different-from-classes/ worth using either class or implimented another use of useRef for dogs
-
 const DogsReorder = () => {
   // initalises store from global state
   const { store, dispatch } = useGlobalState();
@@ -37,128 +33,19 @@ const DogsReorder = () => {
   const [activeId, setActiveId] = useState(null); //<= stores the id of the dragging element
   const [dogs, setDogs] = useState([]); // <= stores the dogs that are being displayed
   const [positions, setPositions] = useState([]); // <= stores the existing positions of displayed dogs
-  // const [updatedPositions, setUpdatedPositions] = useState({}); // <= stores the ids and new positions of each dog to be patched to backend
-  const [filter, setFilter] = useState('all');
-
-  // const [page, setPage] = useState(1);
-  // const [itemsPerPage, setItemsPerPage] = useState(12);
-  // const [pageCount, setPageCount] = useState(1);
 
 
-  // controls component mount via mounted constant variable
+  // on component mount and on dogList change, checks if dogList has more than 0 values, if true, sorts dogList by position value and assigns to dogs state
   useEffect(() => {
-    // if mounted.current is false sets to true, run other inital mount functions here
     if (dogList.length > 0) {
       setDogs(dogList.sort((a, b) => a.position - b.position));
-      // setItemsPerPage(12);
-      // setPageCount(Math.ceil(dogList.length / 12));
     }
   }, [dogList]);
 
-  useEffect(() => {
-    if (filter !== 'all') {
-      const newDogs = handleSex(filter, dogList);
-      setDogs(newDogs);
-      // setPageCount(Math.ceil(newDogs.length / 12));
-      // setPage(1);
-    } else {
-      setDogs(dogList);
-      // setPageCount(Math.ceil(dogList.length / 12));
-      // setPage(1);
-    }
-  }, [filter, dogList]);
-
-  // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
-  // useEffect(() => {
-  //   if (mounted.current) {
-  //     console.log(dogList);
-  //     console.log("populating dogs");
-  //     setDogs(handleSex(params, Object.values(dogList).sort((a, b) => a.position - b.position)));
-  //   }
-  //   return () => {
-  //     console.log("final call setting dogs");
-  //   };
-  // }, [params, dogList]);
-
-  // once doglist is filled, triggers above function to filter available dogs
-  // useEffect(() => {
-  //   if (mounted.current) {
-  //     setDogs(handleSex(params, dogs));
-  //   }
-  // }, [dogs.length > 0]);
-
-  // once drag hook ends parses dogs id and their position into an object to be passed to backend for updating
-  // useEffect(() => {
-  //   if (!activeId && mounted.current) {
-  //     const finalList = { dogs: [] };
-  //     dogs.forEach((dog) => {
-  //       return finalList.dogs.push({
-  //         "id": dog.id,
-  //         "position": dog.position
-  //       });
-  //     });
-  //     console.log("updated dog position list:", finalList);
-  //     console.log(dogs);
-  //     setUpdatedPositions(finalList);
-  //   }
-  //   return () => {
-  //     console.log("final call updating dogs position");
-  //   };
-  // }, [dogs, activeId]);
-
-  // triggers when updatedPositions has value set, makes patch request to update backend on dogs new positions
-  // useEffect(() => {
-  //   console.log("updated positions", updatedPositions);
-  //   if (updatedPositions !== []) {
-  //     pushNewPositions(updatedPositions)
-  //       .then(reply => {
-  //         console.log(reply);
-  //       })
-  //       .catch(e => console.log(e));
-  //   }
-  //   return () => {
-  //     console.log("final call patching dogs position");
-  //   };
-
-  // }, [updatedPositions]);
-
-  // useEffect(() => {
-  //   if (location) {
-
-  //   }
-  //   return () => {
-  //     window.location.reload();
-  //   };
-  // }, [location]);
-
-  // filters dogs based on passed params
-  const handleSex = (filter, dogs) => {
-    switch (filter) {
-      case "male": {
-        return dogs.filter((dog) => dog.sex === 1);
-      }
-      case "female": {
-        return dogs.filter((dog) => dog.sex === 2);
-      }
-      case "retired": {
-        return dogs.filter((dog) => dog.retired);
-      }
-      default: {
-        return dogs;
-      }
-    }
-  };
-
-  // const handleFilter = (status) => {
-  //   if (status === filter) {
-  //     setFilter('all');
-  //   } else {
-  //     setFilter(status);
-  //   }
-  // };
-
+  // triggered on button click, creates object containing dogs key and an emprty array value
   const handleSave = () => {
     const finalList = { dogs: [] };
+    // itterates over dogs state, locates thier original object from dogList then compares psoition values, if they are different, pushes and object containing the dogs id and new position value int othe finalList.dogs array
     dogs.forEach((dog) => {
       const original = dogList.find(original => original.id === dog.id);
       if (dog.position !== original.position) {
@@ -168,9 +55,10 @@ const DogsReorder = () => {
         });
       }
     });
+    // makes patch request to back containing object which all new dog positions, if response status is 200, makes a get request to dogs#index and refreshes dogList with new dog list, then navigates to dogs/manage and triggers success alert
     pushNewPositions(finalList)
       .then(reply => {
-        console.log(reply);
+        // console.log(reply);
         if (reply.status === 201) {
           getDogs()
             .then(dogs => {
@@ -181,15 +69,11 @@ const DogsReorder = () => {
               });
               navigate('/dogs/manage', { state: { alert: true, location: '/dogs/manage', severity: 'success', title: 'Success', body: 'Dogs positions successfully updated' } });
             })
-            .catch(e => console.log(e));
+            .catch(e => console.log(e)); // console logs any errors that occur when getting dogs
         }
       })
-      .catch(e => console.log(e));
+      .catch(e => console.log(e)); //console logs any errors that occur when patching dogs
   };
-
-  // const handleChangePage = (e, newPage) => {
-  //   setPage(newPage);
-  // };
 
   // defines sensores drag and drop will use with their applicable constraints
   const sensors = useSensors(
@@ -200,7 +84,7 @@ const DogsReorder = () => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 500,
+        delay: 1000,
         tolerance: 25,
       }
     }),
@@ -240,22 +124,16 @@ const DogsReorder = () => {
     });
   };
 
-  // .slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage)
 
   return (
     <Box>
-      {console.log("local state dogs:", dogs)}
+      {/* {console.log("local state dogs:", dogs)}
       {console.log(filter)}
-      {console.log(positions)}
+      {console.log(positions)} */}
       <Button onClick={handleSave}>Save New Positions</Button>
       <Button onClick={() => navigate('..')}>Cancel</Button>
       <Box sx={{ py: 2, textAlign: 'center' }}>
         <Typography variant="h2" >Reorder Dogs</Typography>
-        {/* <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
-          <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('male')}>Male</Button>
-          <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('female')}>Female</Button>
-          <Button sx={{ mx: 2 }} variant="outlined" onClick={() => handleFilter('retired')}>Retired</Button>
-        </Box> */}
       </Box>
       <Box component={Paper} sx={{ px: 2 }}>
         <Grid

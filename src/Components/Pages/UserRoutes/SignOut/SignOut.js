@@ -6,15 +6,15 @@ const SignOut = () => {
   const { initialState, dispatch } = useGlobalState();
   const navigate = useNavigate();
 
+  // on component mounts clears session storage and state before reditecting back to root with alert
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.clear();
     dispatch({
       type: "signOutUser",
       payload: initialState
     });
     navigate("/", { state: { alert: true, location: "/", severity: "success", title: "Signed Out", body: "Successfully Signed Out" } });
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, initialState]);
 
   return (
     <>

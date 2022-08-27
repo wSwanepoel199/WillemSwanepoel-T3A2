@@ -5,21 +5,20 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { postDog } from "../../../services/dogsServices";
-import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
-
-// TO-DO 
-// breedername comes from back, don't post breedername or ownername at all
-// if litter present prevent dob creation
-// tackle add pictures
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/generalTools";
 
 const DogCreationForm = () => {
+  // sets up required hooks
   const { store, dispatch } = useGlobalState();
-  const { litterList, dogList } = store;
   const navigate = useNavigate();
   const location = useLocation();
+  // creates fd function that converts objects passed to it into FormData
   const fd = require('form-data-extended');
 
-  // sets form and heath test initial data
+  // destructuring object to make required variables eaiser to access
+  const { litterList, dogList } = store;
+
+  // sets form initial data for formData state
   const initialFormData = {
     callname: "",
     realname: "",
@@ -29,14 +28,16 @@ const DogCreationForm = () => {
     colour: '',
     chipnumber: '',
   };
-  // sets form initial states
+  // sets initial states
   const [formData, setFormData] = useState(initialFormData);
   const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [litterData, setLitterData] = useState({ litter_id: '' });
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
-  // on mount finds nomial litters, status of 3, and makes the choosable
+  // Inputs: litterList: array
+  // Function: runs contents on component mount and when litterList updates
+  // Used for: pupulating validLitterList and dogColours state
   useEffect(() => {
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
@@ -44,15 +45,21 @@ const DogCreationForm = () => {
     setDogColours(colours);
   }, [litterList]);
 
-  // handles form general input
+  // Inputs: event: object
+  // Function: 
+  //    destructures out name and value from the event object target,
+  //    uses name to conditionally alter how provided value is saved to formData
+  //    if name is "sex" converts value to int before saving, if "litter_id" save value in a nested object, else just save value as provided, in all cases name is used to match value with any pre-existing keys
+  // Used for: saving information filled in by input fields
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name, ":", value);
+    // provides unique logic iff the name of the event target is sex
     if (name === 'sex') {
       setFormData({
         ...formData,
         [name]: parseInt(value)
       });
+      // provides unique logic if the name of the event target is litter_id
     } else if (name === "litter_id") {
       setLitterData({
         [name]: value
@@ -71,46 +78,61 @@ const DogCreationForm = () => {
     }
   };
 
-  // handles health test input
+  // Inputs: event: object
+  // Outputs: updated healthTestData and formData states
+  // Function: desctructures out the name and value from event target and saves to healthTestData and a nested healthtest object in formData
+  // Used for: managing inputs for healthtest
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
-    console.log(healthTestData);
-    console.log(name, value);
+    // console.log(healthTestData);
+    // console.log(name, value);
     setHealthTestData({
       ...healthTestData,
       [name]: value
     });
+    setFormData({
+      ...formData,
+      healthtest: {
+        ...formData.healthtest,
+        [name]: value
+      }
+    });
   };
 
-  // handles image uploads
+  // Inputs: event: object
+  // Outputs: updated formData
+  // Function: destructures out name and files from event target and uses name to decide how to save files to formData, either as a single file in the case of "main_image" or array in the case of "gallery_images"
+  // Used for: manageing inputs for image uploads
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    console.log(name, files);
+    // console.log(name, files);
+    // if name is main_image, saves single file to state
     if (name === 'main_image') {
       setFormData({
         ...formData,
         [name]: files[0]
       });
+      // if name is gallery_images, saves array of files to state
     } else if (name === 'gallery_images') {
       setFormData({
         ...formData,
         [name]: [...files]
       });
     }
-
-    // https://stackoverflow.com/questions/52566331/formdata-append-nested-object
   };
 
-  // on form submit formats data for backend and makes post request to create dog
+
+  // Function: creates empty dog object, then itterates over formData and only saving key value pares to dog if the value isn't an empty string, then converts dog into FormData before making a post to the backend to create new dog
+  // Used for: creating new dogs
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
+    // console.log(e);
     let dog = {
-      healthtest: { ...healthTestData },
+      // healthtest: { ...healthTestData },
     };
     Object.entries(formData).forEach((item) => {
-      console.log(item);
+      // console.log(item);
       if (item[1] === '') {
         return;
       } else {
@@ -120,20 +142,13 @@ const DogCreationForm = () => {
         };
       }
     });
-    // Object.entries(healthTestData).forEach((item) => {
-    //   console.log(item);
-    //   // postForm.append(
-    //   //   `healthtest[${item[0]}]`, item[1]
-    //   // );
-    //   postForm = {
-    //     ...postForm
-    //   }
-    // });
-    console.log(dog);
     const postForm = fd({ dog });
+    // Inputs:postForm: FormData
+    // Outputs: backend response
+    // Function: makes post request to '/lazy_dog_create/' with postForm attached, then checks if response status === 201 and if updates dogList with new dog via dispatch if true.
+    // Used for: what feature(s) does this support at the userspace level
     postDog(postForm)
       .then(dog => {
-        console.log(dog);
         if (dog.status === 201) {
           // on success adds dog to dogList
           dispatch({
@@ -161,9 +176,6 @@ const DogCreationForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {console.log(formData)}
-      {console.log(validLitterList)}
-      {console.log(dogColours)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -237,8 +249,8 @@ const DogCreationForm = () => {
           <Grid xs={12}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
+          {/* console.log(healthTest); */}
           {Object.entries(healthTestData).map((healthTest, index) => {
-            console.log(healthTest);
             return (
               <Grid key={index} xs={12} sm={4}>
                 <FormControl fullWidth>

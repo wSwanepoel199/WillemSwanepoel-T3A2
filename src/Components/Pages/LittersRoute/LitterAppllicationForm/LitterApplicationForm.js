@@ -5,24 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
-import { colours } from "../../../utils/helpers/findOriginal";
+import { colours } from "../../../utils/helpers/generalTools";
 
 
 // Criteria form must account for
-// >but questions i always ask,      
-// do they have children, ( ages )   if young,    
-//  other pets,   dogs  ( breeds)  are they desexed,  
-//  yard, ?  
 //  where do you plan to have puppy sleeping,     
 //  anything they feel might let me see that they would be a good pick for one of my pups,   I believe in the happiness of the pup first,
-// probably needs their name and contact info too >.>
-
-// TODO - if user has baught dogs, auto fill
-// if user enters dog do stuff
-// impliment sex and colour preferance
-// remove ability to select litter instead apps are assigned to a waitlist to be processed
-
-// moving apps from waitlist to other litters and vice versa, handle apps in waitlist by altering reject val, 
 
 const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();
@@ -69,6 +57,7 @@ const LitterApplicationForm = () => {
   const handleInput = (e) => {
     const { name, value, type } = e.target;
     console.log(`${name}, ${value}, ${type}`);
+    // ensures provided values for child_age and pet_age are handled as integers
     if (name === "child_age" || name === "pets_age") {
       let fixedValue = 0;
       if (Boolean(parseInt(e.target.value))) {
@@ -118,21 +107,8 @@ const LitterApplicationForm = () => {
     };
   };
 
-  const handleHavePet = (e) => {
-    const { value } = e.target;
-    setPets(value);
-  };
-
-  const handleHaveChildren = (e) => {
-    const { value } = e.target;
-    setChildren(value);
-
-  };
-
   // deletes child from childrenData
   const handleDeleteChild = (e, index) => {
-    console.log(e);
-    console.log(index);
     const newChildren = [...childrenData];
     newChildren.splice(index, 1);
     setChildrenData(
@@ -141,8 +117,6 @@ const LitterApplicationForm = () => {
   };
   // deletes pet from petsData
   const handleDeletePet = (e, index) => {
-    console.log(e);
-    console.log(index);
     const newPets = [...petsData];
     newPets.splice(index, 1);
     setPetsData(
@@ -150,25 +124,34 @@ const LitterApplicationForm = () => {
     );
   };
 
+  // handles form submission
   const handleSubmit = (e) => {
+    // blocks default behavious
     e.preventDefault();
+    // spreads formData, childrenData and petsData into an appForm object for submission
     const appForm = {
       ...formData,
       children: [...childrenData],
       pets: [...petsData],
     };
+    // makes post to backend with appForm, if response.status === 201 saves application to globalState
     postApplication(appForm)
       .then(application => {
-        console.log(application);
-        dispatch({
-          type: "updateLitterApplications",
-          data: [...applicationForms, application]
-        });
-        setFormData(initialformData);
-        navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
+        // console.log(application);
+        if (application.status === 201) {
+          dispatch({
+            type: "updateLitterApplications",
+            data: [...applicationForms, application.data]
+          });
+          // clears formData
+          setFormData(initialformData);
+          // navigates to root and triggers alert
+          navigate('/', { state: { alert: true, location: '/', severity: "success", title: "Success", body: `Application Submitted` } });
+        }
       })
       .catch((e) => {
         console.log(e.response);
+        // if any errors navigates to current page and triggers alert
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
       });
   };
@@ -185,8 +168,6 @@ const LitterApplicationForm = () => {
       mr: 'auto',
       maxWidth: "sm",
     }}>
-      {console.log(petsData)}
-      {console.log(formData)}
       <Paper sx={{ p: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -266,7 +247,7 @@ const LitterApplicationForm = () => {
                 row
                 aria-labelledby="add-children-label"
                 value={children}
-                onChange={handleHaveChildren}
+                onChange={() => setChildren(!children)}
                 name="add-children-group-radio"
               >
                 <FormControlLabel value={true} control={<Radio />} label="Yes" />
@@ -274,7 +255,7 @@ const LitterApplicationForm = () => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          {children === "true" &&
+          {children &&
             <>
               <Grid xs={12} sx={{ display: "flex", alignItems: 'center', justifyContent: 'center' }}>
                 <FormControl>
@@ -335,7 +316,7 @@ const LitterApplicationForm = () => {
                 row
                 aria-labelledby="add-pets-label"
                 value={pets}
-                onChange={handleHavePet}
+                onChange={() => setPets(!pets)}
                 name="add-pets-group-radio"
               >
                 <FormControlLabel value={true} control={<Radio />} label="Yes" />
@@ -343,7 +324,7 @@ const LitterApplicationForm = () => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          {pets === "true" &&
+          {pets &&
             <>
               <Grid xs={12} sm={6}>
                 <TextField name="pets_age" fullWidth id="pets_age_id" label="Age" type="number" onChange={handleInput} value={formData.pets_age} />

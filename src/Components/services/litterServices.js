@@ -1,15 +1,14 @@
 import { backEndAPI } from "../utils/componentIndex";
 
+// collection of functions each making a request to a route and returning the response
+
 export async function getLitters() {
   const response = await backEndAPI.get('/litters');
-  console.log(response.data);
   return response.data;
 }
 
 export async function postLitter(data) {
-  console.log(JSON.stringify(data));
   const response = await backEndAPI.post('/litters', data);
-  console.log(response);
   return response;
 }
 
@@ -20,7 +19,6 @@ export async function getLitter(id) {
 
 export async function patchLitter(id, data) {
   const response = await backEndAPI.patch(`/litters/${id}`, data);
-  console.log(response);
   return response;
 }
 
@@ -40,9 +38,8 @@ export async function getLitterApp(id) {
 }
 
 export async function postApplication(data) {
-  console.log(data);
   const response = await backEndAPI.post('/lazy_litter_application_create', data);
-  return response.data;
+  return response;
 }
 
 export async function patchLitterApp(id, data) {

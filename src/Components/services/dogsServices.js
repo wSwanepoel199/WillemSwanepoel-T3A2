@@ -1,5 +1,7 @@
 import { backEndAPI } from "../utils/componentIndex";
 
+// collection of functions each making a request to a route and returning the response
+
 export async function getDogs() {
   const response = await backEndAPI.get('/dogs');
   return response.data;
@@ -9,11 +11,6 @@ export async function postDog(data) {
   const response = await backEndAPI.post('/lazy_dog_create', data);
   return response;
 }
-
-// export async function postDog(data) {
-//   const response = await backEndAPI.post('/dogs', data);
-//   return response;
-// }
 
 export async function getDog(id) {
   const response = await backEndAPI.get(`/dogs/${id}`);
@@ -36,7 +33,6 @@ export async function addPuppy(data) {
 }
 
 export async function pushNewPositions(data) {
-  console.log(data);
   const response = await backEndAPI.patch('/reorder_dogs', data);
   return response;
 }

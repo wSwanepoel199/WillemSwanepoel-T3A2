@@ -6,6 +6,7 @@ import moment from "moment";
 import { useState } from "react";
 import { patchLitter } from "../../../services/litterServices";
 import { useGlobalState } from "../../../utils/stateContext";
+import { updateItemInArray } from "../../../utils/helpers/generalTools";
 
 const Litter = (props) => {
   const { litter, breeder, sire, bitch } = props;
@@ -14,39 +15,27 @@ const Litter = (props) => {
 
   const [open, setOpen] = useState(false);
 
-  const handleClose = () => {
+  // updates status of litter to either open or close
+  const handleStatus = (status) => {
     // creates new Object with updated litter info
     const newLitter = {
       ...litter,
-      status: 2
-    };
-    updateLitterList(newLitter);
-  };
-  const handleOpen = () => {
-    // creates new Object with updated litter info
-    const newLitter = {
-      ...litter,
-      status: 1
+      "status": status
     };
     updateLitterList(newLitter);
   };
 
+  // takes in newLitter object and makes patch to backend
   const updateLitterList = (newLitter) => {
-    // finds original litter in litter list
-    const originalLitter = litterList.find(lit => lit.id === litter.id);
-    // creates mutable array of litter list
-    let newLitterList = [...litterList];
-    // splices new litter info into the position of old litter info
-    newLitterList.splice(litterList.indexOf(originalLitter), 1, newLitter);
     // makes patch to backend to update litter
     patchLitter(litter.id, newLitter)
       .then(litter => {
-        console.log(litter);
-        // on success dispatches new litter list to update global state
+        // console.log(litter);
+        // on success updates litterList state with output of updateItemInArray function
         if (litter.status === 200) {
           dispatch({
             type: 'updateLitterList',
-            data: newLitterList
+            data: updateItemInArray(newLitter, litterList)
           });
         };
       })
@@ -134,11 +123,11 @@ const Litter = (props) => {
                           :
                           <TableCell align="left" size="small">
                             {litter.status === 2 ?
-                              <Button variant="contained" color="info" onClick={handleOpen}>
+                              <Button variant="contained" color="info" onClick={() => handleStatus(1)}>
                                 Open
                               </Button>
                               :
-                              <Button variant="contained" color="error" onClick={handleClose}>
+                              <Button variant="contained" color="error" onClick={() => handleStatus(2)}>
                                 Close
                               </Button>}
                           </TableCell>

@@ -1,20 +1,23 @@
-import { Box, Button, Collapse, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
-import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { getDog } from "../../../services/dogsServices";
 import moment from 'moment';
 import { useGlobalState } from '../../../utils/stateContext';
 import DogCard from '../Dogcard/DogCard';
-import { healthTestKeys, healthTestValues } from '../../../utils/helpers/findOriginal';
-import ViewPedigree from '../DogPedigree/DogPedigree';
+import { healthTestKeys, healthTestValues } from '../../../utils/helpers/generalTools';
 
 const DogDetails = () => {
+  // setting up required hooks
   const { store } = useGlobalState();
-  const { dogList, loggedInUser } = store;
   const params = useParams();
-  const mounted = useRef();
+  const navigate = useNavigate();
 
+  // destructuring objects to make required variables easier to access
+  const { dogList, loggedInUser } = store;
+
+  // sets up states for DogDetails component
   const [dogDetails, setDogDetails] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [healthtest, setHealthtest] = useState([]);
@@ -22,14 +25,20 @@ const DogDetails = () => {
   const [litters, setLitters] = useState([]);
   const [owner, setOwner] = useState([]);
 
-  const [viewPedigree, setViewPedigree] = useState(false);
+  // const [viewPedigree, setViewPedigree] = useState(false);
 
+  // Inputs:
+  //    params: object
+  //    dispatch: function
+  // Function: runs contents on mount and if params or dispatch updates
+  // Used for: updating component state on mount and when information changes
   useEffect(() => {
-    console.log(params);
-    // if (!mounted.current) {
+    // Inputs: params.id: integer
+    // Outputs: backend response
+    // Function: makes get request to '/dogs/:id' where id is the provided integer, then takes response and assigns the values to the various states
+    // Used for: providing the details needed to populate the DogDetails component
     getDog(params.id)
       .then(res => {
-        console.log(res);
         const { data } = res;
         setDogDetails(data.dog);
         setHealthtest(data.healthtest || []);
@@ -37,12 +46,17 @@ const DogDetails = () => {
         setLittter(data.litter || []);
         setGallery(data.gallery_images || []);
         setOwner(data.owner_details || []);
-        // mounted.current = true;
       })
-      .catch(e => console.log(e));
-    // }
-  }, [mounted, params]);
+      .catch(e => {
+        console.log(e);
+        navigate('./404');
+      });
+  }, [params, navigate]);
 
+  // Inputs: test:integer
+  // Outputs: string
+  // Function: checks if test is not null, if true searches healthTestValues array for matching id and returns the assosiated status string. If test is null just returns "Unknown string"
+  // Used for: translates provided test integers from backend into their equivilant string value
   const healthTestAnalizer = (test) => {
     return test !== null ? healthTestValues.find(result => test === result.id).status : "Unknown";
   };
@@ -60,13 +74,12 @@ const DogDetails = () => {
           <Grid xs={12} sx={{ textAlign: 'center', py: 2 }}>
             <Typography variant="h3">{dogDetails.realname}</Typography>
           </Grid>
-          <Grid xs={12} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6">Owner: {owner.username}</Typography>
-          </Grid>
           <Grid xs={6} sx={{ textAlign: 'center' }}>
             {dogDetails.dob
-              ?
-              <Typography >Born: {moment(dogDetails.dob).format('MMM Do YYYY')}</Typography>
+              ? <>
+                {/* uses moment to format provided dog dob value into a Jan 1st 2000 format */}
+                <Typography >Born: {moment(dogDetails.dob).format('MMM Do YYYY')}</Typography>
+              </>
               :
               <Typography>Not Provided</Typography>}
           </Grid>
@@ -144,9 +157,6 @@ const DogDetails = () => {
               {litters.map((litter, index) => {
                 return litter.id !== 1 &&
                   <Grid key={index} xs={12} sm={5} sx={{ textAlign: 'center', p: 1, my: 2 }} component={Paper}>
-                    <Typography variant="h5" sx={{ py: 2, my: 1 }} component={Paper}>
-                      {litter.lname}
-                    </Typography>
                     <Box>
                       <Box component='img' src={litter.main_image} sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />
                     </Box>
@@ -159,7 +169,7 @@ const DogDetails = () => {
               <Grid xs={12}>
                 <Typography variant="h6" sx={{ textAlign: "center", py: 2 }} component={Paper}>Dog's Gallery</Typography>
               </Grid>
-              {console.log(gallery)}
+              {/* {console.log(gallery)} */}
               {gallery.map((image, index) => {
                 return (
                   <Grid xs={12} sm={4} key={index} sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', overflow: 'hidden', p: 1, m: 2 }}>

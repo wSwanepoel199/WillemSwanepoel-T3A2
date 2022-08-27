@@ -1,13 +1,11 @@
-import { Box, Container, Typography, Button, Paper, Stack, List, ListItem, TableBody, ListItemText, IconButton } from "@mui/material";
+import { Box, Typography, Button, Paper, List, ListItem } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getLitter, patchLitter } from "../../../services/litterServices";
-import { CustomTable, LitterApplicationManage, useGlobalState } from "../../../utils/componentIndex";
-import { updateItemInArray } from "../../../utils/helpers/findOriginal";
+import { LitterApplicationManage, useGlobalState } from "../../../utils/componentIndex";
+import { updateItemInArray } from "../../../utils/helpers/generalTools";
 
 // Add app id field for identifyier, and include fufill state
 // management for unproccseed, approved and rejected
@@ -21,19 +19,23 @@ const LitterApplications = () => {
   const [litterApplications, setLitterApplications] = useState([]);
   const [availablePuppies, setAvailablePups] = useState([]);
 
+  // on component mount or on dogList, userList and params update, makes get to bad for litter with id that matches params.id
+  // assigns returned litter to litterDetails along side its breeder, sire and bitch which are found by searching for an object whos' id mattches the corresponding breeder, sire and bitch id
   useEffect(() => {
     getLitter(params.id)
       .then(litter => {
-        console.log(litter);
+        // console.log(litter);
         setLitterDetail({
           ...litter,
           breeder: userList.find((user) => user.id === litter.breeder_id),
           sire: dogList.find((sire) => sire.id === litter.sire_id),
           bitch: dogList.find((bitch) => bitch.id === litter.bitch_id),
         });
+        // if litter contains any applications, the are assigned to the litterApplications state
         if (litter.litterApplications) {
           setLitterApplications(litter.litterApplications);
         }
+        // if litter contains any puppies and unassigned is atleast 1 value in it, filters out puppies who's id is not included in unassigned and saves to availablePuppies state
         if (litter.puppies && litter.unassigned.length > 0) {
           setAvailablePups(litter.puppies.filter(puppy => litter.unassigned.includes(puppy.id)));
         }
@@ -41,6 +43,7 @@ const LitterApplications = () => {
       .catch(e => console.log(e));
   }, [dogList, userList, params]);
 
+  // secondary control to open or close litter, takes in status and makes patch to back, if response === 200 uses updateItemInArray to update litter in litterList
   const handleOpenOrClose = (newStatus) => {
     const litter = {
       ...litterDetail,
@@ -75,9 +78,6 @@ const LitterApplications = () => {
             flexDirection: 'column',
             py: 2
           }}>
-            {console.log(litterDetail)}
-            {console.log(litterApplications)}
-            {console.log(availablePuppies)}
             <Grid xs={12} >
               <Typography variant="h3" align="center">
                 {litterDetail.lname} Applications

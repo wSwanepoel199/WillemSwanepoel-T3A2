@@ -5,7 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { getDog, patchDog, getDogs } from "../../../services/dogsServices";
-import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/generalTools";
 
 // can't update litter of dog due to to lack of support from back
 
@@ -28,71 +28,75 @@ const DogUpdateForm = () => {
   };
   // sets initial state of application
   const [formData, setFormData] = useState(initialFormData);
-  const [dog, setDog] = useState({});
+  const [dog, setDog] = useState([]);
   const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [litterData, setLitterData] = useState({ litter_id: '' });
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
-  // on component mount, makes get request for a dog and assigns specific values to the form state, also saves the whole dog to the dog state
+  // on component mount, params update and litterList update, makes get request for a dog, if response status is 200, and assigns specific values to the form state, healthtest state, litterdata state and validlitterlist state, also saves the whole data object to dog state
   useEffect(() => {
-    getDog(params.id)
-      .then(dog => {
-        console.log(dog);
-        if (dog.status === 200) {
-          const { data } = dog;
-          setDog(data);
-          let dogColour = data.dog.colour;
-          if (dogColour === 0) {
-            dogColour = '';
+    if (dog.length === 0) {
+      getDog(params.id)
+        .then(dog => {
+          // console.log(dog);
+          if (dog.status === 200) {
+            const { data } = dog;
+            setDog(data);
+            let dogColour = data.dog.colour;
+            if (dogColour === 0) {
+              dogColour = '';
+            }
+            setFormData({
+              ...formData,
+              id: data.dog.id,
+              realname: data.dog.realname,
+              callname: data.dog.callname,
+              sex: data.dog.sex,
+              description: data.dog.description || '',
+              colour: dogColour,
+              chipnumber: data.dog.chipnumber || '',
+            });
+            setHealthTestData({
+              ...healthTestData,
+              pra: data.healthtest.pra,
+              fn: data.healthtest.fn,
+              aon: data.healthtest.aon,
+              ams: data.healthtest.ams,
+              bss: data.healthtest.bss,
+            });
+            if (data.litter) {
+              setValidLitterList([
+                data.litter,
+                ...litterList.filter(litter => litter.status === 3)
+              ]);
+              setLitterData({ litter_id: data.litter.id });
+            } else {
+              setValidLitterList(litterList.filter(litter => litter.status === 3));
+            }
           }
-          setFormData({
-            ...formData,
-            id: data.dog.id,
-            realname: data.dog.realname,
-            callname: data.dog.callname,
-            sex: data.dog.sex,
-            description: data.dog.description || '',
-            colour: dogColour,
-            chipnumber: data.dog.chipnumber || '',
-          });
-          setHealthTestData({
-            ...healthTestData,
-            pra: data.healthtest.pra,
-            fn: data.healthtest.fn,
-            aon: data.healthtest.aon,
-            ams: data.healthtest.ams,
-            bss: data.healthtest.bss,
-          });
-          if (data.litter) {
-            setValidLitterList([
-              data.litter,
-              ...litterList.filter(litter => litter.status === 3)
-            ]);
-            setLitterData({ litter_id: data.litter.id });
-          } else {
-            setValidLitterList(litterList.filter(litter => litter.status === 3));
-          }
-        }
-      })
-      .catch(e => console.log(e));
-    // finds litters with a status of 3, meaning they are nomial
-    // setValidLitterList([
-    //   ...validLitterList,
-    //   ...litterList.filter(litter => litter.status === 3)
-    // ]);
-    setDogColours(colours);
-  }, [litterList, params.id]);
+        })
+        .catch(e => console.log(e)); // console logs any errors
+      // finds litters with a status of 3, meaning they are nomial
+      // setValidLitterList([
+      //   ...validLitterList,
+      //   ...litterList.filter(litter => litter.status === 3)
+      // ]);
+      setDogColours(colours); // assigns colours to dogColours state
+    }
+  }, [litterList, params.id, dog, formData, healthTestData]);
 
-  // handlles the forms general input
+  // handles the forms general input by desctructuring name and value from triggering event target
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name, ":", value);
+    // console.log(name, ":", value);
+    // runs custom form state update if name is 'sex'
     if (name === 'sex') {
       setFormData({
         ...formData,
         [name]: parseInt(value)
       });
+      // runs custom form state update if name is 'litter_id'
     } else if (name === 'litter_id') {
       setLitterData({ [name]: value });
       setFormData({
@@ -110,13 +114,18 @@ const DogUpdateForm = () => {
     }
   };
 
-  // handles input for health tests, not yet implimented in edit
+  // handles input for health tests
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
-
     setHealthTestData({
       ...healthTestData,
       [name]: parseInt(value)
+    });
+    setFormData({
+      ...formData,
+      healthtest: {
+        [name]: value
+      }
     });
   };
 
@@ -124,12 +133,14 @@ const DogUpdateForm = () => {
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    console.log(name, files);
+    // console.log(name, files);
+    // assigns image file if name is 'main_image'
     if (name === 'main_image') {
       setFormData({
         ...formData,
         [name]: files[0]
       });
+      // assigns array of images if name is 'gallery_images'
     } else if (name === 'gallery_images') {
       setFormData({
         ...formData,
@@ -138,12 +149,12 @@ const DogUpdateForm = () => {
     }
   };
 
-  // handles the form submit, patching the dog and making a get request to dogs for an uppdated dog list
+  // on form submit, creates empty dog object, filters out any empty strings and assigns the rest to the dog object. once done converts object into FormData format and patches to back
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
     let dog = {
-      healthtest: { ...healthTestData }
+      // healthtest: { ...healthTestData }
     };
     Object.entries(formData).forEach((item) => {
       console.log(item);
@@ -159,7 +170,8 @@ const DogUpdateForm = () => {
     const postForm = fd({ dog });
     patchDog(params.id, postForm)
       .then(dog => {
-        console.log(dog);
+        // console.log(dog);
+        // if reply.status === 200 makes get request to back and refreshes dogList with reply
         if (dog.status === 200) {
           getDogs()
             .then(dogs => {
@@ -178,7 +190,7 @@ const DogUpdateForm = () => {
       })
       .catch(e => {
         console.log(e);
-        // navigates to current page and alters user of any errors
+        // navigates to current page and alerts user of any errors
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} Error`, body: `${e.response.statusText}` } });
       });
   };
@@ -190,9 +202,9 @@ const DogUpdateForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {console.log(dog)}
+      {/* {console.log(dog)}
       {console.log(formData)}
-      {console.log(validLitterList)}
+      {console.log(validLitterList)} */}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>

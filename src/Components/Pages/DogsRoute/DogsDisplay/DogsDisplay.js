@@ -1,11 +1,7 @@
 import { useGlobalState, DogCard } from "../../../utils/componentIndex";
 import { Box, Typography, Paper, Pagination } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import { useEffect, useRef, useState } from "react";
-
-// known issues; patching to often, patching with to much data(not sure if avoidable)
-// honestly whole page needs rework
-// https://overreacted.io/how-are-function-components-different-from-classes/ worth using either class or implimented another use of useRef for dogs
+import { useEffect, useState } from "react";
 
 
 const DisplayDogs = (params) => {
@@ -14,7 +10,7 @@ const DisplayDogs = (params) => {
   // makes doglist available
   const { dogList } = store;
 
-  const mounted = useRef();
+  // const mounted = useRef();
 
   // sets initial states of page
   const [dogs, setDogs] = useState([]); // <= stores the dogs that are being displaye
@@ -24,7 +20,7 @@ const DisplayDogs = (params) => {
 
   // on mount fills dogs state with doglist, and orders them from lowerest value postion to highest
   useEffect(() => {
-    setDogs(handleSex(params, dogList.filter(dog => dog.display ? dog.display === true : dog).sort((a, b) => a.position - b.position)));
+    setDogs(handleSex(params, dogList.filter(dog => dog.display).sort((a, b) => a.position - b.position)));
     setItemsPerPage(12);
   }, [params, dogList]);
 
@@ -51,10 +47,12 @@ const DisplayDogs = (params) => {
     }
   };
 
+  // converts the first character in provided string into a capital and returns it
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
+  // handles changing page value for pagination
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
@@ -62,7 +60,7 @@ const DisplayDogs = (params) => {
   return (
     <>
       <Box>
-        {console.log("local state dogs:", dogs)}
+        {/* {console.log("local state dogs:", dogs)} */}
         <Box sx={{ py: 2, textAlign: 'center' }}>
           <Typography variant="h2" >{capitalize(params.id)} Dogs</Typography>
         </Box>
