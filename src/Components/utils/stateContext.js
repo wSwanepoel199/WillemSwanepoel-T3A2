@@ -3,8 +3,9 @@ import { reducer, init } from './componentIndex';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
-export const StateContext = createContext();
+// creates custom context for use of accessing global state, is also used to provide adapter settings for MUI date picker
 
+export const StateContext = createContext();
 
 export const StateProvider = ({ children }) => {
   // sets the inital state of the application

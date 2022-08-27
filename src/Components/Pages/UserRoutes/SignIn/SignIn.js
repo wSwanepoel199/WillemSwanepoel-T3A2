@@ -41,19 +41,18 @@ const SignInForm = () => {
     //makes post to '/users/sign_in/' with submitForm as data
     signIn(submitForm)
       .then((user) => {
-        // console.log(user);
         // on status 200 assigns response to sessionStorage and clears globalState
-        if (user.status === 201) {
-          sessionStorage.setItem("user", JSON.stringify(user.data));
-          dispatch({
-            type: "cleanState",
-            payload: initialState
-          });
-          // clears form and navigates back to root while triggering alert
-          setFormData(initialFormData);
-          navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.data.username}`, body: `You have successfully logged in` } });
-        }
+        // if (user.status === 201) {
+        sessionStorage.setItem("user", JSON.stringify(user.data));
+        dispatch({
+          type: "cleanState",
+          payload: initialState
+        });
+        // clears form and navigates back to root while triggering alert
+        setFormData(initialFormData);
+        navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.data.username}`, body: `You have successfully logged in` } });
       }
+        // }
       )
       .catch(e => {
         console.log(e.response);
@@ -95,7 +94,6 @@ const SignInForm = () => {
         mr: 'auto',
         maxWidth: "sm",
       }}>
-        {console.log(formData)}
         <Paper sx={{ padding: 4 }}>
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid item xs={12} sx={{ mb: 3 }}>

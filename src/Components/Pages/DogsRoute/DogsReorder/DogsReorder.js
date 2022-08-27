@@ -58,11 +58,11 @@ const DogsReorder = () => {
     // makes patch request to back containing object which all new dog positions, if response status is 200, makes a get request to dogs#index and refreshes dogList with new dog list, then navigates to dogs/manage and triggers success alert
     pushNewPositions(finalList)
       .then(reply => {
-        // console.log(reply);
+
         if (reply.status === 201) {
           getDogs()
             .then(dogs => {
-              console.log(dogs);
+
               dispatch({
                 type: "setDogList",
                 data: dogs
@@ -127,9 +127,6 @@ const DogsReorder = () => {
 
   return (
     <Box>
-      {/* {console.log("local state dogs:", dogs)}
-      {console.log(filter)}
-      {console.log(positions)} */}
       <Button onClick={handleSave}>Save New Positions</Button>
       <Button onClick={() => navigate('..')}>Cancel</Button>
       <Box sx={{ py: 2, textAlign: 'center' }}>

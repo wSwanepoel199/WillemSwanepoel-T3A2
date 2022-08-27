@@ -84,8 +84,7 @@ const DogCreationForm = () => {
   // Used for: managing inputs for healthtest
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
-    // console.log(healthTestData);
-    // console.log(name, value);
+
     setHealthTestData({
       ...healthTestData,
       [name]: value
@@ -106,7 +105,7 @@ const DogCreationForm = () => {
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    // console.log(name, files);
+
     // if name is main_image, saves single file to state
     if (name === 'main_image') {
       setFormData({
@@ -127,12 +126,12 @@ const DogCreationForm = () => {
   // Used for: creating new dogs
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(e);
+
     let dog = {
       // healthtest: { ...healthTestData },
     };
     Object.entries(formData).forEach((item) => {
-      // console.log(item);
+
       if (item[1] === '') {
         return;
       } else {
@@ -249,7 +248,7 @@ const DogCreationForm = () => {
           <Grid xs={12}>
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
-          {/* console.log(healthTest); */}
+
           {Object.entries(healthTestData).map((healthTest, index) => {
             return (
               <Grid key={index} xs={12} sm={4}>

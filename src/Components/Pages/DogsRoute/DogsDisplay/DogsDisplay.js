@@ -60,7 +60,7 @@ const DisplayDogs = (params) => {
   return (
     <>
       <Box>
-        {/* {console.log("local state dogs:", dogs)} */}
+
         <Box sx={{ py: 2, textAlign: 'center' }}>
           <Typography variant="h2" >{capitalize(params.id)} Dogs</Typography>
         </Box>

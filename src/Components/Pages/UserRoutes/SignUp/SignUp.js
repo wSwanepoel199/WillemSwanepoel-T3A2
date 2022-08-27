@@ -75,7 +75,7 @@ const SignUpForm = () => {
           navigate("/", { state: { alert: true, location: '/', severity: 'warning', title: "Check Email", body: "Please check your emails for the account confirmation link" } });
         })
         .catch(e => {
-          console.log(e.response.data.errors);
+          console.log(e.response);
           navigate("/", { state: { alert: true, location: '/', severity: 'error', title: `${e.response.status} Error`, body: `${e.response.data.message}` } });
         });
     } else {

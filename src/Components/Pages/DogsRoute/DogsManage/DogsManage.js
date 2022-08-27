@@ -39,7 +39,7 @@ const DogsManage = () => {
   const handleSearchSubmit = () => {
     getDogByChip(chipSearch)
       .then(reply => {
-        console.log(reply);
+
         if (reply.status === 200) {
           setDogs([reply.data.dog]);
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Dog Found`, body: `Dog found with microchip number ${reply.data.dog.chipnumber}` } });

@@ -24,7 +24,6 @@ const LitterApplications = () => {
   useEffect(() => {
     getLitter(params.id)
       .then(litter => {
-        // console.log(litter);
         setLitterDetail({
           ...litter,
           breeder: userList.find((user) => user.id === litter.breeder_id),
@@ -51,7 +50,6 @@ const LitterApplications = () => {
     };
     patchLitter(litter.id, litter)
       .then(litter => {
-        console.log(litter);
         // on success dispatches new litter list to update global state
         if (litter.status === 200) {
           dispatch({

@@ -41,7 +41,7 @@ const LitterApplication = (props) => {
     if (action !== "assign") {
       patchLitterApp(app.id, { ...app, fulfillstate: state, litter_id: 1 })
         .then(app => {
-          // console.log(app);
+
           // onsuccess makes get for updated litter applitions list and updates state with new data
           if (app.status === 200) {
             getLitterApps()
@@ -79,7 +79,7 @@ const LitterApplication = (props) => {
   // sets selected puppy id to puppySelect state
   const handlePuppySelect = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+
     setPuppySelect({
       [name]: value
     });
@@ -94,7 +94,7 @@ const LitterApplication = (props) => {
     };
     assignPuppy(postForm)
       .then(reply => {
-        // console.log(reply);
+
         // on reply status 200 makes get request to back for updated application forms list, and assings reply to global state
         if (reply.status === 200) {
           getLitterApps()
