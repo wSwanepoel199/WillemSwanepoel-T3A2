@@ -4,8 +4,8 @@ import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import { useEffect, useState } from "react";
 import { useGlobalState, Dog, CustomTable } from "../../../utils/componentIndex";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getDogByChip, getDogs } from "../../../services/dogsServices";
-import { getUsers } from "../../../services/authServices";
+import { getDogByChip } from "../../../services/dogsServices";
+// import { getUsers } from "../../../services/authServices";
 
 const DogsManage = () => {
   const { store } = useGlobalState();
@@ -21,10 +21,12 @@ const DogsManage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [chipSearch, setChipSearch] = useState({});
 
+  // on component mount and dogList update, sets dogs state to dogList
   useEffect(() => {
     setDogs(dogList);
   }, [dogList]);
 
+  // handles input for chipnumber search by destructuring out name and value from passed event target and saving to chipsearch state
   const handleSearch = (e) => {
     const { name, value } = e.target;
     setChipSearch({
@@ -33,6 +35,7 @@ const DogsManage = () => {
     });
   };
 
+  // makes post to '/find-dog' and saves retured dog to dogs state then navigates to current page inorder to trigger alert
   const handleSearchSubmit = () => {
     getDogByChip(chipSearch)
       .then(reply => {
@@ -43,12 +46,13 @@ const DogsManage = () => {
         }
       })
       .catch(e => {
+        // on error console logs error then navigates to current page inorder to trigger allert with error details
         console.log(e);
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} No Dog Found`, body: `${e.response.data.message}` } });
       });
   };
 
-  // order values based on provided id
+  // called by getComparator, is provided values for a and b which are then ordered dependant on value of orderBy
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -59,14 +63,14 @@ const DogsManage = () => {
     return 0;
   }
 
-  // inverts return if order of return is 'asc'
+  // calls descendingComparator and passes it the values of a, b, and orderBy, then inters output if order value is 'desc'
   function getComparator(order, orderBy) {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
   }
 
-  // sets page value for pagination
+  // updates the page value for pagination
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
@@ -77,13 +81,17 @@ const DogsManage = () => {
     setPage(0);
   };
 
-  // calculates if isAsc is true to control if setOrder is asc or desc then sets new order id
+  // updates sorting state based on passed property value, (string that matches key values of data)
   const createSortHandler = (property) => (e) => {
+    // checks if orderBy is already equal to propery value and that order is already asc
     const isAsc = orderBy === property && order === 'asc';
+    // if either of the top 2 checks return false order state remains 'asc', if both are true, will switch order state to 'desc'
     setOrder(isAsc ? 'desc' : 'asc');
+    // sets orderBy state to the value of property
     setOrderBy(property);
   };
 
+  // simple reset function to reset dogs, order and orderBy state to values present on mount
   const handleFilterReset = () => {
     setOrderBy("id");
     setOrder('asc');

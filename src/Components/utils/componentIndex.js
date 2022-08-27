@@ -22,7 +22,6 @@ import DisplayDogs from '../Pages/DogsRoute/DogsDisplay/DogsDisplay';
 import NotFound from '../Pages/NotFound';
 import LitterIndex from '../Pages/LittersRoute/LitterIndex';
 import LitterApplication from '../Pages/LittersRoute/LitterApplication/LitterApplication';
-// import LitterApplicationsManage from '../Pages/LittersRoute/LitterApplicationsManage/LitterApplicationsManage';
 import Litter from '../Pages/LittersRoute/Litter/Litter';
 import LitterManage from '../Pages/LittersRoute/LitterManage/LitterManage';
 import LitterCreationForm from '../Pages/LittersRoute/LitterCreate/LitterCreate';
@@ -44,7 +43,6 @@ import ViewLitters from '../Pages/UserRoutes/ProfileView/ViewLitters/ViewLitters
 import SignInForm from '../Pages/UserRoutes/SignIn/SignIn';
 import SignUpForm from '../Pages/UserRoutes/SignUp/SignUp';
 import SignOut from '../Pages/UserRoutes/SignOut/SignOut';
-import SignUpRedirect from '../Pages/UserRoutes/SignUpRedirect/SignUpRedirect';
 import SignUpConfirm from '../Pages/UserRoutes/SignUpConfirm/SignUpConfirm';
 // API
 import backEndAPI from './api';
@@ -76,7 +74,6 @@ export {
   DisplayDogs,
   LitterIndex,
   LitterApplication,
-  // LitterApplicationsManage,
   LitterApplicationForm,
   LitterApplicationManage,
   LitterApplicationDetails,
@@ -97,7 +94,6 @@ export {
   ViewLitters,
   SignInForm,
   SignUpForm,
-  SignUpRedirect,
   SignOut,
   SignUpConfirm,
   NotFound,

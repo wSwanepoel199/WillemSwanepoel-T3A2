@@ -1,5 +1,7 @@
 import { backEndAPI } from "../utils/componentIndex";
 
+// collection of functions each making a request to a route and returning the response
+
 export async function getForms() {
   const response = await backEndAPI.get('/contacts');
   return response.data;

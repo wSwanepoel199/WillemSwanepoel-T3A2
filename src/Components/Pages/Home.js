@@ -1,45 +1,27 @@
 import temp_avatar from '../Shared/Assests/Temp Avatar.jpg';
-import { StyledImage } from '../Shared/styles/Home.styled';
 import { Container, Typography, Paper, Box } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { DogCard, useGlobalState } from '../utils/componentIndex';
-import { useEffect, useState } from 'react';
-// import { getBest } from '../services/litterServices';
-// import { getDogs } from '../services/dogsServices';
 
 const Home = () => {
-  const { store, dispatch } = useGlobalState();
+  const { store } = useGlobalState();
   const { dogList } = store;
 
-  // const [showCase, setShowCase] = useState([]);
-
-  // useEffect(() => {
-  // getDogs()
-  //   .then(reply => {
-  //     dispatch({
-  //       type: "setDogList",
-  //       data: reply.filter(dog => dog.display === true)
-  //     });
-  //   })
-  //   .catch(e => {
-  //     console.log(e);
-  //   });
-  // getBest()
-  //   .then(reply => {
-  //     console.log(reply);
-  //     if (reply.status === 200) {
-  //       setShowCase(reply.data.images.filter((image, index) => index < 5));
-  //     }
-  //   })
-  //   .catch(e => {
-  //     console.log(e);
-  //   });
-  // }, []);
-
+  // takes in an array of dogs, sorts based on position then selects the 4 highest positon which are set to display
   const topDogs = (dogs) => {
     const orderedDogs = dogs.sort((a, b) => a.position - b.position);
-    let topDogs;
+    let displayDogs = [];
     let n = 0;
+    orderedDogs.forEach((dog) => {
+      if (dog.display && n < 4) {
+        n = n + 1;
+        displayDogs = [
+          ...displayDogs,
+          dog
+        ];
+      }
+    });
+    return displayDogs;
   };
 
   return (
@@ -48,7 +30,7 @@ const Home = () => {
         {/* Main Body Introduction */}
         <Grid container spacing={3} alignItems="center">
           <Grid sm={6}>
-            <StyledImage src={temp_avatar} />
+            <Box component="img" src={temp_avatar} sx={{ maxWidth: { xs: "100%", lg: "75%" }, maxHeight: '100%', alignSelf: 'center' }} />
           </Grid>
           <Grid sm={6}>
             <Typography variant="p" component="div">
@@ -62,24 +44,14 @@ const Home = () => {
           <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Dogs</Typography>
           {/* Cards for display items */}
           <Grid container spacing={3} justifyContent="center" >
-            {dogList.filter((dog) => dog.position < 5).map((dog, index) =>
-              <Grid key={index} xs={10} sm={5} md={5} lg={3}>
-                <DogCard dog={dog} />
-              </Grid>
-            )}
+            {topDogs(dogList).length === 4 && topDogs(dogList).map((dog, index) => {
+              return (
+                <Grid key={index} xs={10} sm={5} md={5} lg={3}>
+                  <DogCard dog={dog} />
+                </Grid>);
+            })}
           </Grid>
         </Box>
-        {/* <Box>
-          <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Litter</Typography>
-          <Grid container justifyContent="center">
-            {showCase.map((image, index) =>
-              <Grid key={index} xs={10} sm={5} md={5} lg={3}>
-                {console.log(image)}
-                <Box component="img" src={image} sx={{ width: '100%' }} />
-              </Grid>
-            )}
-          </Grid>
-        </Box> */}
       </Container>
     </>
   );

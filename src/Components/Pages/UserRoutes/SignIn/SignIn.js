@@ -17,18 +17,20 @@ const SignInForm = () => {
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  // controls if password is being show or hidden
   const handleShowPassword = () => {
     setFormData({
       ...formData,
       showPassword: !formData.showPassword
     });
-    console.log(formData);
   };
 
+  // prevents copying of password
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  // on form submit spreads formData into user object which is contained in submitForm
   const handleSubmit = (e) => {
     e.preventDefault();
     const submitForm = {
@@ -36,16 +38,21 @@ const SignInForm = () => {
         ...formData
       }
     };
+    //makes post to '/users/sign_in/' with submitForm as data
     signIn(submitForm)
       .then((user) => {
-        console.log(user);
-        localStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: "cleanState",
-          payload: initialState
-        });
-        setFormData(initialFormData);
-        navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.username}`, body: `You have successfully logged in` } });
+        // console.log(user);
+        // on status 200 assigns response to sessionStorage and clears globalState
+        if (user.status === 201) {
+          sessionStorage.setItem("user", JSON.stringify(user.data));
+          dispatch({
+            type: "cleanState",
+            payload: initialState
+          });
+          // clears form and navigates back to root while triggering alert
+          setFormData(initialFormData);
+          navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.data.username}`, body: `You have successfully logged in` } });
+        }
       }
       )
       .catch(e => {
@@ -54,6 +61,7 @@ const SignInForm = () => {
       });
   };
 
+  // saves input from text fields to formState
   const handleInput = (e) => {
     setFormData({
       ...formData,

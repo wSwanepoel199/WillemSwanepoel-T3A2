@@ -1,3 +1,7 @@
+// takes in an updated array value, the array that value was from and a modifier for any situations that aren't standard
+// outputs an updated array where the newvalue has taken the place of the original
+// does this by locating the original value within the array using id, type is used if no id will be present and another criteria is required to locate original value.
+// once found array is spread into a new mutable version inorder to ensure to issues with immutable arrays and a splice is used to insert the updated item before returning mutated array
 export function updateItemInArray(item, array, type) {
   // locates original item in provided array
   let originalItem;
@@ -20,6 +24,7 @@ export function updateItemInArray(item, array, type) {
   return newArray;
 }
 
+// array to translate backend colour ids to their actual meaning
 export const colours = [
   { id: 0, colour: "No Preferance" },
   { id: 1, colour: "Black" },

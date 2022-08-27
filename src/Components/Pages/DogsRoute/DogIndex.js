@@ -1,21 +1,13 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router";
-import { getDogs } from "../../services/dogsServices";
 import { getLitters } from "../../services/litterServices";
 import { useGlobalState } from "../../utils/stateContext";
 
 const DogIndex = () => {
   const { dispatch } = useGlobalState();
 
+  // on component mount and when dispatch updates makes get to back for litterList and saves to global State
   useEffect(() => {
-    // getDogs()
-    //   .then(reply => {
-    //     dispatch({
-    //       type: "setDogList",
-    //       data: reply
-    //     });
-    //   })
-    //   .catch(e => console.log(e));
     getLitters()
       .then(reply => {
         dispatch({
@@ -24,7 +16,7 @@ const DogIndex = () => {
         });
       })
       .catch(e => console.log(e));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
