@@ -9,10 +9,11 @@ import { colours, healthTestKeys, healthTestValues } from "../../../utils/helper
 
 const DogCreationForm = () => {
   const { store, dispatch } = useGlobalState();
-  const { litterList, dogList } = store;
   const navigate = useNavigate();
   const location = useLocation();
   const fd = require('form-data-extended');
+
+  const { litterList, dogList } = store;
 
   // sets form and heath test initial data
   const initialFormData = {

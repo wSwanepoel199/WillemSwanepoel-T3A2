@@ -39,13 +39,15 @@ const SignInForm = () => {
     signIn(submitForm)
       .then((user) => {
         console.log(user);
-        sessionStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: "cleanState",
-          payload: initialState
-        });
-        setFormData(initialFormData);
-        navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.username}`, body: `You have successfully logged in` } });
+        if (user.status === 201) {
+          sessionStorage.setItem("user", JSON.stringify(user.data));
+          dispatch({
+            type: "cleanState",
+            payload: initialState
+          });
+          setFormData(initialFormData);
+          navigate("/", { state: { alert: true, location: '/', severity: 'success', title: `Welcome ${user.data.username}`, body: `You have successfully logged in` } });
+        }
       }
       )
       .catch(e => {

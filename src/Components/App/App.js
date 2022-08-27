@@ -55,7 +55,7 @@ const App = () => {
   //    dispatch: function
   //    dogList: array
   //    loggedInUser: object
-  // Function: runs contents on component mount or if dogList or loggedInUser updates
+  // Function: runs contents on component mount or if dogList, dispatch or loggedInUser updates
   // Used for: makes sure dogList and loggedInUser global state remain as up to date as possible
   useEffect(() => {
     if (dogList.length === 0) {

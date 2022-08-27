@@ -7,7 +7,7 @@ export async function signUp(data) {
 
 export async function signIn(data) {
   const response = await backEndAPI.post('/users/sign_in', data);
-  return response.data;
+  return response;
 }
 
 export async function getUsers() {

@@ -21,7 +21,6 @@ const SignUpForm = () => {
     lastname: '',
     address1: '',
     address2: '',
-    state: '',
     postcode: "",
     showPassword: false,
     showPasswordConfirmation: false
@@ -81,7 +80,7 @@ const SignUpForm = () => {
           navigate("/", { state: { alert: true, location: '/', severity: 'error', title: `${e.response.status} Error`, body: `${e.response.data.message}` } });
         });
     } else {
-      navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: "Password miss match", body: "password does not match password confirmation" } });
+      navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: "Password miss match", body: "password and password confirmation do not match" } });
     }
   };
 
@@ -206,7 +205,7 @@ const SignUpForm = () => {
             </Grid>
             <Grid xs={12}>
               <Container fluid="true">
-                <Button variant="contained" type="submit" disableRipple>Sign Up</Button>
+                <Button variant="contained" type="submit">Sign Up</Button>
                 <Link to="/user/signIn">
                   <Button variant="text">sign in</Button>
                 </Link>

@@ -13,7 +13,6 @@ const DogDetails = () => {
   const { store } = useGlobalState();
   const params = useParams();
   const navigate = useNavigate();
-  // const mounted = useRef();
 
   // destructuring objects to make required variables easier to access
   const { dogList, loggedInUser } = store;
@@ -28,19 +27,18 @@ const DogDetails = () => {
 
   // const [viewPedigree, setViewPedigree] = useState(false);
 
-  // Inputs: what args does the function take and what type are each of them.
-  // Outputs: what are the names of the things the function might return, what type are they, what conditions lead to one return or another.
-  // Function: what does the function do with the inputs to turn them into the outputs, the control flow and the functions
-  // Called by: list all functions that call this function
-  // Used for: what feature(s) does this support at the userspace level
+  // Inputs:
+  //    params: object
+  //    dispatch: function
+  // Function: runs contents on mount and if params or dispatch updates
+  // Used for: updating component state on mount and when information changes
   useEffect(() => {
-    // console.log(params);
-    // if (!mounted.current) {
-    // makes get request for a dog using the id value provided via url
+    // Inputs: params.id: integer
+    // Outputs: backend response
+    // Function: makes get request to '/dogs/:id' where id is the provided integer, then takes response and assigns the values to the various states
+    // Used for: providing the details needed to populate the DogDetails component
     getDog(params.id)
       .then(res => {
-        // console.log(res);
-        // destructures out data and assings values to their own states, if any value other than dog is null, it instead provides an empty array
         const { data } = res;
         setDogDetails(data.dog);
         setHealthtest(data.healthtest || []);
@@ -48,16 +46,17 @@ const DogDetails = () => {
         setLittter(data.litter || []);
         setGallery(data.gallery_images || []);
         setOwner(data.owner_details || []);
-        // mounted.current = true;
       })
       .catch(e => {
         console.log(e);
         navigate('./404');
       });
-    // }
   }, [params, navigate]);
 
-  // called for health test rendering, takes provded results from healthtest state and translates them into their appropriate value, any null tests are listed as
+  // Inputs: test:integer
+  // Outputs: string
+  // Function: checks if test is not null, if true searches healthTestValues array for matching id and returns the assosiated status string. If test is null just returns "Unknown string"
+  // Used for: translates provided test integers from backend into their equivilant string value
   const healthTestAnalizer = (test) => {
     return test !== null ? healthTestValues.find(result => test === result.id).status : "Unknown";
   };
@@ -77,8 +76,10 @@ const DogDetails = () => {
           </Grid>
           <Grid xs={6} sx={{ textAlign: 'center' }}>
             {dogDetails.dob
-              ?
-              <Typography >Born: {moment(dogDetails.dob).format('MMM Do YYYY')}</Typography>
+              ? <>
+                {/* uses moment to format provided dog dob value into a Jan 1st 2000 format */}
+                <Typography >Born: {moment(dogDetails.dob).format('MMM Do YYYY')}</Typography>
+              </>
               :
               <Typography>Not Provided</Typography>}
           </Grid>
