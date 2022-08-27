@@ -53,7 +53,7 @@ const LitterManage = () => {
   // sets id of selected litter to selectedLitter state
   const handleSelect = (e) => {
     const { name, value } = e.target;
-    console.log(e);
+
     setSelectedLitter({
       [name]: parseInt(value)
     });
@@ -66,7 +66,6 @@ const LitterManage = () => {
       // makes patch request to '/litter_applications/:id' where updatingApp.id is the :id and the data consits of the updatingApp object, a litter_id key which the id from selectedLitter and a fulfillstate update to 1
       patchLitterApp(updatingApp.id, { ...updatingApp, litter_id: selectedLitter.select_litter, fulfillstate: 1 })
         .then(app => {
-          console.log(app);
           if (app.status === 200) {
             // if response.status === 200 makes get request to back for updated litter applications and refreshes global state
             getLitterApps()

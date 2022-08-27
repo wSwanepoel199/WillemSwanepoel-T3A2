@@ -47,6 +47,8 @@ import SignUpConfirm from '../Pages/UserRoutes/SignUpConfirm/SignUpConfirm';
 // API
 import backEndAPI from './api';
 
+// index file where all imports are first made inorder to simply the moving or altering of files if many components rely on it
+
 // Export Components
 export {
   // Utils

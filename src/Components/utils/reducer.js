@@ -2,15 +2,14 @@ export const init = (initialState) => {
   return { ...initialState };
 };
 
+// reducer with honestly a large amount of non needed cases
+
 export const reducer = (state, action) => {
   switch (action.type) {
     case "cleanState": {
       return init(action.payload);
     }
     case "setDogList": {
-      // fills ini
-      // sessionStorage.setItem("dogList", JSON.stringify(action.data));
-      // console.log(action.data);
       return {
         ...state,
         dogList: action.data
@@ -34,7 +33,6 @@ export const reducer = (state, action) => {
     }
     case "setLoggedInUser": {
       //updates the loggedInUser value
-      console.log(action.data);
       return {
         ...state,
         loggedInUser: action.data
@@ -103,7 +101,6 @@ export const reducer = (state, action) => {
     }
     case "updateValidBitches": {
       // fills list of valid bitches
-      console.log(action.data);
       return {
         ...state,
         bitches: action.data

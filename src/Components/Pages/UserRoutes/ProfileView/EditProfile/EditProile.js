@@ -95,7 +95,6 @@ const EditForm = ({ user, handleProfileSwitch }) => {
           mr: 'auto',
           maxWidth: "sm",
         }}>
-          {console.log(formData)}
           <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
             <Grid xs={12}>
               <FormControl fullWidth>

@@ -19,7 +19,7 @@ const LitterApplicationDetails = (props) => {
     if (props.id !== applicationDetails.id) {
       getLitterApp(props.id)
         .then(litterApp => {
-          // console.log(litterApp);
+
           if (litterApp.status === 200) {
             const { data } = litterApp;
             // checks for sex preferance and provides strings accordingly
@@ -53,8 +53,6 @@ const LitterApplicationDetails = (props) => {
   return (
     <>
       {/* <ThemeProvider theme={customTheme}> */}
-      {/* {console.log(children)}
-        {console.log(pets)} */}
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',

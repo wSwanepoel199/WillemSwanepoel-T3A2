@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useGlobalState } from "./stateContext";
 
+// admin route that redirects back to route if triggered
 const AdminRoute = ({ children }) => {
   const { store } = useGlobalState();
   const { loggedInUser } = store;
@@ -17,19 +18,16 @@ const AdminRoute = ({ children }) => {
 
   return (
     <>
-      {admin ?
-        <>
+      {admin
+        && <>
           {children}
-        </>
-        :
-        <>
-
         </>
       }
     </>
   );
 };
 
+// user route that redirects to signin if triggered
 const SecuredRoute = ({ children }) => {
   const navigate = useNavigate();
 
@@ -43,13 +41,9 @@ const SecuredRoute = ({ children }) => {
 
   return (
     <>
-      {user ?
-        <>
+      {user
+        && <>
           {children}
-        </>
-        :
-        <>
-
         </>
       }
     </>

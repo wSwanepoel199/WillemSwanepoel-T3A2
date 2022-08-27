@@ -30,7 +30,7 @@ const Litter = (props) => {
     // makes patch to backend to update litter
     patchLitter(litter.id, newLitter)
       .then(litter => {
-        // console.log(litter);
+
         // on success updates litterList state with output of updateItemInArray function
         if (litter.status === 200) {
           dispatch({
@@ -47,7 +47,7 @@ const Litter = (props) => {
   return (
     <>
       <TableRow>
-        {/* {console.log(litter)} */}
+
         <TableCell>
           <IconButton
             aria-label="expand row"
