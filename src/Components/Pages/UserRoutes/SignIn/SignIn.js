@@ -39,7 +39,7 @@ const SignInForm = () => {
     signIn(submitForm)
       .then((user) => {
         console.log(user);
-        localStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
         dispatch({
           type: "cleanState",
           payload: initialState

@@ -5,24 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { postApplication } from "../../../services/litterServices";
 import { useGlobalState, CustomTable } from "../../../utils/componentIndex";
-import { colours } from "../../../utils/helpers/findOriginal";
+import { colours } from "../../../utils/helpers/generalTools";
 
 
 // Criteria form must account for
-// >but questions i always ask,      
-// do they have children, ( ages )   if young,    
-//  other pets,   dogs  ( breeds)  are they desexed,  
-//  yard, ?  
 //  where do you plan to have puppy sleeping,     
 //  anything they feel might let me see that they would be a good pick for one of my pups,   I believe in the happiness of the pup first,
-// probably needs their name and contact info too >.>
-
-// TODO - if user has baught dogs, auto fill
-// if user enters dog do stuff
-// impliment sex and colour preferance
-// remove ability to select litter instead apps are assigned to a waitlist to be processed
-
-// moving apps from waitlist to other litters and vice versa, handle apps in waitlist by altering reject val, 
 
 const LitterApplicationForm = () => {
   const { store, dispatch } = useGlobalState();

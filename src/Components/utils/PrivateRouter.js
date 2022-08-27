@@ -33,7 +33,7 @@ const AdminRoute = ({ children }) => {
 const SecuredRoute = ({ children }) => {
   const navigate = useNavigate();
 
-  const user = Boolean(localStorage.getItem('user'));
+  const user = Boolean(sessionStorage.getItem('user'));
 
   useEffect(() => {
     if (!user) {

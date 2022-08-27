@@ -1,29 +1,23 @@
 import { Table, TableBody, TableRow, TableCell, IconButton, Typography, Collapse, Box, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { assignPuppy, getLitterApps, patchLitterApp } from "../../../services/litterServices";
-import { updateItemInArray } from "../../../utils/helpers/findOriginal";
 import { useGlobalState } from "../../../utils/stateContext";
 import LitterApplicationDetails from "../LitterApplicationDetails/LitterApplicationDetails";
-import { getUser } from "../../../services/authServices";
-
-// TODO
-// Add detailed View for each application
-// impliment edit functionality as to assing puppies to an application and control priority of said application, either by editing value in edit, or consider drag and drop functionality
 
 const LitterApplication = (props) => {
   const { app, user } = props;
   const { store, dispatch } = useGlobalState();
-  const { applicationForms, loggedInUser } = store;
+  const { loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
   const [puppySelect, setPuppySelect] = useState({ selected_puppy_id: '' });
-
   const [open, setOpen] = useState(false);
 
+  // function containing a switch statement to process numerical values into their string counterparts
   const fulFillState = (state) => {
     switch (state) {
       case 1: {
@@ -41,11 +35,14 @@ const LitterApplication = (props) => {
     }
   };
 
+  // function that takes in the application's fulfillstate and a string
   const handleAcceptOrReject = (state, action) => {
+    // if action's value is not assign it simply makes a patch to the back containing the updated state and reinforcing that the application belongs to waitlist, wwhich litter_id is 1
     if (action !== "assign") {
       patchLitterApp(app.id, { ...app, fulfillstate: state, litter_id: 1 })
         .then(app => {
-          console.log(app);
+          // console.log(app);
+          // onsuccess makes get for updated litter applitions list and updates state with new data
           if (app.status === 200) {
             getLitterApps()
               .then(reply => {
@@ -57,14 +54,17 @@ const LitterApplication = (props) => {
               .catch(e => {
                 console.log(e);
               });
+            // closes application dropdown and navigates to current location to trigger alert
             setOpen(!open);
             navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "success", title: `${app.status} Success`, body: `Application ${app.data.id} has been ${action}` } });
           }
         })
         .catch(e => {
           console.log(e);
+          // it any errors, console logs them and navigates to currentl location to trigger alert with error info
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}; ${e.response.statusTxt}` } });
         });
+      // if fulfillstate is 1 and handleOpenDialog function has been provided via props from litterManage, triggers provided function and updates global state to contain application, then closes dropdown
     } else if (state === 1 && props.handleOpenDialog) {
       const { handleOpenDialog, openDialog } = props;
       handleOpenDialog(!openDialog);
@@ -76,6 +76,7 @@ const LitterApplication = (props) => {
     }
   };
 
+  // sets selected puppy id to puppySelect state
   const handlePuppySelect = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -84,6 +85,7 @@ const LitterApplication = (props) => {
     });
   };
 
+  // assigns puppySelect state and id of app to postForm object then makes patch to backend with said object
   const handlePuppySubmit = (e) => {
     e.preventDefault();
     const postForm = {
@@ -92,7 +94,8 @@ const LitterApplication = (props) => {
     };
     assignPuppy(postForm)
       .then(reply => {
-        console.log(reply);
+        // console.log(reply);
+        // on reply status 200 makes get request to back for updated application forms list, and assings reply to global state
         if (reply.status === 200) {
           getLitterApps()
             .then(reply => {
@@ -101,8 +104,11 @@ const LitterApplication = (props) => {
                 data: reply
               });
             });
+          // navigates to current location and triggers success alert
           navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'success', title: `${reply.status} Success`, body: `${reply.data.message}` } });
+          // closes the dropdown containing application controls
           setOpen(!open);
+          // resets selectPuppy state
           setPuppySelect({
             selected_puppy_id: ''
           });
@@ -110,6 +116,7 @@ const LitterApplication = (props) => {
       })
       .catch(e => {
         console.log(e);
+        // if any errors, console logs them then navigates to current location and triggers alert containing error info
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: 'error', title: `${e.response.status} ${e.response.data.success}`, body: `${e.response.data.message}` } });
       });
   };

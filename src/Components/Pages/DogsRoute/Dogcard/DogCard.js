@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import { Container, Card, CardContent, CardMedia, Button, Typography, Box } from "@mui/material";
 import moment from "moment";
 
-const DogCard = forwardRef(({ id, ...props }, ref) => {
-  // makes dog available from props
-  const { dog } = props;
+const DogCard = forwardRef(({ id, dog, ...props }, ref) => {
 
   return (
     <Card
@@ -15,16 +13,17 @@ const DogCard = forwardRef(({ id, ...props }, ref) => {
         maxHeight: 510, display: 'flex', flexDirection: 'column'
       }}
     >
+      {/* if dog prop is not provided it won't render a card */}
       {dog
         && <>
-          {dog.main_image
-            && <Box sx={{ height: 311, overflow: 'hidden', display: 'flex' }}>
-              <CardMedia
+          <Box sx={{ height: 311, overflow: 'hidden', display: 'flex' }}>
+            {dog.main_image
+              && <CardMedia
                 component="img"
                 image={dog.main_image}
                 sx={{ maxHeight: 'auto', maxWidth: 'auto', objectFit: 'contain' }}
-              />
-            </Box>}
+              />}
+          </Box>
           <CardContent sx={{ height: 207, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Container>
               <Typography variant="h5" component="div" textAlign="center">

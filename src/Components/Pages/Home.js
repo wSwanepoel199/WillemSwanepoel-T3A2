@@ -36,10 +36,21 @@ const Home = () => {
   //   });
   // }, []);
 
+  // takes in an array of dogs, sorts based on position then selects the 4 highest positon which are set to display
   const topDogs = (dogs) => {
     const orderedDogs = dogs.sort((a, b) => a.position - b.position);
-    let topDogs;
+    let displayDogs = [];
     let n = 0;
+    orderedDogs.map((dog) => {
+      if (dog.display && n < 4) {
+        n = n + 1;
+        displayDogs = [
+          ...displayDogs,
+          dog
+        ];
+      }
+    });
+    return displayDogs;
   };
 
   return (
@@ -62,11 +73,17 @@ const Home = () => {
           <Typography variant="h5" sx={{ textAlign: 'center', py: 2 }}>Top Dogs</Typography>
           {/* Cards for display items */}
           <Grid container spacing={3} justifyContent="center" >
-            {dogList.filter((dog) => dog.position < 5).map((dog, index) =>
+            {/* {dogList.filter((dog) => dog.position < 5).map((dog, index) =>
               <Grid key={index} xs={10} sm={5} md={5} lg={3}>
                 <DogCard dog={dog} />
               </Grid>
-            )}
+            )} */}
+            {topDogs(dogList).length === 4 && topDogs(dogList).map((dog, index) => {
+              return (
+                <Grid key={index} xs={10} sm={5} md={5} lg={3}>
+                  <DogCard dog={dog} />
+                </Grid>);
+            })}
           </Grid>
         </Box>
         {/* <Box>

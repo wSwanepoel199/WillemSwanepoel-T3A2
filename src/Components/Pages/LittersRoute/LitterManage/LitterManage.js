@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGlobalState, Litter, CustomTable, LitterApplicationManage } from "../../../utils/componentIndex";
 import { getLitterApps, patchLitterApp } from "../../../services/litterServices";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { updateItemInArray } from "../../../utils/helpers/findOriginal";
+import { updateItemInArray } from "../../../utils/helpers/generalTools";
 
 // impliment application filtering out from waitlist to open litters
 // impliment ability to reject litters in waitlist

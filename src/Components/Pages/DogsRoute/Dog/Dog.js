@@ -6,17 +6,28 @@ import moment from "moment";
 import { useState } from "react";
 import { useGlobalState } from "../../../utils/stateContext";
 import { patchDog } from "../../../services/dogsServices";
-import { updateItemInArray } from "../../../utils/helpers/findOriginal";
+import { updateItemInArray } from "../../../utils/helpers/generalTools";
 
 const Dog = (props) => {
-  const { dog } = props;
+  // setting up required hooks
   const { store, dispatch } = useGlobalState();
-  const { dogList, loggedInUser } = store;
   const navigate = useNavigate();
   const location = useLocation();
 
+  // destructuring objects to make required variables eaiser to access
+  const { dogList, loggedInUser } = store;
+  const { dog } = props;
+
+  // used for asyncronius updating of the open state
   const [open, setOpen] = useState(false);
 
+  // Inputs: action: string
+  // Function: uses
+  //    action to switch between 2 cases, switching a dogs retired or display value between true or false
+  //    then removes main_image, ownername and breedername by creating a new object containing everthing but those 3 values
+  //    then makes patch request to backedend using patchDogs()
+  // Called by: 2 Buttons, one for managing retire and the other for managing display
+  // Used for: allowing admins to manage dogs retired or display values
   const handleUpdateDog = (action) => {
     let newDog;
     switch (action) {
@@ -40,15 +51,25 @@ const Dog = (props) => {
         };
       }
     };
-    console.log(newDog);
-    const { main_image, ...newestDog } = newDog;
-    console.log(newestDog);
-    // makes patch request to update dog on back end
+    const { main_image, ownername, breedername, ...newestDog } = newDog;
+    // Inputs: 
+    //    dog.id: integer
+    //    newestDog: object
+    // Outputs: backend response to patch request
+    // Function: 
+    //    makes a patch request to '/dogs/dog.id' with the provided object.
+    //    takes response passes it the dispatch() function
+    // Called by: handleUpdateDog()
+    // Used for: updating a dog with new information on the backend
     patchDog(dog.id, newestDog)
       .then(dog => {
-        console.log(dog);
-        // on status 200 updates local dogList with newDogList containing changed dog
         if (dog.status === 200) {
+          // Inputs: 
+          //    type: integer
+          //    data: array
+          // Function: uses type to switch to a matching case and saves data to dogList in globalState
+          // Called by: patchDog()
+          // Used for: allows an admin to update a dogs data on the front end
           dispatch({
             type: 'setDogList',
             data: updateItemInArray(newDog, dogList)
@@ -56,8 +77,20 @@ const Dog = (props) => {
         }
       })
       .catch(e => {
-        // catches and alerts user of any errors
         console.log(e);
+        // Inputs:
+        //    target: string
+        //    options: object
+        //        state: object
+        //            alert: boolean
+        //            location: string
+        //            severity: string
+        //            title: string
+        //            body: string
+        // Outputs: navigates to target page and saves provided options to react-router browser
+        // Function: uses useNavigate() hook provided by react-router to navigate to target path and save provided options to react-router browser which can be accessed with the useLocation() hook also provided by react-router
+        // Called by: catch()
+        // Used for: automatically navigating the page to protect certain routes or simply trigger an alery by making use of the browser state, an object stored within the options object of react-router
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
       });
   };

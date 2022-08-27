@@ -1,20 +1,24 @@
-import { Box, Button, Collapse, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import Grid from "@mui/material/Unstable_Grid2";
-import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { getDog } from "../../../services/dogsServices";
 import moment from 'moment';
 import { useGlobalState } from '../../../utils/stateContext';
 import DogCard from '../Dogcard/DogCard';
-import { healthTestKeys, healthTestValues } from '../../../utils/helpers/findOriginal';
-import ViewPedigree from '../DogPedigree/DogPedigree';
+import { healthTestKeys, healthTestValues } from '../../../utils/helpers/generalTools';
 
 const DogDetails = () => {
+  // setting up required hooks
   const { store } = useGlobalState();
-  const { dogList, loggedInUser } = store;
   const params = useParams();
-  const mounted = useRef();
+  const navigate = useNavigate();
+  // const mounted = useRef();
 
+  // destructuring objects to make required variables easier to access
+  const { dogList, loggedInUser } = store;
+
+  // sets up states for DogDetails component
   const [dogDetails, setDogDetails] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [healthtest, setHealthtest] = useState([]);
@@ -22,14 +26,21 @@ const DogDetails = () => {
   const [litters, setLitters] = useState([]);
   const [owner, setOwner] = useState([]);
 
-  const [viewPedigree, setViewPedigree] = useState(false);
+  // const [viewPedigree, setViewPedigree] = useState(false);
 
+  // Inputs: what args does the function take and what type are each of them.
+  // Outputs: what are the names of the things the function might return, what type are they, what conditions lead to one return or another.
+  // Function: what does the function do with the inputs to turn them into the outputs, the control flow and the functions
+  // Called by: list all functions that call this function
+  // Used for: what feature(s) does this support at the userspace level
   useEffect(() => {
-    console.log(params);
+    // console.log(params);
     // if (!mounted.current) {
+    // makes get request for a dog using the id value provided via url
     getDog(params.id)
       .then(res => {
-        console.log(res);
+        // console.log(res);
+        // destructures out data and assings values to their own states, if any value other than dog is null, it instead provides an empty array
         const { data } = res;
         setDogDetails(data.dog);
         setHealthtest(data.healthtest || []);
@@ -39,10 +50,14 @@ const DogDetails = () => {
         setOwner(data.owner_details || []);
         // mounted.current = true;
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+        console.log(e);
+        navigate('./404');
+      });
     // }
-  }, [mounted, params]);
+  }, [params, navigate]);
 
+  // called for health test rendering, takes provded results from healthtest state and translates them into their appropriate value, any null tests are listed as
   const healthTestAnalizer = (test) => {
     return test !== null ? healthTestValues.find(result => test === result.id).status : "Unknown";
   };
@@ -59,9 +74,6 @@ const DogDetails = () => {
         <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ textAlign: 'center', py: 2 }}>
             <Typography variant="h3">{dogDetails.realname}</Typography>
-          </Grid>
-          <Grid xs={12} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6">Owner: {owner.username}</Typography>
           </Grid>
           <Grid xs={6} sx={{ textAlign: 'center' }}>
             {dogDetails.dob
@@ -144,9 +156,6 @@ const DogDetails = () => {
               {litters.map((litter, index) => {
                 return litter.id !== 1 &&
                   <Grid key={index} xs={12} sm={5} sx={{ textAlign: 'center', p: 1, my: 2 }} component={Paper}>
-                    <Typography variant="h5" sx={{ py: 2, my: 1 }} component={Paper}>
-                      {litter.lname}
-                    </Typography>
                     <Box>
                       <Box component='img' src={litter.main_image} sx={{ height: '100%', width: '100%', objectFit: 'contain' }} />
                     </Box>

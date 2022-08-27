@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router";
 import { getUsers } from "../../services/authServices";
-import { getDogs } from "../../services/dogsServices";
 import { getLitterApps, getLitters } from "../../services/litterServices";
 import { useGlobalState } from "../../utils/stateContext";
 
@@ -10,14 +9,6 @@ const LitterIndex = () => {
   const { loggedInUser } = store;
 
   useEffect(() => {
-    // getDogs()
-    //   .then(reply => {
-    //     dispatch({
-    //       type: "setDogList",
-    //       data: reply
-    //     });
-    //   })
-    //   .catch(e => console.log(e));
     getLitters()
       .then(reply => {
         dispatch({
@@ -26,7 +17,7 @@ const LitterIndex = () => {
         });
       })
       .catch(e => console.log(e));
-    if (localStorage.getItem("user") && loggedInUser.admin === true) {
+    if (sessionStorage.getItem("user") && loggedInUser.admin === true) {
       getLitterApps()
         .then(apps => {
           dispatch({
@@ -44,7 +35,7 @@ const LitterIndex = () => {
         })
         .catch(e => console.log(e));
     }
-  }, []);
+  }, [dispatch, loggedInUser]);
 
   return (
     <>

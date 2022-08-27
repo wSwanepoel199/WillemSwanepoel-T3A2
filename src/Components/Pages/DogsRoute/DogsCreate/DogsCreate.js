@@ -5,12 +5,7 @@ import { useGlobalState } from "../../../utils/componentIndex";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { postDog } from "../../../services/dogsServices";
-import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/findOriginal";
-
-// TO-DO 
-// breedername comes from back, don't post breedername or ownername at all
-// if litter present prevent dob creation
-// tackle add pictures
+import { colours, healthTestKeys, healthTestValues } from "../../../utils/helpers/generalTools";
 
 const DogCreationForm = () => {
   const { store, dispatch } = useGlobalState();
@@ -29,14 +24,14 @@ const DogCreationForm = () => {
     colour: '',
     chipnumber: '',
   };
-  // sets form initial states
+  // sets initial states
   const [formData, setFormData] = useState(initialFormData);
   const [healthTestData, setHealthTestData] = useState(healthTestKeys);
   const [litterData, setLitterData] = useState({ litter_id: '' });
   const [validLitterList, setValidLitterList] = useState([]);
   const [dogColours, setDogColours] = useState([]);
 
-  // on mount finds nomial litters, status of 3, and makes the choosable
+  // on commponent mount and on litterList changes sets validLitterList state to any notional litters, additionally assings colours to dogColours state for use in component
   useEffect(() => {
     setValidLitterList(
       litterList.filter(litter => litter.status === 3)
@@ -44,15 +39,18 @@ const DogCreationForm = () => {
     setDogColours(colours);
   }, [litterList]);
 
-  // handles form general input
+  // called when am input field is altered being passed the event data as e, inorder to save save alterations to the formData state
   const handleInput = (e) => {
+    // destructures out name and value from the event target
     const { name, value } = e.target;
-    console.log(name, ":", value);
+    // console.log(name, ":", value);
+    // provides unique logic iff the name of the event target is sex
     if (name === 'sex') {
       setFormData({
         ...formData,
         [name]: parseInt(value)
       });
+      // provides unique logic iff the name of the event target is litter_id
     } else if (name === "litter_id") {
       setLitterData({
         [name]: value
@@ -71,14 +69,21 @@ const DogCreationForm = () => {
     }
   };
 
-  // handles health test input
+  // handles input for health tests specifically
   const handleHealthTestInput = (e) => {
     const { name, value } = e.target;
-    console.log(healthTestData);
-    console.log(name, value);
+    // console.log(healthTestData);
+    // console.log(name, value);
     setHealthTestData({
       ...healthTestData,
       [name]: value
+    });
+    setFormData({
+      ...formData,
+      healthtest: {
+        ...formData.healthtest,
+        [name]: value
+      }
     });
   };
 
@@ -86,28 +91,28 @@ const DogCreationForm = () => {
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    console.log(name, files);
+    // console.log(name, files);
+    // if name is main_image, saves single file to state
     if (name === 'main_image') {
       setFormData({
         ...formData,
         [name]: files[0]
       });
+      // if name is gallery_images, saves array of files to state
     } else if (name === 'gallery_images') {
       setFormData({
         ...formData,
         [name]: [...files]
       });
     }
-
-    // https://stackoverflow.com/questions/52566331/formdata-append-nested-object
   };
 
-  // on form submit formats data for backend and makes post request to create dog
+  // when submit is triggered, creates dog object containing the healthtests
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
+    // console.log(e);
     let dog = {
-      healthtest: { ...healthTestData },
+      // healthtest: { ...healthTestData },
     };
     Object.entries(formData).forEach((item) => {
       console.log(item);
@@ -162,8 +167,6 @@ const DogCreationForm = () => {
       alignItems: 'center',
     }}>
       {console.log(formData)}
-      {console.log(validLitterList)}
-      {console.log(dogColours)}
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>

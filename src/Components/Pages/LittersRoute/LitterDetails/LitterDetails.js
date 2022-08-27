@@ -3,7 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { getShowCase } from "../../../services/litterServices";
-import { useGlobalState } from "../../../utils/stateContext";
+// import { useGlobalState } from "../../../utils/stateContext";
 import DogCard from "../../DogsRoute/Dogcard/DogCard";
 
 
@@ -31,9 +31,9 @@ const LitterDetails = () => {
       })
       .catch(e => {
         console.log(e);
-        navigate('..', { state: { alert: true, location: '..', severity: 'error', title: `${e.response.status} ${e.response.statusText}`, body: `Invalid Route` } });
+        navigate('/404');
       });
-  }, [params]);
+  }, [params, navigate]);
 
   return (
     <>

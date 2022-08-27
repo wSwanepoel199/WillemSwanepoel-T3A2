@@ -206,7 +206,7 @@ const SignUpForm = () => {
             </Grid>
             <Grid xs={12}>
               <Container fluid="true">
-                <Button variant="contained" type="submit">Sign Up</Button>
+                <Button variant="contained" type="submit" disableRipple>Sign Up</Button>
                 <Link to="/user/signIn">
                   <Button variant="text">sign in</Button>
                 </Link>

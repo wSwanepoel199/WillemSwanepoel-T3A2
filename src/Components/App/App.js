@@ -19,8 +19,8 @@ import {
   DisplayDogs,
   // LitterApplicationsManage,
   LitterApplicationForm,
-  LitterApplicationManage,
-  LitterApplicationDetails,
+  // LitterApplicationManage,
+  // LitterApplicationDetails,
   LitterManage,
   LitterCreationForm,
   LitterUpdateForm,
@@ -28,7 +28,7 @@ import {
   LitterApplications,
   SignInForm,
   SignUpForm,
-  SignUpRedirect,
+  // SignUpRedirect,
   NotFound,
   // state
   useGlobalState,
@@ -45,31 +45,30 @@ import { AdminRoute, SecuredRoute } from '../utils/PrivateRouter';
 // some basic styling
 import { Box, Container } from '@mui/material';
 
-// TO-DO Sprint 5
-// US 1.11: impliment ability to add puppies to litter creation as to start the pedigree chain
-// US 2.6 add ability for litter application to add pets and children
-// US 1.12 1.21 add ability for admin to assign born puppies to specific litter applications
-
-// to look at, display litters on a clander
-// MISC GET DONE block non signed in users from accessing litter application
-// Impliment allerts for successful login/logout
-
-
 const App = () => {
   const { store, dispatch } = useGlobalState();
   const { dogList, loggedInUser } = store;
   const location = useLocation();
   const { state } = location;
 
-  //   Inputs: dispatch function
-  // Outputs: makes the 3 standard get requess to back end if they are not in sesssionStorage
-  // Function: if not already stored, makes get requestss to back, and uses dispatch to assign response to session storage and global state
-  // Used for: ensures all of the most basic info is available to be displayed to all users
+  // Inputs: 
+  //    dispatch: function
+  //    dogList: array
+  //    loggedInUser: object
+  // Function: runs contents on component mount or if dogList or loggedInUser updates
+  // Used for: makes sure dogList and loggedInUser global state remain as up to date as possible
   useEffect(() => {
-    // if (sessionStorage.getItem("dogList") === null) {
     if (dogList.length === 0) {
+      // Outputs: backend response from get request to '/dogs/'
+      // Function: makes backend get request to dogs#index
+      // Used for: keeping dogList updated with the latest scoped iteration
       getDogs()
         .then(dogs => {
+          // Inputs: 
+          //   type: string
+          //   data: array
+          // Function: uses type to switch to a matching case and saves the provided data to dogList in globalState
+          // Used for: Populates the dogList which is the root that all dog based features reply upon
           dispatch({
             type: "setDogList",
             data: dogs
@@ -77,33 +76,17 @@ const App = () => {
         })
         .catch(e => console.log(e));
     }
-    if (loggedInUser.length === 0 && Boolean(localStorage.getItem('user'))) {
+    if (loggedInUser.length === 0 && Boolean(sessionStorage.getItem('user'))) {
+      // Inputs:
+      //   type: string
+      //   data: object
+      // Function: uses type to switch to a matching case and save provided data to loggedInUser in globalState
+      // Used for: managing the users state and authorisation
       dispatch({
         type: 'setLoggedInUser',
-        data: JSON.parse(localStorage.getItem('user'))
+        data: JSON.parse(sessionStorage.getItem('user'))
       });
     }
-    // }
-    // if (sessionStorage.getItem("litterList") === null) {
-    //   getLitters()
-    //     .then(litter => {
-    //       dispatch({
-    //         type: "setLitterList",
-    //         data: litter
-    //       });
-    //     })
-    //     .catch(e => console.log(e));
-    // }
-    // if (loggedInUser.admin === true) {
-    //   getUsers()
-    //     .then(users => {
-    //       dispatch({
-    //         type: "setUserList",
-    //         data: users
-    //       });
-    //     })
-    //     .catch(e => console.log(e));
-    // }
   }, [dogList, dispatch, loggedInUser]);
 
 
@@ -171,7 +154,7 @@ const App = () => {
                 <AdminRoute>
                   <DisplayDogs id={'all'} />
                 </AdminRoute>} />
-              {/* sets the route that renders the DogsReorder componet */}
+              {/* sets the route that renders the DogsReorder component */}
               <Route path="re_order" element={
                 <AdminRoute>
                   <DogsReorder />
@@ -189,22 +172,22 @@ const App = () => {
               {/* sets the route that renders DogDetails component, uses :id param to control which dog is providing details */}
               <Route path="display/:id" element={<DogDetails />} />
             </Route>
-            {/* sets default path for litters */}
+            {/* sets default route for litters */}
             <Route path="litters" element={<LitterIndex />}>
               {/* automatically routes path: "/litters" to "/litters/apply" */}
-              <Route index element={<Navigate to={'/litters/manage'} replace={true} />} />
-              {/* sets path for litter management page and uses AdminRoute to manage autherisation*/}
+              <Route index element={<Navigate to={'/litters/apply'} replace={true} />} />
+              {/* sets the route for litter manage component and uses AdminRoute to block non admin users*/}
               <Route path="manage" element={
                 <AdminRoute>
                   <LitterManage />
                 </AdminRoute>} />
-              {/* sets path for litter creation page and uses AdminRoute to manage autherisation*/}
+              {/* sets the route for litter creation component and uses AdminRoute to block non admin users*/}
               <Route path="create" element={
                 <AdminRoute>
                   <LitterCreationForm />
                 </AdminRoute>
               } />
-              {/* sets path for litter application page */}
+              {/* sets the route for litter application component and uses SecuredRoute to redirect non signed in users*/}
               <Route path="apply" element={
                 <SecuredRoute>
                   <LitterApplicationForm />
@@ -214,53 +197,64 @@ const App = () => {
                   <LitterApplicationManage />
                 </AdminRoute>
               } /> */}
+              {/* sets the route for the litter showcase component, is used to show off litters */}
               <Route path="browse" element={<ShowCase />} />
+              {/* sets the route for the litter gallery component, used to display all the main images for litters */}
               <Route path="showcase" element={<LitterGallery />} />
-              {/* sets path to access LitterDetails to a non absolute path */}
+              {/* sets the route to access LitterDetails component to view a break down of each litter */}
               <Route path=":id" element={
                 <LitterDetails />
               } />
-              {/* sets path for litter update page and uses AdminRoute to manage autherisation*/}
+              {/* sets the route for litter update component and uses AdminRoute to reroute non admin users*/}
               <Route path=":id/edit" element={
                 <AdminRoute>
                   <LitterUpdateForm />
                 </AdminRoute>
               } />
-              {/* sets default path for the litter applications */}
-              <Route path=":id/applications">
-                {/* sets path for litter applications manafement page and uses AdminRoute to manage autherisation */}
-                {/* <Route path="manage" element={
+              {/* sets the default route for the litter applications component, uses ArminRoute to reroute non admin users*/}
+              <Route path=":id/applications" element={
+                <AdminRoute>
+                  <LitterApplications />
+                </AdminRoute>} />
+              {/* sets path for litter applications manafement page and uses AdminRoute to manage autherisation */}
+              {/* <Route path="manage" element={
                 <AdminRoute>
                   <LitterApplicationsManage />
                 </AdminRoute>
               } /> */}
-                <Route index element={
+              {/* <Route index element={
                   <AdminRoute>
                     <LitterApplications />
                   </AdminRoute>
                 } />
-              </Route>
+              </Route> */}
             </Route>
 
-            {/* sets paths for sign in and sign up pages allowing users to make accounts and sign into them */}
+            {/* sets the default route for user components */}
             <Route path='user'>
+              {/* sets the route for the profile view component */}
               <Route path=":id" element={
                 <SecuredRoute>
                   <ProfileView />
                 </SecuredRoute>
               } />
+              {/* route for sign in form */}
               <Route path="signin" element={<SignInForm />} />
+              {/* route for signup form */}
               <Route path="signup" >
                 <Route index element={<SignUpForm />} />
-                <Route path="redirect" element={<SignUpRedirect />} />
+                {/* <Route path="redirect" element={<SignUpRedirect />} /> */}
               </Route>
+              {/* route to sign out */}
               <Route path="signOut" element={
                 <SignOut />
               } />
             </Route>
+            {/* route to process and confirm user confirmations */}
             <Route path="users/confirmation" element={<SignUpConfirm />} />
             {/* sets path to render 404 page when attempting to access a route that does not exist */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<Navigate to="404" />} />
+            <Route path="404" element={<NotFound />} />
           </Routes>
         </Container>
       </Box>

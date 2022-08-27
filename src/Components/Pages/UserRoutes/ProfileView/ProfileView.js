@@ -3,7 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getUser } from "../../../services/authServices";
 import { EditForm, Profile, useGlobalState, ViewApplications, ViewDogs, ViewLitters } from "../../../utils/componentIndex";
 
@@ -14,6 +14,7 @@ const ProfileView = () => {
   const { loggedInUser } = store;
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
   const [user, setUser] = useState([]);
   const [dogs, setDogs] = useState([]);
@@ -35,13 +36,16 @@ const ProfileView = () => {
             setLitters(reply.data.bred_litters);
           }
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+          console.log(e);
+          navigate('/404');
+        });
     } else if (user !== [] && user !== loggedInUser) {
       setUser(loggedInUser);
     }
     // setUser(loggedInUser);
 
-  }, [id, user, loggedInUser]);
+  }, [id, user, loggedInUser, navigate]);
 
   const handleProfileSwitch = (page) => {
     setPageRender(page);

@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from "react";
 import { CustomTable, useGlobalState } from "../../../utils/componentIndex";
 import { getLitter, patchLitter, postNewPuppy } from "../../../services/litterServices";
 import { getDogs, patchDog } from "../../../services/dogsServices";
-import { colours, updateItemInArray } from "../../../utils/helpers/findOriginal";
+import { colours, updateItemInArray } from "../../../utils/helpers/generalTools";
 
 // TODO, include link to full dogs edit page
 
