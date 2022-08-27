@@ -165,7 +165,6 @@ const LitterUpdateForm = () => {
   // handles the input for puppies
   const handlePuppyInput = (e, index) => {
     const { name, value, files } = e.target;
-    console.log(name, value, files);
     // spreads puppyData into new array inorder to mutate values
     const newPuppyData = [...puppyData];
     // located and alters the object containing the specifc puppies data that is being altered
@@ -198,7 +197,6 @@ const LitterUpdateForm = () => {
     // checks if there are any new puppies
     if (newPuppies.length > 0) {
       newPuppies.forEach((puppy) => {
-        console.log(puppy);
         // formats new puppy data so backend can read it
         const dog = {
           id: formData.id,
@@ -209,7 +207,6 @@ const LitterUpdateForm = () => {
         postNewPuppy(postForm)
           .then(puppies => {
             // if returnes with statuss 201, will add newly created puppies to the newpuppy state
-            console.log(puppies);
             if (puppies.status === 201) {
               setNewPuppyData([
                 ...newPuppyData,
@@ -240,7 +237,6 @@ const LitterUpdateForm = () => {
             .then(dog => {
               // if returned with status 200 adds any updated puppies to the newpuppy state
               if (dog.status === 200) {
-                console.log(dog);
                 setNewPuppyData([
                   ...newPuppyData,
                   dog.data
@@ -311,7 +307,6 @@ const LitterUpdateForm = () => {
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    console.log(name, files);
     if (name === 'main_image') {
       setFormData({
         ...formData,
@@ -352,7 +347,7 @@ const LitterUpdateForm = () => {
         }
       })
       .catch((e) => {
-        console.log(e.toJSON());
+        console.log(e);
         navigate(location.pathname, { state: { alert: true, location: location.pathname, severity: "error", title: e.response.status, body: `${e.response.statusText} ${e.response.data.message}` } });
       });
   };
@@ -367,9 +362,6 @@ const LitterUpdateForm = () => {
         ml: 'auto',
         mr: 'auto',
       }}>
-        {console.log(formData)}
-        {console.log(puppyData)}
-        {console.log(newPuppyData)}
         <Paper sx={{ padding: 4 }}>
           <FormControlLabel
             control={<Switch checked={notional} onChange={handleChangeNotional} />}

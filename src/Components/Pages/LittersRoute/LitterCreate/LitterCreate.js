@@ -46,8 +46,6 @@ const LitterCreationForm = () => {
 
   // formats date input to use moment and passes it to handle input
   const handleDate = (e, name) => {
-    console.log(e);
-    console.log(moment(e).format('YYYY-MM-DD'));
     const date = moment(e).format('YYYY-MM-DD');
     const newDate = {
       target: {
@@ -82,7 +80,6 @@ const LitterCreationForm = () => {
   // general input handler
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name, ":", value);
     if (name === "esize") {
       let fixedValue = 1;
       if (Boolean(parseInt(e.target.value))) {
@@ -90,7 +87,6 @@ const LitterCreationForm = () => {
       } else {
         fixedValue = 1;
       }
-      console.log(fixedValue);
       if (fixedValue > 13) fixedValue = 13;
       if (fixedValue < 0) fixedValue = 0;
 
@@ -104,13 +100,11 @@ const LitterCreationForm = () => {
         [name]: value,
       });
     }
-    console.log("form:", formData);
   };
 
   // on form submit makes post request form formData
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
     postLitter(formData)
       .then((litter) => {
         // on success makes dispatch to update local litterList

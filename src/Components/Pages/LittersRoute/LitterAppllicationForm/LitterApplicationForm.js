@@ -56,7 +56,6 @@ const LitterApplicationForm = () => {
   // handles all form input
   const handleInput = (e) => {
     const { name, value, type } = e.target;
-    console.log(`${name}, ${value}, ${type}`);
     // ensures provided values for child_age and pet_age are handled as integers
     if (name === "child_age" || name === "pets_age") {
       let fixedValue = 0;
@@ -65,7 +64,7 @@ const LitterApplicationForm = () => {
       } else {
         fixedValue = 0;
       }
-      console.log(fixedValue);
+
       if (fixedValue < 0) fixedValue = 0;
 
       setFormData({
@@ -137,7 +136,6 @@ const LitterApplicationForm = () => {
     // makes post to backend with appForm, if response.status === 201 saves application to globalState
     postApplication(appForm)
       .then(application => {
-        // console.log(application);
         if (application.status === 201) {
           dispatch({
             type: "updateLitterApplications",

@@ -23,7 +23,6 @@ const LitterDetails = () => {
   useEffect(() => {
     getShowCase(params.id)
       .then(reply => {
-        console.log(reply);
         if (reply.status === 200) {
           setLitter(reply.data.litter);
           setImages(reply.data.images);

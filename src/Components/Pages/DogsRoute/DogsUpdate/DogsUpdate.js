@@ -39,7 +39,7 @@ const DogUpdateForm = () => {
     if (dog.length === 0) {
       getDog(params.id)
         .then(dog => {
-          // console.log(dog);
+
           if (dog.status === 200) {
             const { data } = dog;
             setDog(data);
@@ -89,7 +89,7 @@ const DogUpdateForm = () => {
   // handles the forms general input by desctructuring name and value from triggering event target
   const handleInput = (e) => {
     const { name, value } = e.target;
-    // console.log(name, ":", value);
+
     // runs custom form state update if name is 'sex'
     if (name === 'sex') {
       setFormData({
@@ -133,7 +133,7 @@ const DogUpdateForm = () => {
   const handleImageUpload = (e) => {
     e.preventDefault();
     const { name, files } = e.target;
-    // console.log(name, files);
+
     // assigns image file if name is 'main_image'
     if (name === 'main_image') {
       setFormData({
@@ -152,12 +152,12 @@ const DogUpdateForm = () => {
   // on form submit, creates empty dog object, filters out any empty strings and assigns the rest to the dog object. once done converts object into FormData format and patches to back
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(formData);
+
     let dog = {
       // healthtest: { ...healthTestData }
     };
     Object.entries(formData).forEach((item) => {
-      console.log(item);
+
       if (item[1] === '') {
         return;
       } else {
@@ -170,7 +170,7 @@ const DogUpdateForm = () => {
     const postForm = fd({ dog });
     patchDog(params.id, postForm)
       .then(dog => {
-        // console.log(dog);
+
         // if reply.status === 200 makes get request to back and refreshes dogList with reply
         if (dog.status === 200) {
           getDogs()
@@ -202,9 +202,7 @@ const DogUpdateForm = () => {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      {/* {console.log(dog)}
-      {console.log(formData)}
-      {console.log(validLitterList)} */}
+
       <Paper sx={{ padding: 4 }}>
         <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Grid xs={12} sx={{ mb: 3 }}>
@@ -279,7 +277,7 @@ const DogUpdateForm = () => {
             <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>Health Test</Typography>
           </Grid>
           {Object.entries(healthTestData).map((healthTest, index) => {
-            console.log(healthTest);
+
             return (
               <Grid key={index} xs={12} sm={4}>
                 <FormControl fullWidth>

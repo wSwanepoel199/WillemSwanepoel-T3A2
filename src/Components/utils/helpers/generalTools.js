@@ -14,8 +14,7 @@ export function updateItemInArray(item, array, type) {
       originalItem = array.find(original => original.id === item.id);
     }
   }
-  console.log(item);
-  console.log(originalItem);
+
   // makes new mutable array out of provided
   let newArray = [...array];
   // splices in provided item into provided array

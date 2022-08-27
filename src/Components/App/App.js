@@ -93,14 +93,6 @@ const App = () => {
 
   return (
     <>
-      {console.log("store:", store)}
-      {/* {console.log("list of dogs:", store.dogList)} */}
-      {/* {console.log("list of litters:", store.litterList)} */}
-      {/* {console.log("logged in user:", store.loggedInUser)} */}
-      {/* {console.log("token", store.token)} */}
-      {/* {console.log("list of contact attempts:", store.contactFormList)} */}
-      {/* {console.log("user list:", store.userList)} */}
-
       {/* wraps whole application in a box that ensures its always the width of the window */}
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* renders custom alert component when location.state containes alert which is set to true */}
@@ -108,7 +100,7 @@ const App = () => {
           <>
             {/* ensures alert is rendered absolutely so it appears ontop of application */}
             <Box sx={{ width: '100%', position: 'sticky', top: 0, zIndex: '2' }}>
-              {/* {console.log("alert triggered")} */}
+
               {/* custom alert component that uses material ui's alert components to display a user friendly alert, fills fields with values passed through location.state */}
               <Box sx={{ position: 'absolute', width: '100%' }}>
                 <AlertComponent location={state.location} severity={state.severity} title={state.title} body={state.body} />
